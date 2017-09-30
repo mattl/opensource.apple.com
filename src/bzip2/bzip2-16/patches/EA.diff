@@ -1,0 +1,28 @@
+Index: bzip2.c
+===================================================================
+RCS file: /cvs/root/bzip2/bzip2/Attic/bzip2.c,v
+retrieving revision 1.1.1.1
+retrieving revision 1.1.1.1.2.1
+diff -u -d -b -p -r1.1.1.1 -r1.1.1.1.2.1
+--- bzip2.c	2002/04/29 21:22:53	1.1.1.1
++++ bzip2.c	2004/08/14 00:35:08	1.1.1.1.2.1
+@@ -152,6 +152,9 @@
+ 
+ #endif /* BZ_LCCWIN32 */
+ 
++#ifdef __APPLE__
++#include <copyfile.h>
++#endif
+ 
+ /*---------------------------------------------*/
+ /*--
+@@ -1071,6 +1074,9 @@ void applySavedMetaInfoToOutputFile ( Ch
+    ERROR_IF_NOT_ZERO ( retVal );
+ 
+    (void) fchown ( fd, fileMetaInfo.st_uid, fileMetaInfo.st_gid );
++#if __APPLE__
++    copyfile(inName, outName, 0, COPYFILE_ACL | COPYFILE_XATTR);
++#endif
+    /* chown() will in many cases return with EPERM, which can
+       be safely ignored.
+    */
