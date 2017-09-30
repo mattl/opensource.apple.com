@@ -1,0 +1,629 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		A96AB4E20DD547FB00DA500A /* BootCache */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = A96AB4E70DD547FB00DA500A /* Build configuration list for PBXAggregateTarget "BootCache" */;
+			buildPhases = (
+			);
+			dependencies = (
+				A96AB5190DD547FC00DA500A /* PBXTargetDependency */,
+				A96AB51B0DD547FC00DA500A /* PBXTargetDependency */,
+			);
+			name = BootCache;
+			productName = SmartReadahead;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		A96AB4F40DD547FB00DA500A /* BootCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F30F63B01B745E90ECA2C3D /* BootCache.h */; settings = {ATTRIBUTES = (); }; };
+		A96AB4F60DD547FB00DA500A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+		A96AB4F80DD547FB00DA500A /* kext.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F30F63A01B745E90ECA2C3D /* kext.c */; };
+		A96AB4F90DD547FB00DA500A /* kext_glue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FF22D1E026652BA0ECA2C3D /* kext_glue.cpp */; };
+		A96AB5090DD547FC00DA500A /* BootCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F30F63B01B745E90ECA2C3D /* BootCache.h */; };
+		A96AB50B0DD547FC00DA500A /* control.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F67ED4101B842340ECA2C3D /* control.c */; };
+		A96AB50C0DD547FC00DA500A /* library.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F47C34001F78EE30ECA2C3D /* library.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A96AB5180DD547FC00DA500A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A96AB5070DD547FC00DA500A;
+			remoteInfo = BootCacheControl;
+		};
+		A96AB51A0DD547FC00DA500A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A96AB4EE0DD547FB00DA500A;
+			remoteInfo = BootCache.kext;
+		};
+		A96AB51C0DD547FC00DA500A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A96AB5070DD547FC00DA500A;
+			remoteInfo = BootCacheControl;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		9F30F63A01B745E90ECA2C3D /* kext.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = kext.c; sourceTree = "<group>"; };
+		9F30F63B01B745E90ECA2C3D /* BootCache.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BootCache.h; sourceTree = "<group>"; };
+		9F47C34001F78EE30ECA2C3D /* library.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = library.c; sourceTree = "<group>"; };
+		9F67ED4101B842340ECA2C3D /* control.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = control.c; sourceTree = "<group>"; };
+		9FF22D1E026652BA0ECA2C3D /* kext_glue.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = kext_glue.cpp; sourceTree = "<group>"; };
+		A96AB5050DD547FB00DA500A /* Info-BootCache_kext.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-BootCache_kext.plist"; sourceTree = "<group>"; };
+		A96AB5060DD547FC00DA500A /* BootCache.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BootCache.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		A96AB5160DD547FC00DA500A /* BootCacheControl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BootCacheControl; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A96AB4FB0DD547FB00DA500A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A96AB50D0DD547FC00DA500A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* SmartReadahead */ = {
+			isa = PBXGroup;
+			children = (
+				9F3E16B701FF60D80ECA2C3D /* Classes */,
+				247142CAFF3F8F9811CA285C /* Source */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				19C28FB6FE9D52B211CA2CBB /* Products */,
+				A96AB5050DD547FB00DA500A /* Info-BootCache_kext.plist */,
+			);
+			name = SmartReadahead;
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		19C28FB6FE9D52B211CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A96AB5060DD547FC00DA500A /* BootCache.kext */,
+				A96AB5160DD547FC00DA500A /* BootCacheControl */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		247142CAFF3F8F9811CA285C /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				9F30F63A01B745E90ECA2C3D /* kext.c */,
+				9F30F63B01B745E90ECA2C3D /* BootCache.h */,
+				9F67ED4101B842340ECA2C3D /* control.c */,
+				9F47C34001F78EE30ECA2C3D /* library.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		9F3E16B701FF60D80ECA2C3D /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				9FF22D1E026652BA0ECA2C3D /* kext_glue.cpp */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		A96AB4F30DD547FB00DA500A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A96AB4F40DD547FB00DA500A /* BootCache.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A96AB5080DD547FC00DA500A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A96AB5090DD547FC00DA500A /* BootCache.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		A96AB4EE0DD547FB00DA500A /* BootCache.kext */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A96AB4FE0DD547FB00DA500A /* Build configuration list for PBXNativeTarget "BootCache.kext" */;
+			buildPhases = (
+				A96AB4F10DD547FB00DA500A /* ShellScript */,
+				A96AB4F20DD547FB00DA500A /* ShellScript */,
+				A96AB4F30DD547FB00DA500A /* Headers */,
+				A96AB4F50DD547FB00DA500A /* Resources */,
+				A96AB4F70DD547FB00DA500A /* Sources */,
+				A96AB4FA0DD547FB00DA500A /* ShellScript */,
+				A96AB4FB0DD547FB00DA500A /* Frameworks */,
+				A96AB4FC0DD547FB00DA500A /* Rez */,
+				A96AB4FD0DD547FB00DA500A /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A96AB51D0DD547FC00DA500A /* PBXTargetDependency */,
+			);
+			name = BootCache.kext;
+			productInstallPath = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+			productName = SmartReadahead;
+			productReference = A96AB5060DD547FC00DA500A /* BootCache.kext */;
+			productType = "com.apple.product-type.kernel-extension.iokit";
+		};
+		A96AB5070DD547FC00DA500A /* BootCacheControl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A96AB50F0DD547FC00DA500A /* Build configuration list for PBXNativeTarget "BootCacheControl" */;
+			buildPhases = (
+				A96AB5080DD547FC00DA500A /* Headers */,
+				A96AB50A0DD547FC00DA500A /* Sources */,
+				A96AB50D0DD547FC00DA500A /* Frameworks */,
+				A96AB50E0DD547FC00DA500A /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BootCacheControl;
+			productInstallPath = /usr/sbin;
+			productName = SmartReadaheadControl;
+			productReference = A96AB5160DD547FC00DA500A /* BootCacheControl */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+			};
+			buildConfigurationList = 42F550340A77D4BD00672F71 /* Build configuration list for PBXProject "BootCache" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 089C166AFE841209C02AAC07 /* SmartReadahead */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A96AB4E20DD547FB00DA500A /* BootCache */,
+				A96AB4EE0DD547FB00DA500A /* BootCache.kext */,
+				A96AB5070DD547FC00DA500A /* BootCacheControl */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A96AB4F50DD547FB00DA500A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A96AB4F60DD547FB00DA500A /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		A96AB4FC0DD547FB00DA500A /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A96AB50E0DD547FC00DA500A /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A96AB4F10DD547FB00DA500A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "script=\"${SYSTEM_DEVELOPER_DIR}/ProjectBuilder Extras/Kernel Extension Support/KEXTPreprocess\";\nif [ -x \"$script\" ]; then\n    . \"$script\"\nfi";
+		};
+		A96AB4F20DD547FB00DA500A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\n#\n# If we have a playlist, regenerate playlist.h\n#\nif [ -r ${SRCROOT}/playlist ]; then\n    echo Generating ${SRCROOT}/playlist.h from ${SRCROOT}/playlist\n    ${BUILT_PRODUCTS_DIR}/BootCacheControl -cf ${SRCROOT}/playlist print > ${SRCROOT}/playlist.h\nelse\n    echo Generating default ${SRCROOT}/playlist.h\n    cp ${SRCROOT}/default_playlist.h ${SRCROOT}/playlist.h\nfi";
+		};
+		A96AB4FA0DD547FB00DA500A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\n#\n# Clean out playlist.h\n#\nrm -f ${SRCROOT}/playlist.h";
+		};
+		A96AB4FD0DD547FB00DA500A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "script=\"${SYSTEM_DEVELOPER_DIR}/ProjectBuilder Extras/Kernel Extension Support/KEXTPostprocess\";\nif [ -x \"$script\" ]; then\n    . \"$script\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A96AB4F70DD547FB00DA500A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A96AB4F80DD547FB00DA500A /* kext.c in Sources */,
+				A96AB4F90DD547FB00DA500A /* kext_glue.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A96AB50A0DD547FC00DA500A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A96AB50B0DD547FC00DA500A /* control.c in Sources */,
+				A96AB50C0DD547FC00DA500A /* library.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A96AB5190DD547FC00DA500A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A96AB5070DD547FC00DA500A /* BootCacheControl */;
+			targetProxy = A96AB5180DD547FC00DA500A /* PBXContainerItemProxy */;
+		};
+		A96AB51B0DD547FC00DA500A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A96AB4EE0DD547FB00DA500A /* BootCache.kext */;
+			targetProxy = A96AB51A0DD547FC00DA500A /* PBXContainerItemProxy */;
+		};
+		A96AB51D0DD547FC00DA500A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A96AB5070DD547FC00DA500A /* BootCacheControl */;
+			targetProxy = A96AB51C0DD547FC00DA500A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C167EFE841241C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		42F550350A77D4BD00672F71 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Development;
+		};
+		42F550370A77D4BD00672F71 /* CD_mode */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = CD_mode;
+		};
+		42F5503A0A77D4BD00672F71 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Default;
+		};
+		A96AB4E80DD547FB00DA500A /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "-DDEBUG";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = BootCache;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		A96AB4EA0DD547FB00DA500A /* CD_mode */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "-DSTATIC_PLAYLIST";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = BootCache;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = CD_mode;
+		};
+		A96AB4ED0DD547FB00DA500A /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = BootCache;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		A96AB4FF0DD547FB00DA500A /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Info-BootCache_kext.plist";
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+				KERNEL_MODULE = YES;
+				LIBRARY_SEARCH_PATHS = "";
+				MODULE_IOKIT = YES;
+				MODULE_NAME = com.apple.BootCache;
+				MODULE_VERSION = 23;
+				OTHER_CFLAGS = (
+					"-no-cpp-precomp",
+					"-Wall",
+				);
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = BootCache;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = kext;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		A96AB5010DD547FB00DA500A /* CD_mode */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = STATIC_PLAYLIST;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Info-BootCache_kext.plist";
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+				KERNEL_MODULE = YES;
+				LIBRARY_SEARCH_PATHS = "";
+				MODULE_IOKIT = YES;
+				MODULE_NAME = com.apple.BootCache;
+				MODULE_VERSION = 23;
+				OTHER_CFLAGS = (
+					"-no-cpp-precomp",
+					"-Wall",
+				);
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = BootCache;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = kext;
+			};
+			name = CD_mode;
+		};
+		A96AB5040DD547FB00DA500A /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Info-BootCache_kext.plist";
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+				KERNEL_MODULE = YES;
+				LIBRARY_SEARCH_PATHS = "";
+				MODULE_IOKIT = YES;
+				MODULE_NAME = com.apple.BootCache;
+				MODULE_VERSION = 23;
+				OTHER_CFLAGS = (
+					"-no-cpp-precomp",
+					"-Wall",
+				);
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = BootCache;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = kext;
+			};
+			name = Default;
+		};
+		A96AB5100DD547FC00DA500A /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				INSTALL_PATH = /usr/sbin;
+				OTHER_CFLAGS = (
+					"-no-cpp-precomp",
+					"-Wall",
+				);
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = BootCacheControl;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		A96AB5120DD547FC00DA500A /* CD_mode */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = STATIC_PLAYLIST;
+				INSTALL_PATH = /usr/sbin;
+				OTHER_CFLAGS = (
+					"-no-cpp-precomp",
+					"-Wall",
+				);
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = BootCacheControl;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = CD_mode;
+		};
+		A96AB5150DD547FC00DA500A /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = /usr/sbin;
+				OTHER_CFLAGS = (
+					"-no-cpp-precomp",
+					"-Wall",
+				);
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = BootCacheControl;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		42F550340A77D4BD00672F71 /* Build configuration list for PBXProject "BootCache" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				42F550350A77D4BD00672F71 /* Development */,
+				42F550370A77D4BD00672F71 /* CD_mode */,
+				42F5503A0A77D4BD00672F71 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		A96AB4E70DD547FB00DA500A /* Build configuration list for PBXAggregateTarget "BootCache" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A96AB4E80DD547FB00DA500A /* Development */,
+				A96AB4EA0DD547FB00DA500A /* CD_mode */,
+				A96AB4ED0DD547FB00DA500A /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		A96AB4FE0DD547FB00DA500A /* Build configuration list for PBXNativeTarget "BootCache.kext" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A96AB4FF0DD547FB00DA500A /* Development */,
+				A96AB5010DD547FB00DA500A /* CD_mode */,
+				A96AB5040DD547FB00DA500A /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		A96AB50F0DD547FC00DA500A /* Build configuration list for PBXNativeTarget "BootCacheControl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A96AB5100DD547FC00DA500A /* Development */,
+				A96AB5120DD547FC00DA500A /* CD_mode */,
+				A96AB5150DD547FC00DA500A /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}

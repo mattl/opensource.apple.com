@@ -1,0 +1,4 @@
+SVK: Perl
+SVN-Dump: Perl
+SVN-Mirror: Perl
+SVN-Simple: Perl

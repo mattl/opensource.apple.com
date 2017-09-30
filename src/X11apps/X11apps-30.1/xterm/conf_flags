@@ -1,0 +1,1 @@
+--mandir=/usr/X11/share/man --enable-wide-chars --enable-luit --enable-256-color --enable-logging --enable-load-vt-fonts
