@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Copyright (C) 1998,1999 Philip Hands <phil@hands.com>
+# Copyright (C) 2001 by Martin Pool <mbp@samba.org>
+
+# This program is distributable under the terms of the GNU GPL (see
+# COPYING)
+
+# This script tests ssh, if possible.  It's called by runtests.sh
+
+. "$suitedir/rsync.fns"
+
+if [ "x$rsync_enable_ssh_tests" != xyes ]
+then
+    test_skipped "Skipping SSH tests because \$rsync_enable_ssh_tests is not set"
+fi
+
+if ! type ssh >/dev/null ; then
+    test_skipped "Skipping SSH tests because ssh is not in the path"
+fi
+
+if ! [ "`ssh -o'BatchMode yes' localhost echo yes`" = "yes" ]; then
+    test_skipped "Skipping SSH tests because ssh conection to localhost not authorised"
+fi
+
+runtest "ssh: basic test" 'checkit "$RSYNC -avH -e ssh --rsync-path=$RSYNC ${FROM}/ localhost:${TO}" ${FROM}/ ${TO}'
+
+mv ${TO}/${F1} ${TO}/ThisShouldGo
+
+runtest "ssh: renamed file" 'checkit "$RSYNC --delete -avH -e ssh --rsync-path=$RSYNC ${FROM}/ localhost:${TO}" ${FROM}/ ${TO}'

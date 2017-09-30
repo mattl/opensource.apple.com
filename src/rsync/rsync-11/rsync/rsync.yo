@@ -1,0 +1,1164 @@
+mailto(rsync-bugs@samba.org)
+manpage(rsync)(1)(26 Jan 2003)()()
+manpagename(rsync)(faster, flexible replacement for rcp)
+manpagesynopsis()
+
+rsync [OPTION]... SRC [SRC]... [USER@]HOST:DEST
+
+rsync [OPTION]... [USER@]HOST:SRC DEST
+
+rsync [OPTION]... SRC [SRC]... DEST
+
+rsync [OPTION]... [USER@]HOST::SRC [DEST]
+
+rsync [OPTION]... SRC [SRC]... [USER@]HOST::DEST
+
+rsync [OPTION]... rsync://[USER@]HOST[:PORT]/SRC [DEST]
+
+rsync [OPTION]... SRC [SRC]... rsync://[USER@]HOST[:PORT]/DEST
+
+manpagedescription()
+
+rsync is a program that behaves in much the same way that rcp does,
+but has many more options and uses the rsync remote-update protocol to
+greatly speed up file transfers when the destination file already
+exists.
+
+The rsync remote-update protocol allows rsync to transfer just the
+differences between two sets of files across the network link, using
+an efficient checksum-search algorithm described in the technical
+report that accompanies this package.
+
+Some of the additional features of rsync are:
+
+itemize(
+  it() support for copying links, devices, owners, groups and permissions
+  it() exclude and exclude-from options similar to GNU tar
+  it() a CVS exclude mode for ignoring the same files that CVS would ignore
+  it() can use any transparent remote shell, including rsh or ssh
+  it() does not require root privileges
+  it() pipelining of file transfers to minimize latency costs
+  it() support for anonymous or authenticated rsync servers (ideal for
+       mirroring)
+)
+
+manpagesection(GENERAL)
+
+There are eight different ways of using rsync. They are:
+
+itemize(
+	it() for copying local files. This is invoked when neither
+	     source nor destination path contains a : separator
+
+	it() for copying from the local machine to a remote machine using
+	a remote shell program as the transport (such as rsh or
+	ssh). This is invoked when the destination path contains a
+	single : separator.
+
+	it() for copying from a remote machine to the local machine
+	using a remote shell program. This is invoked when the source
+	contains a : separator.
+
+	it() for copying from a remote rsync server to the local
+	machine. This is invoked when the source path contains a ::
+	separator or a rsync:// URL.
+
+	it() for copying from the local machine to a remote rsync
+	server. This is invoked when the destination path contains a ::
+	separator or a rsync:// URL.
+
+	it() for copying from a remote machine using a remote shell
+	program as the transport, using rsync server on the remote
+	machine.  This is invoked when the source path contains a ::
+	separator and the --rsh=COMMAND (aka "-e COMMAND") option is
+	also provided.
+
+	it() for copying from the local machine to a remote machine
+	using a remote shell program as the transport, using rsync
+	server on the remote machine.  This is invoked when the
+	destination path contains a :: separator and the
+	--rsh=COMMMAND option is also provided.
+
+	it() for listing files on a remote machine. This is done the
+	same way as rsync transfers except that you leave off the
+	local destination.  
+)
+
+Note that in all cases (other than listing) at least one of the source
+and destination paths must be local.
+
+manpagesection(SETUP)
+
+See the file README for installation instructions.
+
+Once installed, you can use rsync to any machine that you can access via
+a remote shell (as well as some that you can access using the rsync
+daemon-mode protocol).  For remote transfers, rsync typically uses rsh
+for its communications, but it may have been configured to use a
+different remote shell by default, such as ssh.
+
+You can also specify any remote shell you like, either by using the -e
+command line option, or by setting the RSYNC_RSH environment variable.
+
+One common substitute is to use ssh, which offers a high degree of
+security.
+
+Note that rsync must be installed on both the source and destination
+machines. 
+
+manpagesection(USAGE)
+
+You use rsync in the same way you use rcp. You must specify a source
+and a destination, one of which may be remote.
+
+Perhaps the best way to explain the syntax is some examples:
+
+quote(rsync *.c foo:src/)
+
+this would transfer all files matching the pattern *.c from the
+current directory to the directory src on the machine foo. If any of
+the files already exist on the remote system then the rsync
+remote-update protocol is used to update the file by sending only the
+differences. See the tech report for details.
+
+quote(rsync -avz foo:src/bar /data/tmp)
+
+this would recursively transfer all files from the directory src/bar on the
+machine foo into the /data/tmp/bar directory on the local machine. The
+files are transferred in "archive" mode, which ensures that symbolic
+links, devices, attributes, permissions, ownerships etc are preserved
+in the transfer.  Additionally, compression will be used to reduce the
+size of data portions of the transfer.
+
+quote(rsync -avz foo:src/bar/ /data/tmp)
+
+a trailing slash on the source changes this behavior to transfer
+all files from the directory src/bar on the machine foo into the
+/data/tmp/.  A trailing / on a source name means "copy the
+contents of this directory".  Without a trailing slash it means "copy
+the directory". This difference becomes particularly important when
+using the --delete option.
+
+You can also use rsync in local-only mode, where both the source and
+destination don't have a ':' in the name. In this case it behaves like
+an improved copy command.
+
+quote(rsync somehost.mydomain.com::)
+
+this would list all the anonymous rsync modules available on the host
+somehost.mydomain.com.  (See the following section for more details.)
+
+
+manpagesection(CONNECTING TO AN RSYNC SERVER)
+
+It is also possible to use rsync without a remote shell as the
+transport. In this case you will connect to a remote rsync server
+running on TCP port 873. 
+
+You may establish the connection via a web proxy by setting the
+environment variable RSYNC_PROXY to a hostname:port pair pointing to
+your web proxy.  Note that your web proxy's configuration must allow
+proxying to port 873.
+
+Using rsync in this way is the same as using it with a remote shell except
+that:
+
+itemize(
+	it() you use a double colon :: instead of a single colon to
+	separate the hostname from the path or a rsync:// URL.
+
+	it() the remote server may print a message of the day when you
+	connect.
+
+	it() if you specify no path name on the remote server then the
+	list of accessible paths on the server will be shown.
+
+	it() if you specify no local destination then a listing of the
+	specified files on the remote server is provided.
+)
+
+Some paths on the remote server may require authentication. If so then
+you will receive a password prompt when you connect. You can avoid the
+password prompt by setting the environment variable RSYNC_PASSWORD to
+the password you want to use or using the --password-file option. This
+may be useful when scripting rsync.
+
+WARNING: On some systems environment variables are visible to all
+users. On those systems using --password-file is recommended.
+
+manpagesection(CONNECTING TO AN RSYNC SERVER OVER A REMOTE SHELL PROGRAM)
+
+It is sometimes useful to be able to set up file transfers using rsync
+server capabilities on the remote machine, while still using rsh or
+ssh for transport.  This is especially useful when you want to connect
+to a remote machine via ssh (for encryption or to get through a
+firewall), but you still want to have access to the rsync server
+features (see RUNNING AN RSYNC SERVER OVER A REMOTE SHELL PROGRAM,
+below).  
+
+From the user's perspective, using rsync in this way is the same as
+using it to connect to an rsync server, except that you must
+explicitly set the remote shell program on the command line with
+--rsh=COMMAND.  (Setting RSYNC_RSH in the environment will not turn on
+this functionality.)
+
+In order to distinguish between the remote-shell user and the rsync
+server user, you can use '-l user' on your remote-shell command:
+
+quote(rsync -av --rsh="ssh -l ssh-user" rsync-user@host::module[/path] local-path)
+
+The "ssh-user" will be used at the ssh level; the "rsync-user" will be
+used to check against the rsyncd.conf on the remote host.
+
+manpagesection(RUNNING AN RSYNC SERVER)
+
+An rsync server is configured using a config file.  Please see the 
+rsyncd.conf(5) man page for more information.  By default the configuration
+file is called /etc/rsyncd.conf, unless rsync is running over a remote
+shell program and is not running as root; in that case, the default name
+is rsyncd.conf in the current directory on the remote computer 
+(typically $HOME).
+
+manpagesection(RUNNING AN RSYNC SERVER OVER A REMOTE SHELL PROGRAM)
+
+See the rsyncd.conf(5) man page for full information on the rsync
+server configuration file.  
+
+Several configuration options will not be available unless the remote
+user is root (e.g. chroot, setuid/setgid, etc.).  There is no need to
+configure inetd or the services map to include the rsync server port
+if you run an rsync server only via a remote shell program.
+
+To run an rsync server out of a single-use ssh key, use the
+"command=em(COMMAND)" syntax in the remote user's
+authorized_keys entry, where command would be
+
+quote(rsync --server --daemon .)
+
+NOTE: rsync's argument parsing expects the trailing ".", so make sure
+that it's there.  If you want to use a rsyncd.conf(5)-style
+configuration file other than the default, you can added a
+--config option to the em(command):
+
+quote(rsync --server --daemon --config=em(file) .)
+
+manpagesection(EXAMPLES)
+
+Here are some examples of how I use rsync.
+
+To backup my wife's home directory, which consists of large MS Word
+files and mail folders, I use a cron job that runs
+
+quote(rsync -Cavz . arvidsjaur:backup)
+
+each night over a PPP link to a duplicate directory on my machine
+"arvidsjaur".
+
+To synchronize my samba source trees I use the following Makefile
+targets:
+
+quote(      get:nl()
+       rsync -avuzb --exclude '*~' samba:samba/ .
+
+      put:nl()
+       rsync -Cavuzb . samba:samba/
+
+      sync: get put)
+
+this allows me to sync with a CVS directory at the other end of the
+link. I then do cvs operations on the remote machine, which saves a
+lot of time as the remote cvs protocol isn't very efficient.
+
+I mirror a directory between my "old" and "new" ftp sites with the
+command
+
+quote(rsync -az -e ssh --delete ~ftp/pub/samba/ nimbus:"~ftp/pub/tridge/samba")
+
+this is launched from cron every few hours.
+
+manpagesection(OPTIONS SUMMARY)
+
+Here is a short summary of the options available in rsync. Please refer
+to the detailed description below for a complete description.
+
+verb(
+ -v, --verbose               increase verbosity
+ -q, --quiet                 decrease verbosity
+ -c, --checksum              always checksum
+ -a, --archive               archive mode, equivalent to -rlptgoD
+ -r, --recursive             recurse into directories
+ -R, --relative              use relative path names
+ -b, --backup                make backups (default ~ suffix)
+     --backup-dir            make backups into this directory
+     --suffix=SUFFIX         define backup suffix
+ -u, --update                update only (don't overwrite newer files)
+ -l, --links                 copy symlinks as symlinks
+ -L, --copy-links            copy the referent of symlinks
+     --copy-unsafe-links     copy links outside the source tree
+     --safe-links            ignore links outside the destination tree
+ -H, --hard-links            preserve hard links
+ -p, --perms                 preserve permissions
+ -o, --owner                 preserve owner (root only)
+ -g, --group                 preserve group
+ -D, --devices               preserve devices (root only)
+ -t, --times                 preserve times
+ -S, --sparse                handle sparse files efficiently
+ -n, --dry-run               show what would have been transferred
+ -W, --whole-file            copy whole files, no incremental checks
+     --no-whole-file         turn off --whole-file
+ -x, --one-file-system       don't cross filesystem boundaries
+ -B, --block-size=SIZE       checksum blocking size (default 700)
+ -e, --rsh=COMMAND           specify the remote shell to use
+     --rsync-path=PATH       specify path to rsync on the remote machine
+ -C, --cvs-exclude           auto ignore files in the same way CVS does
+     --existing              only update files that already exist
+     --ignore-existing       ignore files that already exist on the receiving side
+     --delete                delete files that don't exist on the sending side
+     --delete-excluded       also delete excluded files on the receiving side
+     --delete-after          delete after transferring, not before
+     --ignore-errors         delete even if there are IO errors
+     --max-delete=NUM        don't delete more than NUM files
+     --partial               keep partially transferred files
+     --force                 force deletion of directories even if not empty
+     --numeric-ids           don't map uid/gid values by user/group name
+     --timeout=TIME          set IO timeout in seconds
+ -I, --ignore-times          don't exclude files that match length and time
+     --size-only             only use file size when determining if a file should be transferred
+     --modify-window=NUM     Timestamp window (seconds) for file match (default=0)
+ -T  --temp-dir=DIR          create temporary files in directory DIR
+     --compare-dest=DIR      also compare destination files relative to DIR
+     --link-dest=DIR         create hardlinks to DIR for unchanged files
+ -P                          equivalent to --partial --progress
+ -z, --compress              compress file data
+     --exclude=PATTERN       exclude files matching PATTERN
+     --exclude-from=FILE     exclude patterns listed in FILE
+     --include=PATTERN       don't exclude files matching PATTERN
+     --include-from=FILE     don't exclude patterns listed in FILE
+     --version               print version number
+     --daemon                run as a rsync daemon
+     --no-detach             do not detach from the parent
+     --address=ADDRESS       bind to the specified address
+     --config=FILE           specify alternate rsyncd.conf file
+     --port=PORT             specify alternate rsyncd port number
+     --blocking-io           use blocking IO for the remote shell
+     --no-blocking-io        turn off --blocking-io
+     --stats                 give some file transfer stats
+     --progress              show progress during transfer
+     --log-format=FORMAT     log file transfers using specified format
+     --password-file=FILE    get password from FILE
+     --bwlimit=KBPS          limit I/O bandwidth, KBytes per second
+     --read-batch=PREFIX     read batch fileset starting with PREFIX
+     --write-batch=PREFIX    write batch fileset starting with PREFIX
+ -h, --help                  show this help screen
+
+
+)
+
+manpageoptions()
+
+rsync uses the GNU long options package. Many of the command line
+options have two variants, one short and one long.  These are shown
+below, separated by commas. Some options only have a long variant.
+The '=' for options that take a parameter is optional; whitespace
+can be used instead.
+
+startdit()
+dit(bf(-h, --help)) Print a short help page describing the options
+available in rsync
+
+dit(bf(--version)) print the rsync version number and exit
+
+dit(bf(-v, --verbose)) This option increases the amount of information you
+are given during the transfer.  By default, rsync works silently. A
+single -v will give you information about what files are being
+transferred and a brief summary at the end. Two -v flags will give you
+information on what files are being skipped and slightly more
+information at the end. More than two -v flags should only be used if
+you are debugging rsync.
+
+dit(bf(-q, --quiet)) This option decreases the amount of information you
+are given during the transfer, notably suppressing information messages
+from the remote server. This flag is useful when invoking rsync from
+cron.
+
+dit(bf(-I, --ignore-times)) Normally rsync will skip any files that are
+already the same length and have the same time-stamp. This option turns
+off this behavior.
+
+dit(bf(--size-only)) Normally rsync will skip any files that are
+already the same length and have the same time-stamp. With the
+--size-only option files will be skipped if they have the same size,
+regardless of timestamp. This is useful when starting to use rsync
+after using another mirroring system which may not preserve timestamps
+exactly.
+
+dit(bf(--modify-window)) When comparing two timestamps rsync treats
+the timestamps as being equal if they are within the value of
+modify_window. This is normally zero, but you may find it useful to
+set this to a larger value in some situations. In particular, when
+transferring to Windows FAT filesystems which cannot represent times
+with a 1 second resolution --modify-window=1 is useful.
+
+dit(bf(-c, --checksum)) This forces the sender to checksum all files using
+a 128-bit MD4 checksum before transfer. The checksum is then
+explicitly checked on the receiver and any files of the same name
+which already exist and have the same checksum and size on the
+receiver are skipped.  This option can be quite slow.
+
+dit(bf(-a, --archive)) This is equivalent to -rlptgoD. It is a quick
+way of saying you want recursion and want to preserve almost
+everything.  
+
+Note however that bf(-a) bf(does not preserve hardlinks), because
+finding multiply-linked files is expensive.  You must separately
+specify bf(-H).
+
+dit(bf(-r, --recursive)) This tells rsync to copy directories
+recursively. If you don't specify this then rsync won't copy
+directories at all.
+
+dit(bf(-R, --relative)) Use relative paths. This means that the full path
+names specified on the command line are sent to the server rather than
+just the last parts of the filenames. This is particularly useful when
+you want to send several different directories at the same time. For
+example, if you used the command
+
+verb(rsync foo/bar/foo.c remote:/tmp/)
+
+then this would create a file called foo.c in /tmp/ on the remote
+machine. If instead you used
+
+verb(rsync -R foo/bar/foo.c remote:/tmp/)
+
+then a file called /tmp/foo/bar/foo.c would be created on the remote
+machine. The full path name is preserved.
+
+dit(bf(-b, --backup)) With this option preexisting destination files are
+renamed with a ~ extension as each file is transferred.  You can
+control the backup suffix using the --suffix option.
+
+dit(bf(--backup-dir=DIR)) In combination with the --backup option, this
+tells rsync to store all backups in the specified directory. This is
+very useful for incremental backups.  You can additionally
+specify a backup suffix using the --suffix option
+(otherwise the files backed up in the specified directory
+will keep their original filenames).
+
+dit(bf(--suffix=SUFFIX)) This option allows you to override the default
+backup suffix used with the -b option. The default is a ~.
+If --backup-dir and --suffix are both specified,
+the SUFFIX is appended to the filename even in the backup directory.
+
+dit(bf(-u, --update)) This forces rsync to skip any files for which the
+destination file already exists and has a date later than the source
+file.
+
+dit(bf(-l, --links)) When symlinks are encountered, recreate the
+symlink on the destination.
+
+dit(bf(-L, --copy-links)) When symlinks are encountered, the file that
+they point to is copied, rather than the symlink.
+
+dit(bf(--copy-unsafe-links)) This tells rsync to copy the referent of
+symbolic links that point outside the source tree.  Absolute symlinks
+are also treated like ordinary files, and so are any symlinks in the
+source path itself when --relative is used.
+
+dit(bf(--safe-links)) This tells rsync to ignore any symbolic links
+which point outside the destination tree. All absolute symlinks are
+also ignored. Using this option in conjunction with --relative may
+give unexpected results. 
+
+dit(bf(-H, --hard-links)) This tells rsync to recreate hard  links  on
+the  remote system  to  be the same as the local system. Without this
+option hard links are treated like regular files.
+
+Note that rsync can only detect hard links if both parts of the link
+are in the list of files being sent.
+
+This option can be quite slow, so only use it if you need it.
+
+dit(bf(-W, --whole-file)) With this option the incremental rsync algorithm
+is not used and the whole file is sent as-is instead.  The transfer may be
+faster if this option is used when the bandwidth between the source and
+target machines is higher than the bandwidth to disk (especially when the
+"disk" is actually a networked file system).  This is the default when both
+the source and target are on the local machine.
+
+dit(bf(--no-whole-file)) Turn off --whole-file, for use when it is the
+default.
+
+dit(bf(-p, --perms)) This option causes rsync to update the remote
+permissions to be the same as the local permissions.
+
+dit(bf(-o, --owner)) This option causes rsync to set the owner of the
+destination file to be the same as the source file.  On most systems,
+only the super-user can set file ownership.  Note that if the remote system
+is a daemon using chroot, the --numeric-ids option is implied because the
+remote system cannot get access to the usernames from /etc/passwd.
+
+dit(bf(-g, --group)) This option causes rsync to set the group of the
+destination file to be the same as the source file.  If the receiving
+program is not running as the super-user, only groups that the
+receiver is a member of will be preserved (by group name, not group id
+number).
+
+dit(bf(-D, --devices)) This option causes rsync to transfer character and
+block device information to the remote system to recreate these
+devices. This option is only available to the super-user.
+
+dit(bf(-t, --times)) This tells rsync to transfer modification times along
+with the files and update them on the remote system.  Note that if this
+option is not used, the optimization that excludes files that have not been
+modified cannot be effective; in other words, a missing -t or -a will
+cause the next transfer to behave as if it used -I, and all files will have
+their checksums compared and show up in log messages even if they haven't
+changed.
+
+dit(bf(-n, --dry-run)) This tells rsync to not do any file transfers,
+instead it will just report the actions it would have taken.
+
+dit(bf(-S, --sparse)) Try to handle sparse files efficiently so they take
+up less space on the destination.
+
+NOTE: Don't use this option when the destination is a Solaris "tmpfs"
+filesystem. It doesn't seem to handle seeks over null regions
+correctly and ends up corrupting the files.
+
+dit(bf(-x, --one-file-system)) This tells rsync not to cross filesystem
+boundaries  when recursing.  This  is useful for transferring the
+contents of only one filesystem.
+
+dit(bf(--existing)) This tells rsync not to create any new files -
+only update files that already exist on the destination.
+
+dit(bf(--ignore-existing))
+This tells rsync not to update files that already exist on 
+the destination. 
+
+dit(bf(--max-delete=NUM)) This tells rsync not to delete more than NUM
+files or directories. This is useful when mirroring very large trees
+to prevent disasters.
+
+dit(bf(--delete)) This tells rsync to delete any files on the receiving
+side that aren't on the sending side.   Files that are excluded from
+transfer are excluded from being deleted unless you use --delete-excluded.
+
+This option has no effect if directory recursion is not selected.
+
+This option can be dangerous if used incorrectly!  It is a very good idea
+to run first using the dry run option (-n) to see what files would be
+deleted to make sure important files aren't listed.
+
+If the sending side detects any IO errors then the deletion of any
+files at the destination will be automatically disabled. This is to
+prevent temporary filesystem failures (such as NFS errors) on the
+sending side causing a massive deletion of files on the
+destination.  You can override this with the --ignore-errors option.
+
+dit(bf(--delete-excluded)) In addition to deleting the files on the
+receiving side that are not on the sending side, this tells rsync to also
+delete any files on the receiving side that are excluded (see --exclude).
+Implies --delete.
+
+dit(bf(--delete-after)) By default rsync does file deletions before
+transferring files to try to ensure that there is sufficient space on
+the receiving filesystem. If you want to delete after transferring
+then use the --delete-after switch. Implies --delete.
+
+dit(bf(--ignore-errors)) Tells --delete to go ahead and delete files
+even when there are IO errors.
+
+dit(bf(--force)) This options tells rsync to delete directories even if
+they are not empty when they are to be replaced by non-directories.  This
+is only relevant without --delete because deletions are now done depth-first.
+Requires the --recursive option (which is implied by -a) to have any effect.
+
+dit(bf(-B , --block-size=BLOCKSIZE)) This controls the block size used in
+the rsync algorithm. See the technical report for details.
+
+dit(bf(-e, --rsh=COMMAND)) This option allows you to choose an alternative
+remote shell program to use for communication between the local and
+remote copies of rsync. Typically, rsync is configured to use rsh by
+default, but you may prefer to use ssh because of its high security.
+
+If this option is used with bf([user@]host::module/path), then the
+remote shell em(COMMMAND) will be used to run an rsync server on the
+remote host, and all data will be transmitted through that remote
+shell connection, rather than through a direct socket connection to a
+running rsync server on the remote host.  See the section "CONNECTING
+TO AN RSYNC SERVER OVER A REMOTE SHELL PROGRAM" above.
+
+Command-line arguments are permitted in COMMAND provided that COMMAND is
+presented to rsync as a single argument.  For example:
+
+quote(-e "ssh -p 2234")
+
+(Note that ssh users can alternately customize site-specific connect
+options in their .ssh/config file.)
+
+You can also choose the remote shell program using the RSYNC_RSH
+environment variable, which accepts the same range of values as -e.
+
+See also the --blocking-io option which is affected by this option.
+
+dit(bf(--rsync-path=PATH)) Use this to specify the path to the copy of
+rsync on the remote machine. Useful when it's not in your path. Note
+that this is the full path to the binary, not just the directory that
+the binary is in.
+
+dit(bf(--exclude=PATTERN)) This option allows you to selectively exclude
+certain files from the list of files to be transferred. This is most
+useful in combination with a recursive transfer.
+
+You may use as many --exclude options on the command line as you like
+to build up the list of files to exclude.
+
+See the section on exclude patterns for information on the syntax of 
+this option.
+
+dit(bf(--exclude-from=FILE)) This option is similar to the --exclude
+option, but instead it adds all exclude patterns listed in the file
+FILE to the exclude list.  Blank lines in FILE and lines starting with
+';' or '#' are ignored.
+If em(FILE) is bf(-) the list will be read from standard input.
+
+
+dit(bf(--include=PATTERN)) This option tells rsync to not exclude the
+specified pattern of filenames. This is useful as it allows you to
+build up quite complex exclude/include rules.
+
+See the section of exclude patterns for information on the syntax of 
+this option.
+
+dit(bf(--include-from=FILE)) This specifies a list of include patterns
+from a file.
+If em(FILE) is bf(-) the list will be read from standard input.
+
+
+dit(bf(-C, --cvs-exclude)) This is a useful shorthand for excluding a
+broad range of files that you often don't want to transfer between
+systems. It uses the same algorithm that CVS uses to determine if
+a file should be ignored.
+
+The exclude list is initialized to:
+
+quote(RCS/ SCCS/ CVS/ .svn/ CVS.adm RCSLOG cvslog.* tags TAGS .make.state
+.nse_depinfo *~ #* .#* ,* *.old *.bak *.BAK *.orig *.rej .del-*
+*.a *.o *.obj *.so *.Z *.elc *.ln core)
+
+then files listed in a $HOME/.cvsignore are added to the list and any
+files listed in the CVSIGNORE environment variable (space delimited).
+
+Finally, any file is ignored if it is in the same directory as a
+.cvsignore file and matches one of the patterns listed therein.  See
+the bf(cvs(1)) manual for more information.
+
+dit(bf(--csum-length=LENGTH)) By default the primary checksum used in
+rsync is a very strong 16 byte MD4 checksum. In most cases you will
+find that a truncated version of this checksum is quite efficient, and
+this will decrease the size of the checksum data sent over the link,
+making things faster. 
+
+You can choose the number of bytes in the truncated checksum using the
+--csum-length option. Any value less than or equal to 16 is valid.
+
+Note that if you use this option then you run the risk of ending up
+with an incorrect target file. The risk with a value of 16 is
+microscopic and can be safely ignored (the universe will probably end
+before it fails) but with smaller values the risk is higher.
+
+Current versions of rsync actually use an adaptive algorithm for the
+checksum length by default, using a 16 byte file checksum to determine
+if a 2nd pass is required with a longer block checksum. Only use this
+option if you have read the source code and know what you are doing.
+
+dit(bf(-T, --temp-dir=DIR)) This option instructs rsync to use DIR as a
+scratch directory when creating temporary copies of the files
+transferred on the receiving side.  The default behavior is to create
+the temporary files in the receiving directory.
+
+dit(bf(--compare-dest=DIR)) This option instructs rsync to use DIR on
+the destination machine as an additional directory to compare destination
+files against when doing transfers if the files are missing in the
+destination directory.  This is useful for doing transfers to a new
+destination while leaving existing files intact, and then doing a
+flash-cutover when all files have been successfully transferred (for
+example by moving directories around and removing the old directory,
+although this skips files that haven't changed; see also --link-dest).
+This option increases the usefulness of --partial because partially
+transferred files will remain in the new temporary destination until they
+have a chance to be completed.  If DIR is a relative path, it is relative
+to the destination directory.
+
+dit(bf(--link-dest=DIR)) This option behaves like bf(--compare-dest) but
+also will create hard links from em(DIR) to the destination directory for
+unchanged files.  Files with changed ownership or permissions will not be
+linked.
+
+dit(bf(-z, --compress)) With this option, rsync compresses any data from
+the files that it sends to the destination machine.  This
+option is useful on slow links.  The compression method used is the
+same method that gzip uses.
+
+Note this this option typically achieves better compression ratios
+that can be achieved by using a compressing remote shell, or a
+compressing transport, as it takes advantage of the implicit
+information sent for matching data blocks.
+
+dit(bf(--numeric-ids)) With this option rsync will transfer numeric group
+and user ids rather than using user and group names and mapping them
+at both ends.
+
+By default rsync will use the user name and group name to determine
+what ownership to give files. The special uid 0 and the special group
+0 are never mapped via user/group names even if the --numeric-ids
+option is not specified.
+
+If the source system is a daemon using chroot, or if a user or group
+name does not exist on the destination system, then the numeric id
+from the source system is used instead.
+
+dit(bf(--timeout=TIMEOUT)) This option allows you to set a maximum IO
+timeout in seconds. If no data is transferred for the specified time
+then rsync will exit. The default is 0, which means no timeout.
+
+dit(bf(--daemon)) This tells rsync that it is to run as a daemon.  The
+daemon may be accessed using the bf(host::module) or
+bf(rsync://host/module/) syntax.
+
+If standard input is a socket then rsync will assume that it is being
+run via inetd, otherwise it will detach from the current terminal and
+become a background daemon.  The daemon will read the config file
+(rsyncd.conf) on each connect made by a client and respond to
+requests accordingly.  See the rsyncd.conf(5) man page for more
+details.
+
+dit(bf(--no-detach)) When running as a daemon, this option instructs
+rsync to not detach itself and become a background process.  This
+option is required when running as a service on Cygwin, and may also
+be useful when rsync is supervised by a program such as
+bf(daemontools) or AIX's bf(System Resource Controller).
+bf(--no-detach) is also recommended when rsync is run under a
+debugger.  This option has no effect if rsync is run from inetd or
+sshd.
+
+dit(bf(--address)) By default rsync will bind to the wildcard address
+when run as a daemon with the --daemon option or when connecting to a
+rsync server. The --address option allows you to specify a specific IP
+address (or hostname) to bind to. This makes virtual hosting possible
+in conjunction with the --config option.
+
+dit(bf(--config=FILE)) This specifies an alternate config file than
+the default.  This is only relevant when --daemon is specified. 
+The default is /etc/rsyncd.conf unless the daemon is running over
+a remote shell program and the remote user is not root; in that case
+the default is rsyncd.conf in the current directory (typically $HOME).
+
+dit(bf(--port=PORT)) This specifies an alternate TCP port number to use
+rather than the default port 873.
+
+dit(bf(--blocking-io)) This tells rsync to use blocking IO when launching
+a remote shell transport.  If -e or --rsh are not specified or are set to
+the default "rsh", this defaults to blocking IO, otherwise it defaults to
+non-blocking IO.  You may find the --blocking-io option is needed for some
+remote shells that can't handle non-blocking IO.  (Note that ssh prefers
+non-blocking IO.)
+
+dit(bf(--no-blocking-io)) Turn off --blocking-io, for use when it is the
+default.
+
+dit(bf(--log-format=FORMAT)) This allows you to specify exactly what the
+rsync client logs to stdout on a per-file basis. The log format is
+specified using the same format conventions as the log format option in
+rsyncd.conf.
+
+dit(bf(--stats)) This tells rsync to print a verbose set of statistics
+on the file transfer, allowing you to tell how effective the rsync
+algorithm is for your data.
+
+dit(bf(--partial)) By default, rsync will delete any partially
+transferred file if the transfer is interrupted. In some circumstances
+it is more desirable to keep partially transferred files. Using the
+--partial option tells rsync to keep the partial file which should
+make a subsequent transfer of the rest of the file much faster.
+
+dit(bf(--progress)) This option tells rsync to print information
+showing the progress of the transfer. This gives a bored user
+something to watch.
+
+This option is normally combined with -v. Using this option without
+the -v option will produce weird results on your display.
+
+dit(bf(-P)) The -P option is equivalent to --partial --progress. I
+found myself typing that combination quite often so I created an
+option to make it easier.
+
+dit(bf(--password-file)) This option allows you to provide a password
+in a file for accessing a remote rsync server. Note that this option
+is only useful when accessing a rsync server using the built in
+transport, not when using a remote shell as the transport. The file
+must not be world readable. It should contain just the password as a
+single line.
+
+dit(bf(--bwlimit=KBPS)) This option allows you to specify a maximum
+transfer rate in kilobytes per second. This option is most effective when
+using rsync with large files (several megabytes and up). Due to the nature
+of rsync transfers, blocks of data are sent, then if rsync determines the
+transfer was too fast, it will wait before sending the next data block. The
+result is an average transfer rate equalling the specified limit. A value
+of zero specifies no limit.
+
+dit(bf(--write-batch=PREFIX)) Generate a set of files that can be
+transferred as a batch update. Each filename in the set starts with
+PREFIX. See the "BATCH MODE" section for details.
+
+dit(bf(--read-batch=PREFIX)) Apply a previously generated change batch,
+using the fileset whose filenames start with PREFIX. See the "BATCH
+MODE" section for details.
+
+enddit()
+
+manpagesection(EXCLUDE PATTERNS)
+
+The exclude and include patterns specified to rsync allow for flexible
+selection of which files to transfer and which files to skip.
+
+rsync builds an ordered list of include/exclude options as specified on
+the command line. When a filename is encountered, rsync checks the
+name against each exclude/include pattern in turn. The first matching
+pattern is acted on. If it is an exclude pattern, then that file is
+skipped. If it is an include pattern then that filename is not
+skipped. If no matching include/exclude pattern is found then the
+filename is not skipped.
+
+Note that when used with -r (which is implied by -a), every subcomponent of
+every path is visited from top down, so include/exclude patterns get
+applied recursively to each subcomponent.
+
+Note also that the --include and --exclude options take one pattern
+each. To add multiple patterns use the --include-from and
+--exclude-from options or multiple --include and --exclude options. 
+
+The patterns can take several forms. The rules are:
+
+itemize(
+  it() if the pattern starts with a / then it is matched against the
+  start of the filename, otherwise it is matched against the end of
+  the filename.  Thus "/foo" would match a file called "foo" at the base of
+  the tree.  On the other hand, "foo" would match any file called "foo"
+  anywhere in the tree because the algorithm is applied recursively from
+  top down; it behaves as if each path component gets a turn at being the
+  end of the file name.
+
+  it() if the pattern ends with a / then it will only match a
+  directory, not a file, link or device.
+
+  it() if the pattern contains a wildcard character from the set
+  *?[ then expression matching is applied using the shell filename
+  matching rules. Otherwise a simple string match is used.
+
+  it() if the pattern includes a double asterisk "**" then all wildcards in
+  the pattern will match slashes, otherwise they will stop at slashes.
+
+  it() if the pattern contains a / (not counting a trailing /) then it
+  is matched against the full filename, including any leading
+  directory. If the pattern doesn't contain a / then it is matched
+  only against the final component of the filename.  Again, remember
+  that the algorithm is applied recursively so "full filename" can 
+  actually be any portion of a path.
+
+  it() if the pattern starts with "+ " (a plus followed by a space)
+  then it is always considered an include pattern, even if specified as
+  part of an exclude option. The "+ " part is discarded before matching.
+
+  it() if the pattern starts with "- " (a minus followed by a space)
+  then it is always considered an exclude pattern, even if specified as
+  part of an include option. The "- " part is discarded before matching.
+
+  it() if the pattern is a single exclamation mark ! then the current
+  include/exclude list is reset, removing all previously defined patterns.
+)
+
+The +/- rules are most useful in exclude lists, allowing you to have a
+single exclude list that contains both include and exclude options.
+
+If you end an exclude list with --exclude '*', note that since the
+algorithm is applied recursively that unless you explicitly include
+parent directories of files you want to include then the algorithm
+will stop at the parent directories and never see the files below
+them.  To include all directories, use --include '*/' before the
+--exclude '*'.
+
+Here are some exclude/include examples:
+
+itemize(
+  it() --exclude "*.o" would exclude all filenames matching *.o
+  it() --exclude "/foo" would exclude a file in the base directory called foo
+  it() --exclude "foo/" would exclude any directory called foo
+  it() --exclude "/foo/*/bar" would exclude any file called bar two
+  levels below a base directory called foo
+  it() --exclude "/foo/**/bar" would exclude any file called bar two
+  or more levels below a base directory called foo
+  it() --include "*/" --include "*.c" --exclude "*" would include all 
+  directories and C source files
+  it() --include "foo/" --include "foo/bar.c" --exclude "*" would include
+  only foo/bar.c (the foo/ directory must be explicitly included or
+  it would be excluded by the "*")
+)
+
+manpagesection(BATCH MODE)
+
+bf(Note:) Batch mode should be considered experimental in this version
+of rsync. The interface or behaviour may change before it stabilizes.
+
+Batch mode can be used to apply the same set of updates to many
+identical systems. Suppose one has a tree which is replicated on a
+number of hosts.  Now suppose some changes have been made to this
+source tree and those changes need to be propagated to the other
+hosts. In order to do this using batch mode, rsync is run with the
+write-batch option to apply the changes made to the source tree to one
+of the destination trees.  The write-batch option causes the rsync
+client to store the information needed to repeat this operation against
+other destination trees in a batch update fileset (see below).  The
+filename of each file in the fileset starts with a prefix specified by
+the user as an argument to the write-batch option.  This fileset is
+then copied to each remote host, where rsync is run with the read-batch
+option, again specifying the same prefix, and the destination tree.
+Rsync updates the destination tree using the information stored in the
+batch update fileset.
+
+The fileset consists of 4 files:
+
+itemize(
+it() bf(<prefix>.rsync_argvs) command-line arguments
+it() bf(<prefix>.rsync_flist) rsync internal file metadata
+it() bf(<prefix>.rsync_csums) rsync checksums
+it() bf(<prefix>.rsync_delta) data blocks for file update & change
+)
+
+The .rsync_argvs file contains a command-line suitable for updating a
+destination tree using that batch update fileset. It can be executed
+using a Bourne(-like) shell, optionally passing in an alternate
+destination tree pathname which is then used instead of the original
+path. This is useful when the destination tree path differs from the
+original destination tree path.
+
+Generating the batch update fileset once saves having to perform the
+file status, checksum and data block generation more than once when
+updating multiple destination trees. Multicast transport protocols can
+be used to transfer the batch update files in parallel to many hosts at
+once, instead of sending the same data to every host individually.
+
+Example:
+
+verb(
+$ rsync --write_batch=pfx -a /source/dir/ /adest/dir/
+$ rcp pfx.rsync_* remote:
+$ rsh remote rsync --read_batch=pfx -a /bdest/dir/
+# or alternatively
+$ rsh remote ./pfx.rsync_argvs /bdest/dir/
+)
+
+In this example, rsync is used to update /adest/dir/ with /source/dir/
+and the information to repeat this operation is stored in the files
+pfx.rsync_*. These files are then copied to the machine named "remote".
+Rsync is then invoked on "remote" to update /bdest/dir/ the same way as
+/adest/dir/. The last line shows the rsync_argvs file being used to
+invoke rsync.
+
+Caveats:
+
+The read-batch option expects the destination tree it is meant to update
+to be identical to the destination tree that was used to create the
+batch update fileset.  When a difference between the destination trees
+is encountered the update will fail at that point, leaving the
+destination tree in a partially updated state. In that case, rsync can
+be used in its regular (non-batch) mode of operation to fix up the
+destination tree.
+
+The rsync version used on all destinations should be identical to the
+one used on the original destination.
+
+The -z/--compress option does not work in batch mode and yields a usage
+error. A separate compression tool can be used instead to reduce the
+size of the batch update files for transport to the destination.
+
+The -n/--dryrun option does not work in batch mode and yields a runtime
+error.
+
+See bf(http://www.ils.unc.edu/i2dsi/unc_rsync+.html) for papers and technical
+reports.
+
+manpagesection(SYMBOLIC LINKS)
+
+Three basic behaviours are possible when rsync encounters a symbolic
+link in the source directory.
+
+By default, symbolic links are not transferred at all.  A message
+"skipping non-regular" file is emitted for any symlinks that exist.
+
+If bf(--links) is specified, then symlinks are recreated with the same
+target on the destination.  Note that bf(--archive) implies
+bf(--links).
+
+If bf(--copy-links) is specified, then symlinks are "collapsed" by
+copying their referent, rather than the symlink.
+
+rsync also distinguishes "safe" and "unsafe" symbolic links.  An
+example where this might be used is a web site mirror that wishes
+ensure the rsync module they copy does not include symbolic links to
+bf(/etc/passwd) in the public section of the site.  Using
+bf(--copy-unsafe-links) will cause any links to be copied as the file
+they point to on the destination.  Using bf(--safe-links) will cause
+unsafe links to be ommitted altogether.
+
+Symbolic links are considered unsafe if they are absolute symlinks
+(start with bf(/)), empty, or if they contain enough bf("..")
+components to ascend from the directory being copied.
+
+manpagesection(DIAGNOSTICS)
+
+rsync occasionally produces error messages that may seem a little
+cryptic. The one that seems to cause the most confusion is "protocol
+version mismatch - is your shell clean?".
+
+This message is usually caused by your startup scripts or remote shell
+facility producing unwanted garbage on the stream that rsync is using
+for its transport. The way to diagnose this problem is to run your
+remote shell like this:
+
+verb(
+   rsh remotehost /bin/true > out.dat
+)
+       
+then look at out.dat. If everything is working correctly then out.dat
+should be a zero length file. If you are getting the above error from
+rsync then you will probably find that out.dat contains some text or
+data. Look at the contents and try to work out what is producing
+it. The most common cause is incorrectly configured shell startup
+scripts (such as .cshrc or .profile) that contain output statements
+for non-interactive logins.
+
+If you are having trouble debugging include and exclude patterns, then
+try specifying the -vv option.  At this level of verbosity rsync will
+show why each individual file is included or excluded.
+
+manpagesection(EXIT VALUES)
+
+startdit()
+dit(bf(RERR_SYNTAX     1))       Syntax or usage error 
+dit(bf(RERR_PROTOCOL   2))       Protocol incompatibility 
+dit(bf(RERR_FILESELECT 3))       Errors selecting input/output files, dirs
+
+dit(bf(RERR_UNSUPPORTED 4)) Requested action not supported: an attempt
+was made to manipulate 64-bit files on a platform that cannot support
+them; or an option was speciifed that is supported by the client and
+not by the server.
+
+dit(bf(RERR_SOCKETIO   10))      Error in socket IO 
+dit(bf(RERR_FILEIO     11))      Error in file IO 
+dit(bf(RERR_STREAMIO   12))      Error in rsync protocol data stream 
+dit(bf(RERR_MESSAGEIO  13))      Errors with program diagnostics 
+dit(bf(RERR_IPC        14))      Error in IPC code 
+dit(bf(RERR_SIGNAL     20))      Received SIGUSR1 or SIGINT 
+dit(bf(RERR_WAITCHILD  21))      Some error returned by waitpid() 
+dit(bf(RERR_MALLOC     22))      Error allocating core memory buffers 
+dit(bf(RERR_TIMEOUT    30))      Timeout in data send/receive 
+enddit()
+
+manpagesection(ENVIRONMENT VARIABLES)
+
+startdit()
+
+dit(bf(CVSIGNORE)) The CVSIGNORE environment variable supplements any
+ignore patterns in .cvsignore files. See the --cvs-exclude option for
+more details.
+
+dit(bf(RSYNC_RSH)) The RSYNC_RSH environment variable allows you to
+override the default shell used as the transport for rsync.  Command line
+options are permitted after the command name, just as in the -e option.
+
+dit(bf(RSYNC_PROXY)) The RSYNC_PROXY environment variable allows you to
+redirect your rsync client to use a web proxy when connecting to a
+rsync daemon. You should set RSYNC_PROXY to a hostname:port pair.
+
+dit(bf(RSYNC_PASSWORD)) Setting RSYNC_PASSWORD to the required
+password allows you to run authenticated rsync connections to a rsync
+daemon without user intervention. Note that this does not supply a
+password to a shell transport such as ssh.
+
+dit(bf(USER) or bf(LOGNAME)) The USER or LOGNAME environment variables
+are used to determine the default username sent to a rsync server.
+
+dit(bf(HOME)) The HOME environment variable is used to find the user's
+default .cvsignore file.
+
+enddit()
+
+manpagefiles()
+
+/etc/rsyncd.conf or rsyncd.conf
+
+manpageseealso()
+
+rsyncd.conf(5)
+
+manpagediagnostics()
+
+manpagebugs()
+
+times are transferred as unix time_t values
+
+When transferring to FAT filesystmes rsync may resync
+unmodified files.
+See the comments on the --modify-window option.
+
+file permissions, devices etc are transferred as native numerical
+values
+
+see also the comments on the --delete option
+
+Please report bugs! See the website at
+url(http://rsync.samba.org/)(http://rsync.samba.org/)
+
+manpagesection(CREDITS)
+
+rsync is distributed under the GNU public license.  See the file
+COPYING for details.
+
+A WEB site is available at
+url(http://rsync.samba.org/)(http://rsync.samba.org/).  The site
+includes an FAQ-O-Matic which may cover questions unanswered by this
+manual page.
+
+The primary ftp site for rsync is
+url(ftp://rsync.samba.org/pub/rsync)(ftp://rsync.samba.org/pub/rsync).
+
+We would be delighted to hear from you if you like this program.
+
+This program uses the excellent zlib compression library written by
+Jean-loup Gailly and Mark Adler.
+
+manpagesection(THANKS)
+
+Thanks to Richard Brent, Brendan Mackay, Bill Waite, Stephen Rothwell
+and David Bell for helpful suggestions, patches and testing of rsync.
+I've probably missed some people, my apologies if I have.
+
+Especial thanks also to: David Dykstra, Jos Backus, Sebastian Krahmer.
+
+
+manpageauthor()
+
+rsync was written by Andrew Tridgell <tridge@samba.org> and Paul
+Mackerras.
+
+rsync is now maintained by Martin Pool <mbp@samba.org>.  
+
+Mailing lists for support and development are available at
+url(http://lists.samba.org)(lists.samba.org) 
+
+If you suspect you have found a security vulnerability in rsync,
+please send it directly to Martin Pool and Andrew Tridgell.  For other
+enquiries, please use the mailing list.

@@ -1,0 +1,15 @@
+(
+	{
+		OpenSourceProject = distcc;
+		OpenSourceVersion = "3.1";
+		OpenSourceWebsiteURL = "http://distcc.googlecode.com";
+		OpenSourceURL = "http://distcc.googlecode.com/trunk";
+		OpenSourceSHA1 = "88e4c15826bdbc5a3de0f7c1bcb429e558c6976d";
+		OpenSourceImportDate = "2009-09-09";
+		"OpenSourceModifications" = (
+			"Add versinfo for compiler info",
+		);
+		OpenSourceLicense = GPL;
+		"OpenSourceLicenseFile" = "distcc.txt";
+	},
+)

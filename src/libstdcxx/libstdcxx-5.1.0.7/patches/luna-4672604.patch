@@ -1,0 +1,382 @@
+diff -upr ../gcc-4.0.0-baseline/libiberty/argv.c ./libiberty/argv.c
+--- ../gcc-4.0.0-baseline/libiberty/argv.c	2003-04-15 13:36:33.000000000 -0700
++++ ./libiberty/argv.c	2006-08-18 11:10:07.000000000 -0700
+@@ -100,7 +100,8 @@ dupargv (argv)
+ 	  freeargv (copy);
+ 	  return NULL;
+ 	}
+-      strcpy (copy[argc], argv[argc]);
++      /* LUNA LOCAL don't use unbounded string writes */
++      strlcpy (copy[argc], argv[argc], sizeof (char *) * (len + 1));
+     }
+   copy[argc] = NULL;
+   return copy;
+diff -upr ../gcc-4.0.0-baseline/libiberty/choose-temp.c ./libiberty/choose-temp.c
+--- ../gcc-4.0.0-baseline/libiberty/choose-temp.c	2001-10-17 14:15:40.000000000 -0700
++++ ./libiberty/choose-temp.c	2006-08-18 11:10:08.000000000 -0700
+@@ -62,8 +62,10 @@ choose_temp_base ()
+ 
+   len = strlen (base);
+   temp_filename = xmalloc (len + TEMP_FILE_LEN + 1);
+-  strcpy (temp_filename, base);
+-  strcpy (temp_filename + len, TEMP_FILE);
++  /* LUNA LOCAL begin don't use unbounded string writes */
++  strlcpy (temp_filename, base, len + TEMP_FILE_LEN + 1);
++  strlcpy (temp_filename + len, TEMP_FILE, TEMP_FILE_LEN + 1);
++  /* LUNA LOCAL end don't use unbounded string writes */
+ 
+   mktemp (temp_filename);
+   if (strlen (temp_filename) == 0)
+diff -upr ../gcc-4.0.0-baseline/libiberty/cp-demangle.c ./libiberty/cp-demangle.c
+--- ../gcc-4.0.0-baseline/libiberty/cp-demangle.c	2005-02-12 22:58:20.000000000 -0800
++++ ./libiberty/cp-demangle.c	2006-08-18 11:10:08.000000000 -0700
+@@ -161,6 +161,7 @@ d_init_info PARAMS ((const char *, int, 
+ #endif /* defined (__STDC__) */
+ #endif /* ! defined (__GNUC__) */
+ 
++/* LUNA LOCAL begin don't use unbounded string writes */
+ /* We avoid pulling in the ctype tables, to prevent pulling in
+    additional unresolved symbols when this code is used in a library.
+    FIXME: Is this really a valid reason?  This comes from the original
+@@ -168,7 +169,8 @@ d_init_info PARAMS ((const char *, int, 
+ 
+    As of this writing this file has the following undefined references
+    when compiled with -DIN_GLIBCPP_V3: malloc, realloc, free, memcpy,
+-   strcpy, strcat, strlen.  */
++   strlcpy, strlcat, strlen.  */
++/* LUNA LOCAL end don't use unbounded string writes */
+ 
+ #define IS_DIGIT(c) ((c) >= '0' && (c) <= '9')
+ #define IS_UPPER(c) ((c) >= 'A' && (c) <= 'Z')
+@@ -3891,20 +3893,23 @@ d_demangle (mangled, options, palc)
+ 	   && (mangled[9] == 'D' || mangled[9] == 'I')
+ 	   && mangled[10] == '_')
+     {
++      /* LUNA LOCAL begin don't use unbounded string writes */
+       char *r;
++      size_t r_len = 40 + len - 11;
+ 
+-      r = malloc (40 + len - 11);
++      r = malloc (r_len);
+       if (r == NULL)
+ 	*palc = 1;
+       else
+ 	{
+ 	  if (mangled[9] == 'I')
+-	    strcpy (r, "global constructors keyed to ");
++	    strlcpy (r, "global constructors keyed to ", r_len);
+ 	  else
+-	    strcpy (r, "global destructors keyed to ");
+-	  strcat (r, mangled + 11);
++	    strlcpy (r, "global destructors keyed to ", r_len);
++	  strlcat (r, mangled + 11, r_len);
+ 	}
+       return r;
++      /* LUNA LOCAL end don't use unbounded string writes */
+     }
+   else
+     {
+@@ -4070,7 +4075,8 @@ __cxa_demangle (mangled_name, output_buf
+     {
+       if (strlen (demangled) < *length)
+ 	{
+-	  strcpy (output_buffer, demangled);
++	  /* LUNA LOCAL don't use unbounded string writes */
++	  strlcpy (output_buffer, demangled, *length);
+ 	  free (demangled);
+ 	  demangled = output_buffer;
+ 	}
+diff -upr ../gcc-4.0.0-baseline/libiberty/cplus-dem.c ./libiberty/cplus-dem.c
+--- ../gcc-4.0.0-baseline/libiberty/cplus-dem.c	2004-11-23 18:19:10.000000000 -0800
++++ ./libiberty/cplus-dem.c	2006-08-18 11:10:08.000000000 -0700
+@@ -682,6 +682,8 @@ demangle_qualifier (c)
+   return qualifier_string (code_for_qualifier (c));
+ }
+ 
++/* LUNA LOCAL don't use unbounded string writes */
++#if 0 /* Not needed for libstdc++, and introduces strcat dependencies.  */
+ int
+ cplus_demangle_opname (opname, result, options)
+      const char *opname;
+@@ -811,6 +813,8 @@ cplus_demangle_opname (opname, result, o
+   return ret;
+ 
+ }
++/* LUNA LOCAL don't use unbounded string writes */
++#endif
+ 
+ /* Takes operator name as e.g. "++" and returns mangled
+    operator name (e.g. "postincrement_expr"), or NULL if not found.
+@@ -1059,7 +1063,8 @@ ada_demangle (mangled, option)
+ 	     sizeof (char));
+ 
+   if (mangled[0] == '<')
+-     strcpy (demangled, mangled);
++     /* LUNA LOCAL don't use unbounded string writes */
++     strlcpy (demangled, mangled, demangled_size);
+   else
+     sprintf (demangled, "<%s>", mangled);
+ 
+diff -upr ../gcc-4.0.0-baseline/libiberty/dyn-string.c ./libiberty/dyn-string.c
+--- ../gcc-4.0.0-baseline/libiberty/dyn-string.c	2004-02-23 18:32:50.000000000 -0800
++++ ./libiberty/dyn-string.c	2006-08-18 11:10:08.000000000 -0700
+@@ -200,7 +200,8 @@ dyn_string_copy (dest, src)
+   if (dyn_string_resize (dest, src->length) == NULL)
+     return 0;
+   /* Copy DEST into SRC.  */
+-  strcpy (dest->s, src->s);
++  /* LUNA LOCAL don't use unbounded string writes */
++  strlcpy (dest->s, src->s, dest->allocated);
+   /* Update the size of DEST.  */
+   dest->length = src->length;
+   return 1;
+@@ -220,7 +221,8 @@ dyn_string_copy_cstr (dest, src)
+   if (dyn_string_resize (dest, length) == NULL)
+     return 0;
+   /* Copy DEST into SRC.  */
+-  strcpy (dest->s, src);
++  /* LUNA LOCAL don't use unbounded string writes */
++  strlcpy (dest->s, src, dest->allocated);
+   /* Update the size of DEST.  */
+   dest->length = length;
+   return 1;
+@@ -340,7 +342,8 @@ dyn_string_append (dest, s)
+ {
+   if (dyn_string_resize (dest, dest->length + s->length) == 0)
+     return 0;
+-  strcpy (dest->s + dest->length, s->s);
++  /* LUNA LOCAL don't use unbounded string writes */
++  strlcpy (dest->s + dest->length, s->s, dest->allocated - dest->length);
+   dest->length += s->length;
+   return 1;
+ }
+@@ -360,7 +363,8 @@ dyn_string_append_cstr (dest, s)
+      one for the null at the end.  */
+   if (dyn_string_resize (dest, dest->length + len) == NULL)
+     return 0;
+-  strcpy (dest->s + dest->length, s);
++  /* LUNA LOCAL don't use unbounded string writes */
++  strlcpy (dest->s + dest->length, s, dest->allocated - dest->length);
+   dest->length += len;
+   return 1;
+ }
+diff -upr ../gcc-4.0.0-baseline/libiberty/getcwd.c ./libiberty/getcwd.c
+--- ../gcc-4.0.0-baseline/libiberty/getcwd.c	2003-04-15 13:36:33.000000000 -0700
++++ ./libiberty/getcwd.c	2006-08-18 11:10:08.000000000 -0700
+@@ -58,7 +58,8 @@ getcwd (buf, len)
+ 	   return 0;
+        }
+     }
+-    strcpy (buf, ourbuf);
++    /* LUNA LOCAL don't use unbounded string writes */
++    strlcpy (buf, ourbuf, len);
+   }
+   return buf;
+ }
+diff -upr ../gcc-4.0.0-baseline/libiberty/make-relative-prefix.c ./libiberty/make-relative-prefix.c
+--- ../gcc-4.0.0-baseline/libiberty/make-relative-prefix.c	2003-02-20 14:10:58.000000000 -0800
++++ ./libiberty/make-relative-prefix.c	2006-08-18 11:10:08.000000000 -0700
+@@ -248,10 +248,13 @@ make_relative_prefix (progname, bin_pref
+ 	{
+ 	  char *startp, *endp, *nstore;
+ 	  size_t prefixlen = strlen (temp) + 1;
++	  /* LUNA LOCAL don't use unbounded string writes */
++	  size_t nstore_size = prefixlen + strlen (progname) + 1;
+ 	  if (prefixlen < 2)
+ 	    prefixlen = 2;
+ 
+-	  nstore = (char *) alloca (prefixlen + strlen (progname) + 1);
++	  /* LUNA LOCAL don't use unbounded string writes */
++	  nstore = (char *) alloca (nstore_size);
+ 
+ 	  startp = endp = temp;
+ 	  while (1)
+@@ -275,7 +278,8 @@ make_relative_prefix (progname, bin_pref
+ 		      else
+ 			nstore[endp - startp] = 0;
+ 		    }
+-		  strcat (nstore, progname);
++		  /* LUNA LOCAL don't use unbounded string writes */
++		  strlcat (nstore, progname, nstore_size);
+ 		  if (! access (nstore, X_OK)
+ #ifdef HAVE_HOST_EXECUTABLE_SUFFIX
+                       || ! access (strcat (nstore, HOST_EXECUTABLE_SUFFIX), X_OK)
+@@ -372,13 +376,15 @@ make_relative_prefix (progname, bin_pref
+   /* Build up the pathnames in argv[0].  */
+   *ret = '\0';
+   for (i = 0; i < prog_num; i++)
+-    strcat (ret, prog_dirs[i]);
++    /* LUNA LOCAL don't use unbounded string writes */
++    strlcat (ret, prog_dirs[i], needed_len);
+ 
+   /* Now build up the ..'s.  */
+   ptr = ret + strlen(ret);
+   for (i = common; i < bin_num; i++)
+     {
+-      strcpy (ptr, DIR_UP);
++      /* LUNA LOCAL don't use unbounded string writes */
++      strlcpy (ptr, DIR_UP, needed_len - (ptr - ret));
+       ptr += sizeof (DIR_UP) - 1;
+       *(ptr++) = DIR_SEPARATOR;
+     }
+@@ -386,7 +392,8 @@ make_relative_prefix (progname, bin_pref
+ 
+   /* Put in directories to move over to prefix.  */
+   for (i = common; i < prefix_num; i++)
+-    strcat (ret, prefix_dirs[i]);
++    /* LUNA LOCAL don't use unbounded string writes */
++    strlcat (ret, prefix_dirs[i], needed_len);
+ 
+   free_split_directories (prog_dirs);
+   free_split_directories (bin_dirs);
+diff -upr ../gcc-4.0.0-baseline/libiberty/make-temp-file.c ./libiberty/make-temp-file.c
+--- ../gcc-4.0.0-baseline/libiberty/make-temp-file.c	2001-10-17 14:15:41.000000000 -0700
++++ ./libiberty/make-temp-file.c	2006-08-18 11:10:08.000000000 -0700
+@@ -125,7 +125,8 @@ choose_tmpdir ()
+      and return it.  */
+   len = strlen (base);
+   tmpdir = xmalloc (len + 2);
+-  strcpy (tmpdir, base);
++  /* LUNA LOCAL don't use unbounded string writes */
++  strlcpy (tmpdir, base, len + 2);
+   tmpdir[len] = DIR_SEPARATOR;
+   tmpdir[len+1] = '\0';
+ 
+@@ -163,9 +164,17 @@ make_temp_file (suffix)
+   temp_filename = xmalloc (base_len
+ 			   + TEMP_FILE_LEN
+ 			   + suffix_len + 1);
+-  strcpy (temp_filename, base);
+-  strcpy (temp_filename + base_len, TEMP_FILE);
+-  strcpy (temp_filename + base_len + TEMP_FILE_LEN, suffix);
++  /* LUNA LOCAL begin don't use unbounded string writes */
++  strlcpy (temp_filename,
++	   base,
++	   base_len + TEMP_FILE_LEN + suffix_len + 1);
++  strlcpy (temp_filename + base_len,
++	   TEMP_FILE,
++	   TEMP_FILE_LEN + suffix_len + 1);
++  strlcpy (temp_filename + base_len + TEMP_FILE_LEN,
++	   suffix,
++	   suffix_len + 1);
++  /* LUNA LOCAL end don't use unbounded string writes */
+ 
+   fd = mkstemps (temp_filename, suffix_len);
+   /* If mkstemps failed, then something bad is happening.  Maybe we should
+diff -upr ../gcc-4.0.0-baseline/libstdc++-v3/config/locale/generic/c_locale.h ./libstdc++-v3/config/locale/generic/c_locale.h
+--- ../gcc-4.0.0-baseline/libstdc++-v3/config/locale/generic/c_locale.h	2005-01-30 06:09:58.000000000 -0800
++++ ./libstdc++-v3/config/locale/generic/c_locale.h	2006-08-18 11:35:45.000000000 -0700
+@@ -63,8 +63,16 @@ namespace std
+       char* __sav = NULL;
+       if (std::strcmp(__old, "C"))
+ 	{
++/* LUNA LOCAL begin don't use unbounded string writes */
++#if defined(_ANSI_SOURCE) || (defined(_POSIX_C_SOURCE) && ! defined(_DARWIN_C_SOURCE))
+ 	  __sav = new char[std::strlen(__old) + 1];
+ 	  std::strcpy(__sav, __old);
++#else
++	  size_t __savlen = std::strlen(__old) + 1;
++	  __sav = new char[__savlen];
++	  ::strlcpy(__sav, __old, __savlen);
++#endif
++/* LUNA LOCAL end don't use unbounded string writes */
+ 	  std::setlocale(LC_NUMERIC, "C");
+ 	}
+ 
+diff -upr ../gcc-4.0.0-baseline/libstdc++-v3/config/locale/generic/time_members.h ./libstdc++-v3/config/locale/generic/time_members.h
+--- ../gcc-4.0.0-baseline/libstdc++-v3/config/locale/generic/time_members.h	2003-10-02 16:06:12.000000000 -0700
++++ ./libstdc++-v3/config/locale/generic/time_members.h	2006-08-18 11:37:19.000000000 -0700
+@@ -55,8 +55,16 @@
+ 				     size_t __refs) 
+     : facet(__refs), _M_data(NULL)
+     { 
++/* LUNA LOCAL begin don't use unbounded string writes */
++#if defined(_ANSI_SOURCE) || (defined(_POSIX_C_SOURCE) && ! defined(_DARWIN_C_SOURCE))
+       char* __tmp = new char[std::strlen(__s) + 1];
+       std::strcpy(__tmp, __s);
++#else
++      size_t __tmplen = std::strlen(__s) + 1;
++      char* __tmp = new char[__tmplen];
++      ::strlcpy(__tmp, __s, __tmplen);
++#endif
++/* LUNA LOCAL end don't use unbounded string writes */
+       _M_name_timepunct = __tmp;
+       _M_initialize_timepunct(__cloc); 
+     }
+diff -upr ../gcc-4.0.0-baseline/libstdc++-v3/config/locale/gnu/c_locale.h ./libstdc++-v3/config/locale/gnu/c_locale.h
+--- ../gcc-4.0.0-baseline/libstdc++-v3/config/locale/gnu/c_locale.h	2004-08-07 06:48:31.000000000 -0700
++++ ./libstdc++-v3/config/locale/gnu/c_locale.h	2006-08-18 14:33:03.000000000 -0700
+@@ -75,8 +75,16 @@ namespace std
+ 		     _Tv __v, const __c_locale&, int __prec)
+     {
+       char* __old = std::setlocale(LC_ALL, NULL);
++/* LUNA LOCAL begin don't use unbounded string writes */
++#if defined(_ANSI_SOURCE) || (defined(_POSIX_C_SOURCE) && ! defined(_DARWIN_C_SOURCE))
+       char* __sav = new char[std::strlen(__old) + 1];
+       std::strcpy(__sav, __old);
++#else
++      size_t __savlen = std::strlen(__old) + 1;
++      char* __sav = new char[__savlen];
++      ::strlcpy(__sav, __old, __savlen);
++#endif
++/* LUNA LOCAL end don't use unbounded string writes */
+       std::setlocale(LC_ALL, "C");
+ #endif
+ 
+diff -upr ../gcc-4.0.0-baseline/libstdc++-v3/config/locale/gnu/messages_members.h ./libstdc++-v3/config/locale/gnu/messages_members.h
+--- ../gcc-4.0.0-baseline/libstdc++-v3/config/locale/gnu/messages_members.h	2004-05-22 16:46:31.000000000 -0700
++++ ./libstdc++-v3/config/locale/gnu/messages_members.h	2006-08-18 11:41:28.000000000 -0700
+@@ -46,8 +46,16 @@
+      : facet(__refs), _M_c_locale_messages(_S_clone_c_locale(__cloc)),
+      _M_name_messages(__s)
+      {
++/* LUNA LOCAL begin don't use unbounded string writes */
++#if defined(_ANSI_SOURCE) || (defined(_POSIX_C_SOURCE) && ! defined(_DARWIN_C_SOURCE))
+        char* __tmp = new char[std::strlen(__s) + 1];
+        std::strcpy(__tmp, __s);
++#else
++       size_t __tmplen = std::strlen(__s) + 1;
++       char* __tmp = new char[__tmplen];
++       ::strlcpy(__tmp, __s, __tmplen);
++#endif
++/* LUNA LOCAL end don't use unbounded string writes */
+        _M_name_messages = __tmp;
+      }
+ 
+@@ -92,8 +100,16 @@
+      { 
+        if (this->_M_name_messages != locale::facet::_S_get_c_name())
+ 	 delete [] this->_M_name_messages;
++/* LUNA LOCAL begin don't use unbounded string writes */
++#if defined(_ANSI_SOURCE) || (defined(_POSIX_C_SOURCE) && ! defined(_DARWIN_C_SOURCE))
+        char* __tmp = new char[std::strlen(__s) + 1];
+        std::strcpy(__tmp, __s);
++#else
++       size_t __tmplen = std::strlen(__s) + 1;
++       char* __tmp = new char[__tmplen];
++       std::strlcpy(__tmp, __s, __tmplen);
++#endif
++/* LUNA LOCAL end don't use unbounded string writes */
+        this->_M_name_messages = __tmp;
+ 
+        if (std::strcmp(__s, "C") != 0 && std::strcmp(__s, "POSIX") != 0)
+diff -upr ../gcc-4.0.0-baseline/libstdc++-v3/config/locale/gnu/time_members.h ./libstdc++-v3/config/locale/gnu/time_members.h
+--- ../gcc-4.0.0-baseline/libstdc++-v3/config/locale/gnu/time_members.h	2004-05-22 16:46:31.000000000 -0700
++++ ./libstdc++-v3/config/locale/gnu/time_members.h	2006-08-18 11:42:30.000000000 -0700
+@@ -52,8 +52,16 @@
+     : facet(__refs), _M_data(NULL), _M_c_locale_timepunct(NULL), 
+     _M_name_timepunct(__s)
+     { 
++* LUNA LOCAL begin don't use unbounded string writes */
++#if defined(_ANSI_SOURCE) || (defined(_POSIX_C_SOURCE) && ! defined(_DARWIN_C_SOURCE))
+       char* __tmp = new char[std::strlen(__s) + 1];
+       std::strcpy(__tmp, __s);
++#else
++      size_t __tmplen = std::strlen(__s) + 1;
++      char* __tmp = new char[__tmplen];
++      std::strlcpy(__tmp, __s, __tmplen);
++#endif
++/* LUNA LOCAL end don't use unbounded string writes */
+       _M_name_timepunct = __tmp;
+       _M_initialize_timepunct(__cloc); 
+     }

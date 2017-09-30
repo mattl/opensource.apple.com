@@ -1,0 +1,201 @@
+#compdef zpool
+
+_zpool() {
+	local -a subcmds fields
+
+	subcmds=(
+		  create destroy add remove list iostat status online
+		  offline clear attach detach replace scrub import export 
+		  upgrade history get set
+	)
+
+	fields=(
+		name\:"Pool name" size\:"Total size" used\:"Space used"
+		available\:"Space available" capacity\:"Space used (percentage)"
+		health\:"Health status"
+	)
+
+	properties=(
+		"bootfs:value:"
+		"autoreplace:value:(on off)"
+		"delegation:value:(on off)"
+	)
+	propnames=( ${properties%%:*} )
+
+	import_properties=(
+		xattr
+		copies
+		shareiscsi
+		canmount
+		share
+		sharenfs
+		userprop
+		mount
+	)
+
+	if [[ $service == "zpool" ]]; then
+		_arguments -C -A "-*" \
+			'-\?[help]' \
+			'*::command:->subcmd' && return 0
+
+		if (( CURRENT == 1 )); then
+			_wanted commands expl "zpool subcommand" compadd -a subcmds
+			return
+		fi
+		service="$words[1]"
+		curcontext="${curcontext%:*}=$service:"
+	fi
+
+	case $service in
+	(clear)
+		_arguments \
+			':pool name:_zfs_pool' \
+			'*:virtual device:_files'
+		;;
+
+	(create)
+		# TODO: investigate better vdev handling
+		_arguments -A "-*" \
+			'-f[force use of in-use devices]' \
+			'-n[display configuration without creating pool]' \
+			'-R[use alternate root]:alternate root:_files -/' \
+			'-m[set mountpoint for root dataset]:mountpoint:' \
+			':pool name:' \
+			'*:virtual device:_files'
+		;;
+
+	(destroy)
+		_arguments -A "-*" \
+			'-f[force active datasets to be unmounted]' \
+			':pool name:_zfs_pool'
+		;;
+
+	(add)
+		_arguments -A "-*" \
+			'-f[force use of in-use devices]' \
+			'-n[display configuration without modifying pool]' \
+			':pool name:_zfs_pool' \
+			'*:virtual device:_files'
+		;;
+
+	(list)
+		_arguments \
+			'-H[scripted mode]' \
+			'-o[fields to list]:field:_values -s , "field" ${^fields/\:/[}\]' \
+			'::pool name:_zfs_pool'
+		;;
+
+	(iostat)
+		_arguments -A "-*" \
+			'-v[verbose statistics]' \
+			'*::pool name:_zfs_pool' \
+			'::interval:' \
+			'::count:'
+		;;
+
+	(status)
+		_arguments -A "-*" \
+			'-v[verbose information]' \
+			'-x[show only unhealthy pools]' \
+			'*::pool name:_zfs_pool'
+		;;
+
+	(offline)
+		_arguments -A "-*" \
+			'-t[offline until next reboot]' \
+			':pool name:_zfs_pool' \
+			'*:virtual device:_files'
+		;;
+
+	(online)
+		_arguments \
+			':pool name:_zfs_pool' \
+			'*:virtual device:_files'
+		;;
+
+	(attach)
+		# TODO: first device should choose first from existing.
+		_arguments \
+			'-f[force attach, even if in use]' \
+			':pool name:_zfs_pool' \
+			':virtual device:_files' \
+			':virtual device:_files'
+		;;
+
+	(detach)
+		_arguments \
+			':pool name:_zfs_pool' \
+			':virtual device:_files'
+		;;
+
+	(replace)
+		_arguments -A "-*" \
+			'-f[force attach, even if in use]' \
+			':pool name:_zfs_pool' \
+			':virtual device:_files' \
+			'::virtual device:_files'
+		;;
+
+	(scrub)
+		_arguments -A "-*" \
+			'-s[stop scrubbing]' \
+			'*:pool name:_zfs_pool'
+		;;
+
+	(export)
+		_arguments -A "-*" \
+			'-f[forcefully unmount all datasets]' \
+			'*:pool name:_zfs_pool'
+		;;
+
+	(import)
+		# TODO: -o should complete options
+		_arguments -A "-*" \
+			'*-d[search for devices or files in directory]:_files -/' \
+			'-D[destroyed pools]' \
+			'-f[force import]' \
+			- set1 \
+			'-o[mount options]' \
+			'-p[set property]:property:_values -s , "property" $import_properties' \
+			'-R[alternate root]:_files -/' \
+			'*:pool name or id:_zfs_pool' \
+			'::new pool name:' \
+			- set2 \
+			'-a[all pools]'
+		;;
+
+	(get)
+		_arguments -A "-*" \
+			':property:_values -s , "property" $propnames all' \
+			'*:pool name:_zfs_pool'
+		;;
+
+	(set)
+		_arguments -A "-*" \
+			':property:_values -s , "property" $properties' \
+			'*:pool name:_zfs_pool'
+		;;
+
+	(upgrade)
+		_arguments -A "-*" \
+			- set1 \
+			'-v[display ZFS versions and descriptions]' \
+			- set2 \
+			'-a[upgrade all pools]' \
+			'*:pool name:_zfs_pool'
+		;;
+
+	(history)
+		_arguments -A "-*" \
+			'-i[display internal events]' \
+			'-l[long format]' \
+			'*:pool name:_zfs_pool'
+		;;
+
+	(*)
+		_message "unknown zpool subcommand: $service"
+		;;
+	esac
+}
+
+_zpool "$@"

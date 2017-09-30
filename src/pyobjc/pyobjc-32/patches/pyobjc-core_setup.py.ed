@@ -1,0 +1,4 @@
+g/namespace_packages/s//#&/
+/^USE_SYSTEM_FFI /s/=.*/= True/
+/^USE_SYSTEM_LIBXML /s/=.*/= True/
+w

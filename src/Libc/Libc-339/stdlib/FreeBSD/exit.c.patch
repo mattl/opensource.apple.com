@@ -1,0 +1,29 @@
+--- exit.c.orig	Wed Mar 10 14:20:34 2004
++++ exit.c	Wed Mar 10 14:38:14 2004
+@@ -46,26 +46,12 @@
+ void (*__cleanup)();
+ 
+ /*
+- * This variable is zero until a process has created a thread.
+- * It is used to avoid calling locking functions in libc when they
+- * are not required. By default, libc is intended to be(come)
+- * thread-safe, but without a (significant) penalty to non-threaded
+- * processes.
+- */
+-int	__isthreaded	= 0;
+-
+-/*
+  * Exit, flushing stdio buffers if necessary.
+  */
+ void
+ exit(status)
+ 	int status;
+ {
+-	/* Ensure that the auto-initialization routine is linked in: */
+-	extern int _thread_autoinit_dummy_decl;
+-
+-	_thread_autoinit_dummy_decl = 1;
+-
+ 	__cxa_finalize(NULL);
+ 	if (__cleanup)
+ 		(*__cleanup)();

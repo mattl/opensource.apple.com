@@ -1,0 +1,73 @@
+--- atexit.c.orig	2006-04-09 01:23:25.000000000 -0700
++++ atexit.c	2006-04-09 01:44:07.000000000 -0700
+@@ -45,6 +45,9 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <pthread.h>
++#if defined(__DYNAMIC__)
++#include <mach-o/dyld.h>
++#endif /* defined(__DYNAMIC__) */
+ #include "atexit.h"
+ #include "un-namespace.h"
+ 
+@@ -74,6 +77,7 @@
+ };
+ 
+ static struct atexit *__atexit;		/* points to head of LIFO stack */
++static int new_registration;
+ 
+ /*
+  * Register the function described by 'fptr' to be called at application
+@@ -109,6 +113,7 @@
+ 		__atexit = p;
+ 	}
+ 	p->fns[p->ind++] = *fptr;
++	new_registration = 1;
+ 	_MUTEX_UNLOCK(&atexit_mutex);
+ 	return 0;
+ }
+@@ -125,7 +130,11 @@
+ 	fn.fn_type = ATEXIT_FN_STD;
+ 	fn.fn_ptr.std_func = func;;
+ 	fn.fn_arg = NULL;
++#if defined(__DYNAMIC__)
++	fn.fn_dso = (void *)_dyld_get_image_header_containing_address((unsigned long) func);
++#else /* ! defined(__DYNAMIC__) */
+ 	fn.fn_dso = NULL;
++#endif /* defined(__DYNAMIC__) */
+ 
+  	error = atexit_register(&fn);	
+ 	return (error);
+@@ -156,13 +165,14 @@
+  * handlers are called.
+  */
+ void
+-__cxa_finalize(void *dso)
++__cxa_finalize(const void *dso)
+ {
+ 	struct atexit *p;
+ 	struct atexit_fn fn;
+ 	int n;
+ 
+ 	_MUTEX_LOCK(&atexit_mutex);
++restart:
+ 	for (p = __atexit; p; p = p->next) {
+ 		for (n = p->ind; --n >= 0;) {
+ 			if (p->fns[n].fn_type == ATEXIT_FN_EMPTY)
+@@ -175,6 +185,7 @@
+ 			  has already been called.
+ 			*/
+ 			p->fns[n].fn_type = ATEXIT_FN_EMPTY;
++			new_registration = 0;
+ 		        _MUTEX_UNLOCK(&atexit_mutex);
+ 		
+ 			/* Call the function of correct type. */
+@@ -183,6 +194,8 @@
+ 			else if (fn.fn_type == ATEXIT_FN_STD)
+ 				fn.fn_ptr.std_func();
+ 			_MUTEX_LOCK(&atexit_mutex);
++			if (new_registration)
++			    goto restart;
+ 		}
+ 	}
+ 	_MUTEX_UNLOCK(&atexit_mutex);

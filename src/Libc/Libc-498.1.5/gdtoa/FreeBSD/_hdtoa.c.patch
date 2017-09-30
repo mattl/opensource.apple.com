@@ -1,0 +1,82 @@
+--- _hdtoa.c.orig	2008-03-15 10:50:51.000000000 -0700
++++ _hdtoa.c	2008-03-27 00:55:34.000000000 -0700
+@@ -55,7 +55,7 @@ roundup(char *s0, int ndigits)
+ 			*s = 1;
+ 			return (1);
+ 		}
+-		++*s;
++		*s = 0;
+ 	}
+ 	++*s;
+ 	return (0);
+@@ -210,6 +210,7 @@ __hdtoa(double d, const char *xdigs, int
+ 	return (s0);
+ }
+ 
++#ifndef LDBL_COMPAT
+ #if (LDBL_MANT_DIG > DBL_MANT_DIG)
+ 
+ /*
+@@ -223,12 +224,17 @@ __hldtoa(long double e, const char *xdig
+ 	union IEEEl2bits u;
+ 	char *s, *s0;
+ 	int bufsize;
++#ifdef LDBL_HEAD_TAIL_PAIR
++	uint32_t bits[4];
++	int i, pos;
++#endif /* LDBL_HEAD_TAIL_PAIR */
+ 
+ 	u.e = e;
+ 	*sign = u.bits.sign;
+ 
+ 	switch (fpclassify(e)) {
+ 	case FP_NORMAL:
++	case FP_SUPERNORMAL:
+ 		*decpt = u.bits.exp - LDBL_ADJ;
+ 		break;
+ 	case FP_ZERO:
+@@ -270,6 +276,19 @@ __hldtoa(long double e, const char *xdig
+ 	 */
+ 	for (s = s0 + bufsize - 1; s > s0 + sigfigs - 1; s--)
+ 		*s = 0;
++#ifdef LDBL_HEAD_TAIL_PAIR
++	_ldbl2array32dd(u, bits);
++	i = 0;
++	pos = 8;
++	for (; s > s0; s--) {
++		*s = bits[i] & 0xf;
++		bits[i] >>= 4;
++		if (--pos <= 0) {
++			i++;
++			pos = 8;
++		}
++	}
++#else /* LDBL_HEAD_TAIL_PAIR */
+ 	for (; s > s0 + sigfigs - (LDBL_MANL_SIZE / 4) - 1 && s > s0; s--) {
+ 		*s = u.bits.manl & 0xf;
+ 		u.bits.manl >>= 4;
+@@ -278,6 +297,7 @@ __hldtoa(long double e, const char *xdig
+ 		*s = u.bits.manh & 0xf;
+ 		u.bits.manh >>= 4;
+ 	}
++#endif /* LDBL_HEAD_TAIL_PAIR */
+ 
+ 	/*
+ 	 * At this point, we have snarfed all the bits in the
+@@ -285,7 +305,11 @@ __hldtoa(long double e, const char *xdig
+ 	 * (partial) nibble, which is dealt with by the next
+ 	 * statement.  We also tack on the implicit normalization bit.
+ 	 */
++#ifdef LDBL_HEAD_TAIL_PAIR
++	*s = bits[i];
++#else /* LDBL_HEAD_TAIL_PAIR */
+ 	*s = u.bits.manh | (1U << ((LDBL_MANT_DIG - 1) % 4));
++#endif /* LDBL_HEAD_TAIL_PAIR */
+ 
+ 	/* If ndigits < 0, we are expected to auto-size the precision. */
+ 	if (ndigits < 0) {
+@@ -317,3 +341,4 @@ __hldtoa(long double e, const char *xdig
+ }
+ 
+ #endif	/* (LDBL_MANT_DIG == DBL_MANT_DIG) */
++#endif  /* !LDBL_COMPAT */

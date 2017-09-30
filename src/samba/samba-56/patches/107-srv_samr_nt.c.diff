@@ -1,0 +1,19 @@
+--- samba/source/rpc_server/srv_samr_nt.c.orig	Wed Feb 11 09:24:00 2004
++++ samba/source/rpc_server/srv_samr_nt.c	Thu Feb 26 16:57:00 2004
+@@ -2243,6 +2243,8 @@
+ 	if ( !NT_STATUS_IS_OK(nt_status = pdb_init_sam_new(&sam_pass, account, new_rid)) )
+ 		return nt_status;
+ 		
++	if (!lp_opendirectory())
++	{
+  	pdb_set_acct_ctrl(sam_pass, acb_info, PDB_CHANGED);
+ 	
+  	if (!pdb_add_sam_account(sam_pass)) {
+@@ -2251,6 +2253,7 @@
+  			  account));
+  		return NT_STATUS_ACCESS_DENIED;		
+  	}
++	}
+  	
+ 	/* Get the user's SID */
+ 	sid_copy(&sid, pdb_get_user_sid(sam_pass));

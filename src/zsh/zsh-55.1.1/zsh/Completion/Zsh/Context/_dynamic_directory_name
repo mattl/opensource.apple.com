@@ -1,0 +1,7 @@
+#autoload
+
+if [[ -n $functions[zsh_directory_name] ]]; then
+  zsh_directory_name c
+else
+  _message 'dynamic directory name: implemented as zsh_directory_name c'
+fi

@@ -1,0 +1,34 @@
+Class::C3 version 0.18
+===========================
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+	Algorithm::C3 0.06
+	Scalar::Util 1.10
+
+Additionally, this module will optionally take advantage of
+these if installed:
+
+        perl 5.9.5
+        Class::C3::XS 0.04
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2005, 2006 Infinity Interactive, Inc.
+
+http://www.iinteractive.com
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 
+

@@ -1,0 +1,16 @@
+Home: http://distcc.googlecode.com/
+URL: http://distcc.googlecode.com/files/distcc-3.1.tar.bz2
+Version: distcc 3.1
+License: GPL
+License File: COPYING
+Local Vendor Branch: http://toolwhip.googlecode.com/svn/vendor/distcc
+Local Trunk: http://toolwhip.googlecode.com/svn/trunk/distcc
+
+Description:
+distcc provides distributed compilation for faster C/C++ builds.  distcc 3
+and later provide "pump mode," which allows compilation servers to perform
+preprocessing.
+
+Local Modifications:
+Only this file, README.toolwhip, has been added to the local vendor branch.
+All other local modifications are made on the local trunk.

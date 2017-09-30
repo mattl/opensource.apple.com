@@ -1,0 +1,368 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		B3BA8F2B087CA0FF009521B6 /* Copy Files */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = B3BA8F2F087CA105009521B6 /* Build configuration list for PBXAggregateTarget "Copy Files" */;
+			buildPhases = (
+				B387DBC1087F273D00A8560D /* Launchd .plist */,
+				B3979744089C5B7900A40359 /* distcc_compilers */,
+				B3236A9508A978AE00609FFD /* license plist */,
+				B3236A9D08A9791400609FFD /* license file */,
+			);
+			dependencies = (
+			);
+			name = "Copy Files";
+			productName = LaunchdConfig;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		B3236A9808A978E700609FFD /* distcc.plist in license plist */ = {isa = PBXBuildFile; fileRef = B3236A8608A976CE00609FFD /* distcc.plist */; };
+		B3236AA108A97BD700609FFD /* distcc.txt in license file */ = {isa = PBXBuildFile; fileRef = B3236AA008A97BCE00609FFD /* distcc.txt */; };
+		B387DBC3087F275300A8560D /* com.apple.distccd.plist in Launchd .plist */ = {isa = PBXBuildFile; fileRef = B3BA8F32087CA128009521B6 /* com.apple.distccd.plist */; };
+		B3979746089C5BD100A40359 /* distcc_compilers in distcc_compilers */ = {isa = PBXBuildFile; fileRef = B3979742089C5B4400A40359 /* distcc_compilers */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B3CC5D06087DFBE800EB91A2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B3BA8F21087CA0CC009521B6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B3BA8F2B087CA0FF009521B6;
+			remoteInfo = LaunchdConfig;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B3236A9508A978AE00609FFD /* license plist */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/local/OpenSourceVersions/;
+			dstSubfolderSpec = 0;
+			files = (
+				B3236A9808A978E700609FFD /* distcc.plist in license plist */,
+			);
+			name = "license plist";
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		B3236A9D08A9791400609FFD /* license file */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/local/OpenSourceLicenses/;
+			dstSubfolderSpec = 0;
+			files = (
+				B3236AA108A97BD700609FFD /* distcc.txt in license file */,
+			);
+			name = "license file";
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		B387DBC1087F273D00A8560D /* Launchd .plist */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /System/Library/LaunchDaemons;
+			dstSubfolderSpec = 0;
+			files = (
+				B387DBC3087F275300A8560D /* com.apple.distccd.plist in Launchd .plist */,
+			);
+			name = "Launchd .plist";
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		B3979744089C5B7900A40359 /* distcc_compilers */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share;
+			dstSubfolderSpec = 0;
+			files = (
+				B3979746089C5BD100A40359 /* distcc_compilers in distcc_compilers */,
+			);
+			name = distcc_compilers;
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		501133301047244A00FCF127 /* distcc.README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = distcc.README; sourceTree = "<group>"; };
+		50367E020EDB29BD0049A223 /* DevToolsGlobalBuildAndIntegration.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = DevToolsGlobalBuildAndIntegration.xcconfig; path = /AppleInternal/Developer/Library/Xcode/GlobalConfigFiles/DevToolsGlobalBuildAndIntegration.xcconfig; sourceTree = "<absolute>"; };
+		50367E030EDB29BD0049A223 /* DevToolsGlobalDebug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = DevToolsGlobalDebug.xcconfig; path = /AppleInternal/Developer/Library/Xcode/GlobalConfigFiles/DevToolsGlobalDebug.xcconfig; sourceTree = "<absolute>"; };
+		50367E040EDB29BD0049A223 /* DevToolsGlobalRelease.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = DevToolsGlobalRelease.xcconfig; path = /AppleInternal/Developer/Library/Xcode/GlobalConfigFiles/DevToolsGlobalRelease.xcconfig; sourceTree = "<absolute>"; };
+		5042A59010693BB300371743 /* distcc_dist */ = {isa = PBXFileReference; lastKnownFileType = folder; path = distcc_dist; sourceTree = "<group>"; };
+		505B00FB10699C9000477B20 /* runmake.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = runmake.sh; sourceTree = "<group>"; };
+		B3236A8608A976CE00609FFD /* distcc.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = distcc.plist; sourceTree = "<group>"; };
+		B3236AA008A97BCE00609FFD /* distcc.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = distcc.txt; sourceTree = "<group>"; };
+		B387DA8B087EFCAC00A8560D /* Common.make */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Common.make; sourceTree = "<group>"; };
+		B387DA8C087EFCAC00A8560D /* GNUSource.make */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = GNUSource.make; sourceTree = "<group>"; };
+		B3979742089C5B4400A40359 /* distcc_compilers */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = distcc_compilers; sourceTree = "<group>"; };
+		B3BA8F32087CA128009521B6 /* com.apple.distccd.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = com.apple.distccd.plist; sourceTree = "<group>"; };
+		B3CC5CFD087DFB8F00EB91A2 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		B3CC5D78087DFCD100EB91A2 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = Makefile.in; path = distcc_dist/Makefile.in; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		50367DFF0EDB29950049A223 /* Config Files */ = {
+			isa = PBXGroup;
+			children = (
+				50367E020EDB29BD0049A223 /* DevToolsGlobalBuildAndIntegration.xcconfig */,
+				50367E030EDB29BD0049A223 /* DevToolsGlobalDebug.xcconfig */,
+				50367E040EDB29BD0049A223 /* DevToolsGlobalRelease.xcconfig */,
+			);
+			name = "Config Files";
+			sourceTree = "<group>";
+		};
+		B3BA8F1F087CA0CC009521B6 = {
+			isa = PBXGroup;
+			children = (
+				5042A59010693BB300371743 /* distcc_dist */,
+				501133301047244A00FCF127 /* distcc.README */,
+				B3CC5CF8087DFB2C00EB91A2 /* distcc */,
+				B3236AA008A97BCE00609FFD /* distcc.txt */,
+				B3236A8608A976CE00609FFD /* distcc.plist */,
+				B3BA8F32087CA128009521B6 /* com.apple.distccd.plist */,
+				B3979742089C5B4400A40359 /* distcc_compilers */,
+				B3BA8F3B087CA1DE009521B6 /* Products */,
+				50367DFF0EDB29950049A223 /* Config Files */,
+			);
+			sourceTree = "<group>";
+		};
+		B3BA8F3B087CA1DE009521B6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B3CC5CF8087DFB2C00EB91A2 /* distcc */ = {
+			isa = PBXGroup;
+			children = (
+				B3CC5CFD087DFB8F00EB91A2 /* Makefile */,
+				B3CC5D78087DFCD100EB91A2 /* Makefile.in */,
+				B387DA8B087EFCAC00A8560D /* Common.make */,
+				B387DA8C087EFCAC00A8560D /* GNUSource.make */,
+				505B00FB10699C9000477B20 /* runmake.sh */,
+			);
+			name = distcc;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		B3CC5D00087DFBA800EB91A2 /* make */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = runmake.sh;
+			buildConfigurationList = B3CC5D01087DFBC700EB91A2 /* Build configuration list for PBXLegacyTarget "make" */;
+			buildPhases = (
+			);
+			buildToolPath = /bin/sh;
+			buildWorkingDirectory = "";
+			dependencies = (
+				B3CC5D07087DFBE800EB91A2 /* PBXTargetDependency */,
+			);
+			name = make;
+			passBuildSettingsInEnvironment = 1;
+			productName = distcc;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		B3BA8F21087CA0CC009521B6 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = B3BA8F22087CA0CC009521B6 /* Build configuration list for PBXProject "distcc" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B3BA8F1F087CA0CC009521B6;
+			productRefGroup = B3BA8F3B087CA1DE009521B6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B3CC5D00087DFBA800EB91A2 /* make */,
+				B3BA8F2B087CA0FF009521B6 /* Copy Files */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXTargetDependency section */
+		B3CC5D07087DFBE800EB91A2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B3BA8F2B087CA0FF009521B6 /* Copy Files */;
+			targetProxy = B3CC5D06087DFBE800EB91A2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		8D5B0CAC093BFD9000250A19 /* BuildAndIntegration */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = i386;
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "_FORTIFY_SOURCE=2";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = LaunchdConfig;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = BuildAndIntegration;
+		};
+		8D5B0CAD093BFD9000250A19 /* BuildAndIntegration */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DESTDIR = "$(DSTROOT)";
+				PRODUCT_NAME = distcc;
+			};
+			name = BuildAndIntegration;
+		};
+		8D5B0CAE093BFD9000250A19 /* BuildAndIntegration */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 50367E020EDB29BD0049A223 /* DevToolsGlobalBuildAndIntegration.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1686;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "_FORTIFY_SOURCE=2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = BuildAndIntegration;
+		};
+		B3BA8F23087CA0CC009521B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 50367E030EDB29BD0049A223 /* DevToolsGlobalDebug.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1686;
+				ONLY_ACTIVE_ARCH = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		B3BA8F24087CA0CC009521B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 50367E040EDB29BD0049A223 /* DevToolsGlobalRelease.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1686;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		B3BA8F30087CA105009521B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = i386;
+				COPY_PHASE_STRIP = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_TREAT_WARNINGS_AS_ERRORS = "$(DT_TREAT_WARNINGS_AS_ERRORS)";
+				GCC_VERSION = 4.2;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = distcc;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug;
+		};
+		B3BA8F31087CA105009521B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = i386;
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = LaunchdConfig;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Release;
+		};
+		B3CC5D02087DFBC700EB91A2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DESTDIR = "$(DESTROOT)";
+				GCC_TREAT_WARNINGS_AS_ERRORS = "$(DT_TREAT_WARNINGS_AS_ERRORS)";
+				PRODUCT_NAME = distcc;
+			};
+			name = Debug;
+		};
+		B3CC5D03087DFBC700EB91A2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DESTDIR = "$(DSTROOT)";
+				PRODUCT_NAME = distcc;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B3BA8F22087CA0CC009521B6 /* Build configuration list for PBXProject "distcc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3BA8F23087CA0CC009521B6 /* Debug */,
+				B3BA8F24087CA0CC009521B6 /* Release */,
+				8D5B0CAE093BFD9000250A19 /* BuildAndIntegration */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = BuildAndIntegration;
+		};
+		B3BA8F2F087CA105009521B6 /* Build configuration list for PBXAggregateTarget "Copy Files" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3BA8F30087CA105009521B6 /* Debug */,
+				B3BA8F31087CA105009521B6 /* Release */,
+				8D5B0CAC093BFD9000250A19 /* BuildAndIntegration */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = BuildAndIntegration;
+		};
+		B3CC5D01087DFBC700EB91A2 /* Build configuration list for PBXLegacyTarget "make" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3CC5D02087DFBC700EB91A2 /* Debug */,
+				B3CC5D03087DFBC700EB91A2 /* Release */,
+				8D5B0CAD093BFD9000250A19 /* BuildAndIntegration */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = BuildAndIntegration;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B3BA8F21087CA0CC009521B6 /* Project object */;
+}

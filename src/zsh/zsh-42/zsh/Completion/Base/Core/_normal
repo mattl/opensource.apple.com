@@ -1,0 +1,26 @@
+#compdef -command-line-
+
+local _comp_command1 _comp_command2 _comp_command skip
+
+if [[ "$1" = -s ]]; then
+  skip=(-s)
+else
+  skip=()
+  _compskip=''
+fi
+
+# Completing in command position?
+
+if [[ CURRENT -eq 1 ]]; then
+  curcontext="${curcontext%:*:*}:-command-:"
+
+  comp="$_comps[-command-]"
+  [[ -n "$comp" ]] && eval "$comp" && ret=0
+
+  return ret
+fi
+
+_set_command
+
+_dispatch "$skip[@]" "$_comp_command" \
+          "$_comp_command1" "$_comp_command2" -default-

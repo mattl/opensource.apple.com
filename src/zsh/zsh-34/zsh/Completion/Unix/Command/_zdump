@@ -1,0 +1,5 @@
+#compdef zdump
+
+_arguments '-v[lowest possible]' \
+           '-c[cutoff]:cutoff year:' \
+           '*:timezone:_time_zone'

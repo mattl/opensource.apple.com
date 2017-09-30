@@ -1,0 +1,31 @@
+--- samba/docs/manpages/smb.conf.5  2004/02/11 18:51:50     1.12
++++ samba/docs/manpages/smb.conf.5  2004/02/11 21:21:32
+@@ -4345,7 +4345,7 @@
+ 
+ 
+ Default: .nf
+-\fIoplocks\fR = yes
++\fIoplocks\fR = no
+ .fi
+ 
+ 
+@@ -6015,7 +6015,7 @@
+ 
+ 
+ Default: .nf
+-\fIstrict locking\fR = no
++\fIstrict locking\fR = yes
+ .fi
+ 
+ 
+--- samba/source/param/loadparm.c.orig	Thu Dec 18 15:12:46 2003
++++ samba/source/param/loadparm.c	Fri Dec 19 08:31:23 2003
+@@ -506,7 +506,7 @@ static service sDefault = {
+ 	True,			/* bStrictLocking */
+ 	True,			/* bPosixLocking */
+ 	True,			/* bShareModes */
+-	True,			/* bOpLocks */
++	False,			/* bOpLocks */
+ 	True,			/* bLevel2OpLocks */
+ 	False,			/* bOnlyUser */
+ 	True,			/* bMangledNames */

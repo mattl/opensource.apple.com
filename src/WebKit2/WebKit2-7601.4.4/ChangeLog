@@ -1,0 +1,1395 @@
+2015-10-13  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r190141. rdar://problem/23075536
+
+    2015-09-22  Anders Carlsson  <andersca@apple.com>
+
+            URL of page visited in private browsing still appears in Activity Monitor after page is closed
+            https://bugs.webkit.org/show_bug.cgi?id=149475
+            rdar://problem/22684521
+
+            Reviewed by Dan Bernstein.
+
+            * WebProcess/WebPage/WebPage.cpp:
+            (WebKit::WebPage::close):
+            Make sure to call updateActivePages after removing the page from the page map.
+
+            * WebProcess/cocoa/WebProcessCocoa.mm:
+            (WebKit::WebProcess::updateActivePages):
+            Don't include pages that have private browsing enabled.
+
+2015-10-13  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r188443. rdar://problem/22801969
+
+    2015-08-13  Tim Horton  <timothy_horton@apple.com>
+
+            Performing a Lookup on wrapped text puts the popover arrow in the wrong place (off to the right)
+            https://bugs.webkit.org/show_bug.cgi?id=148012
+            <rdar://problem/19238094>
+
+            Reviewed by Simon Fraser.
+
+            * UIProcess/mac/PageClientImpl.mm:
+            (WebKit::PageClientImpl::didPerformDictionaryLookup):
+            * UIProcess/mac/WKImmediateActionController.mm:
+            (-[WKImmediateActionController _animationControllerForText]):
+            Adopt the new SPI, handing it the first text rect, instead of having it
+            guess where to put the popover.
+
+2015-10-08  Andy Estes  <aestes@apple.com>
+
+        Merge r188150, r188517, r188844, r188845, r188851, r188852, r188880, r188881, r188988, r189193, r189289, and r190133.
+        rdar://problem/22847063
+
+    2015-08-26  Andy Estes  <aestes@apple.com>
+
+            [Content Filtering] Determine navigation and content policy before continuing to filter a load
+            https://bugs.webkit.org/show_bug.cgi?id=148506
+
+            Reviewed by Brady Eidson.
+
+            Deleted parts of r188486 and r188851.
+
+            * WebProcess/WebCoreSupport/WebFrameLoaderClient.cpp:
+            (WebKit::WebFrameLoaderClient::dispatchDidReceiveServerRedirectForProvisionalLoad):
+            * WebProcess/WebCoreSupport/WebFrameLoaderClient.h:
+            * WebProcess/WebPage/WebFrame.cpp:
+            (WebKit::WebFrame::convertMainResourceLoadToDownload):
+
+    2015-08-11  Andy Estes  <aestes@apple.com>
+
+            [Cocoa] Add redirect support to CustomProtocolManager
+            https://bugs.webkit.org/show_bug.cgi?id=147871
+
+            Reviewed by Dan Bernstein.
+            
+            NSURLProtocols have the ability to generate redirect responses. This change teaches CustomProtocolManager how to handle them.
+
+            * Shared/Network/CustomProtocols/Cocoa/CustomProtocolManagerCocoa.mm:
+            (WebKit::CustomProtocolManager::wasRedirectedToRequest): Called -URLProtocol:wasRedirectedToRequest:redirectResponse: on the NSURLProtocolClient.
+            * Shared/Network/CustomProtocols/CustomProtocolManager.h:
+            * Shared/Network/CustomProtocols/CustomProtocolManager.messages.in: Defined WasRedirectedToRequest.
+            * Shared/Network/CustomProtocols/soup/CustomProtocolManagerSoup.cpp:
+            (WebKit::CustomProtocolManager::wasRedirectedToRequest): Defined empty function.
+            * UIProcess/Network/CustomProtocols/mac/CustomProtocolManagerProxyMac.mm:
+            (-[WKCustomProtocolLoader connection:willSendRequest:redirectResponse:]): If a redirect response is received, send WasRedirectedToRequest and return nil to ignore the redirect.
+
+2015-10-08  Lucas Forschler  <lforschler@apple.com>
+
+        Rollout r190745
+
+2015-10-08  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r188443. rdar://problem/22801969
+
+    2015-08-13  Tim Horton  <timothy_horton@apple.com>
+
+            Performing a Lookup on wrapped text puts the popover arrow in the wrong place (off to the right)
+            https://bugs.webkit.org/show_bug.cgi?id=148012
+            <rdar://problem/19238094>
+
+            Reviewed by Simon Fraser.
+
+            * UIProcess/mac/PageClientImpl.mm:
+            (WebKit::PageClientImpl::didPerformDictionaryLookup):
+            * UIProcess/mac/WKImmediateActionController.mm:
+            (-[WKImmediateActionController _animationControllerForText]):
+            Adopt the new SPI, handing it the first text rect, instead of having it
+            guess where to put the popover.
+
+2015-10-02  Babak Shafiei  <bshafiei@apple.com>
+
+        Merge r190418.
+
+    2015-10-01  Antti Koivisto  <antti@apple.com>
+
+            Network cache: Subresource referer header wrong after cached redirect
+            https://bugs.webkit.org/show_bug.cgi?id=149709
+            rdar://problem/22917174
+
+            Reviewed by Chris Dumez.
+
+            If a main resource is loaded from a cache entry that involved redirects the document
+            will end up setting the Referer-headers of the subresources to the request URL not the redirected URL
+
+            * NetworkProcess/NetworkResourceLoader.cpp:
+            (WebKit::NetworkResourceLoader::didRetrieveCacheEntry):
+
+                If a cache entry involved a redirect synthesize a minimal willSendRequest message so that WebCore side
+                runs through the same code paths as when receiving a redirect from network.
+
+2015-10-02  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r190252. rdar://problem/22867962
+
+    2015-09-25  Beth Dakin  <bdakin@apple.com>
+
+            Clicking on a data detected item inside a form control always pops up a map
+            on force touch trackpad
+            https://bugs.webkit.org/show_bug.cgi?id=149559
+            -and corresponding-
+            rdar://problem/22826796
+
+            Reviewed by Tim Horton.
+
+            Look for Data Detected text for text nodes and HitTestResults that are over
+            text inside form controls.
+
+            * WebProcess/WebPage/mac/WebPageMac.mm:
+            (WebKit::WebPage::performImmediateActionHitTestAtLocation):
+
+2015-10-02  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r188990. rdar://problem/22802029
+
+    2015-08-26  Beth Dakin  <bdakin@apple.com>
+
+            REGRESSION: Safari navigates after a cancelled force click
+            https://bugs.webkit.org/show_bug.cgi?id=148491
+            -and corresponding-
+            rdar://problem/22394323
+
+            Reviewed by Tim Horton.
+
+            Use the current stage to determine which type of cancel this is.
+            * WebProcess/WebPage/mac/WebPageMac.mm:
+            (WebKit::WebPage::immediateActionDidCancel):
+
+2015-10-02  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r188755. rdar://problem/22802005
+
+    2015-08-21  Chris Dumez  <cdumez@apple.com>
+
+            Regression(r188698): http/tests/cache/disk-cache/disk-cache-revalidation-new-expire-header.html is very flaky
+            https://bugs.webkit.org/show_bug.cgi?id=148205
+
+            Reviewed by Antti Koivisto.
+
+            After r188640, successful revalidation of resources in the memory cache
+            would cause us to drop the corresponding resource in the disk cache.
+            This patch addresses the issue by not removing the cache entry if the
+            response is a successful revalidation (i.e. status code == 304).
+
+            Longer term, we should probably update the entry in the disk cache (if
+            it exists) when it is revalidated by the memory cache. Currently,
+            revalidation by the memory cache bypasses the disk cache and goes
+            straight to the network. Then, when the response comes back as a 304,
+            we try and store the response in the cache. However, a 304 status code
+            is not cacheable so the cache rejects it.
+
+            * NetworkProcess/cache/NetworkCache.cpp:
+            (WebKit::NetworkCache::Cache::store):
+
+2015-10-02  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r189102. rdar://problem/22802034
+
+    2015-08-28  Timothy Horton  <timothy_horton@apple.com>
+
+            [Mac] Right-clicking on GIFs spins the UI process for a while
+            https://bugs.webkit.org/show_bug.cgi?id=148566
+            <rdar://problem/22460854>
+
+            Reviewed by Brady Eidson.
+
+            * UIProcess/WebPageProxy.cpp:
+            (WebKit::WebPageProxy::internalShowContextMenu):
+            (WebKit::WebPageProxy::platformInitializeShareMenuItem):
+            * UIProcess/WebPageProxy.h:
+            * UIProcess/mac/WebPageProxyMac.mm:
+            (WebKit::WebPageProxy::platformInitializeShareMenuItem):
+            Move all of the code to make a Share menuitem into platformInitializeShareMenuItem.
+            Make an NSImage directly from the image data if possible.
+
+2015-10-02  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r188640. rdar://problem/22802005
+
+    2015-08-19  Chris Dumez  <cdumez@apple.com>
+
+            WebKit may keep outdated entry in the disk cache after a reload
+            https://bugs.webkit.org/show_bug.cgi?id=148137
+            <rdar://problem/22299547>
+
+            Reviewed by Antti Koivisto.
+
+            WebKit would keep outdated entry in the disk cache after a reload
+            in the following scenario:
+            1. We have an entry in the cache
+            2. The user reloads
+            3. We get a fresh resource from the network but this one is not cacheable
+
+            In this case, we now remove the stale entry from the cache to make sure
+            it is not served to following requests (e.g. history navigations).
+
+            * NetworkProcess/NetworkResourceLoader.cpp:
+            (WebKit::NetworkResourceLoader::didFinishLoading):
+            Remove the entry from the cache if its redirection is no longer
+            cacheable.
+
+            * NetworkProcess/cache/NetworkCache.cpp:
+            (WebKit::NetworkCache::Cache::store):
+            If we make the decision not to store the response, then remove the
+            entry in the cache for this resource if it exists.
+
+            (WebKit::NetworkCache::Cache::remove):
+            * NetworkProcess/cache/NetworkCache.h:
+            Add new remove() overload taking a ResourceRequest argument so the
+            call site does not have the compute the key.
+
+            * NetworkProcess/cache/NetworkCacheStorage.cpp:
+            (WebKit::NetworkCache::Storage::removeFromPendingWriteOperations):
+            (WebKit::NetworkCache::Storage::remove):
+            * NetworkProcess/cache/NetworkCacheStorage.h:
+            When we're asked to remove an entry with a given key, also remove
+            it from the pending write operations. This pre-existing bug would
+            prevent the new layout test from passing.
+
+2015-08-17  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r188365. rdar://problem/22254920
+
+    2015-08-12  Alexey Proskuryakov  <ap@apple.com>
+
+            [Mac] WebKit processes should have access to com.apple.nesessionmanager.flow-divert-token
+            https://bugs.webkit.org/show_bug.cgi?id=147949
+            rdar://problem/22254920
+
+            Reviewed by Anders Carlsson.
+
+            * NetworkProcess/mac/com.apple.WebKit.NetworkProcess.sb.in:
+            * WebProcess/com.apple.WebProcess.sb.in:
+
+2015-08-14  Babak Shafiei  <bshafiei@apple.com>
+
+        Merge r188486.
+
+    2015-08-13  Andy Estes  <aestes@apple.com>
+
+            [Cocoa] Downloads do not start if policy decision is made asynchronously
+            https://bugs.webkit.org/show_bug.cgi?id=147985
+
+            Reviewed by Brady Eidson.
+
+            * WebProcess/Network/WebResourceLoader.cpp: Updated to include SubresourceLoader.h.
+            * WebProcess/WebPage/WebFrame.cpp:
+            (WebKit::WebFrame::convertMainResourceLoadToDownload): Started a new download if the main resource loader is not calling didReceiveResponse.
+
+2015-08-06  Dana Burkart  <dburkart@apple.com>
+
+        Merge r188011. rdar://problem/22055130
+
+    2015-08-05  Tim Horton  <timothy_horton@apple.com>
+
+            PDFPlugins are clipped in link previews (and remain so when opened)
+            https://bugs.webkit.org/show_bug.cgi?id=147708
+            <rdar://problem/22055130>
+
+            Reviewed by Simon Fraser.
+
+            * UIProcess/API/mac/WKView.mm:
+            (-[WKView initWithFrame:processPool:configuration:webView:]):
+            (-[WKView _supportsArbitraryLayoutModes]):
+            (-[WKView _didCommitLoadForMainFrame]):
+            (-[WKView _setLayoutMode:]):
+            (-[WKView _setViewScale:]):
+            Avoid using any layout mode other than "ViewSize" for main frame PluginDocuments,
+            because they will often end up behaving incorrectly (especially with PDFPlugin,
+            which is even more special in that it takes over application of page scale).
+
+            Save any incoming changes to the viewScale and layoutMode, and re-apply
+            them once we load something in the main frame that is *not* a PluginDocument.
+
+            * UIProcess/API/mac/WKViewInternal.h:
+            * WebProcess/WebPage/WebPage.cpp:
+            (WebKit::WebPage::scalePage):
+            Make sure to reset WebCore's page scale if the main frame contains a
+            PluginDocument that takes care of page scale itself.
+
+            (WebKit::WebPage::didCommitLoad):
+            Do the same thing as what we do in WKView _didCommitLoadForMainFrame,
+            but without the UI process round-trip, to avoid an ugly flash.
+
+            * UIProcess/WebFrameProxy.cpp:
+            (WebKit::WebFrameProxy::didCommitLoad):
+            * UIProcess/WebFrameProxy.h:
+            (WebKit::WebFrameProxy::containsPluginDocument):
+            * UIProcess/WebPageProxy.cpp:
+            (WebKit::WebPageProxy::didCommitLoadForFrame):
+            * UIProcess/WebPageProxy.h:
+            * UIProcess/WebPageProxy.messages.in:
+            * UIProcess/mac/PageClientImpl.mm:
+            (WebKit::PageClientImpl::didCommitLoadForMainFrame):
+            * WebProcess/WebCoreSupport/WebFrameLoaderClient.cpp:
+            (WebKit::WebFrameLoaderClient::dispatchDidCommitLoad):
+            Plumb and keep track of whether the main frame contains a PluginDocument or not.
+
+2015-08-06  Dana Burkart  <dburkart@apple.com>
+
+        Merge r187962. rdar://problem/21827815
+
+    2015-08-05  Daniel Bates  <dabates@apple.com>
+
+            REGRESSION (r185111): Clicking phone numbers doesn't prompt to call sometimes
+            https://bugs.webkit.org/show_bug.cgi?id=147678
+            <rdar://problem/21827815>
+
+            Reviewed by Brady Eidson.
+
+            Teach WebKit to save and restore the "should open external URLs" policy.
+
+            * Shared/SessionState.cpp:
+            (WebKit::isValidEnum): Added.
+            (WebKit::PageState::encode): Modified to encode the "should open external URLs" policy.
+            (WebKit::PageState::decode): Modified to decode the "should open external URLs" policy.
+            * Shared/SessionState.h: Added ShouldOpenExternalURLsPolicy to PageState (defaults to WebCore::ShouldOpenExternalURLsPolicy::ShouldNotAllow).
+            * UIProcess/API/Cocoa/WKWebView.mm:
+            (-[WKWebView _killWebContentProcessAndResetState]): Added; used in the unit test TestWebKitAPI/Tests/WebKit2Cocoa/ShouldOpenExternalURLsInNewWindowActions.mm.
+            * UIProcess/API/Cocoa/WKWebViewPrivate.h: Declare -[WKWebView _killWebContentProcessAndResetState].
+            * UIProcess/mac/LegacySessionStateCoding.cpp: Defined constant sessionHistoryEntryShouldOpenExternalURLsPolicyKey.
+            (WebKit::encodeSessionHistory): Modified to encode the "should open external URLs" policy.
+            (WebKit::decodeSessionHistoryEntry): Modified to decode the "should open external URLs" policy.
+            * WebProcess/WebCoreSupport/SessionStateConversion.cpp:
+            (WebKit::toPageState): Copy "should open external URLs" policy from specified history item.
+            (WebKit::toHistoryItem): Apply "should open external URLs" policy from PageState to HistoryItem.
+
+2015-08-06  Dana Burkart  <dburkart@apple.com>
+
+        Merge r187764. rdar://problem/22077836
+
+    2015-08-03  Beth Dakin  <bdakin@apple.com>
+
+            Need WKWebView API to enable/disable link preview
+            https://bugs.webkit.org/show_bug.cgi?id=147573
+            -and corresponding-
+            rdar://problem/22077836
+
+            Reviewed by Dan Bernstein.
+
+            WKView implementation.
+            * UIProcess/API/Cocoa/WKViewPrivate.h:
+
+            New API. Call into WKView to handle Mac.
+            * UIProcess/API/Cocoa/WKWebView.h:
+            * UIProcess/API/Cocoa/WKWebView.mm:
+            (-[WKWebView initWithFrame:configuration:]):
+            (-[WKWebView allowsLinkPreview]):
+            (-[WKWebView setAllowsLinkPreview:]):
+
+            Remove the SPI declaration from WKWebViewPrivate in order to make this API.
+            * UIProcess/API/Cocoa/WKWebViewPrivate.h:
+
+            Handle the Mac side.
+            * UIProcess/API/mac/WKView.mm:
+            (-[WKView viewDidMoveToWindow]):
+            (-[WKView initWithFrame:processPool:configuration:webView:]):
+            (-[WKView allowsBackForwardNavigationGestures]):
+            (-[WKView allowsLinkPreview]):
+            (-[WKView setAllowsLinkPreview:]):
+
+            Don’t register previews when link preview is prevented.
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView _registerPreview]):
+
+2015-08-06  Dana Burkart  <dburkart@apple.com>
+
+        Merge r187886. rdar://problem/15779101
+
+    2015-08-04  Alexey Proskuryakov  <ap@apple.com>
+
+            Implement NPAPI redirect handling
+            https://bugs.webkit.org/show_bug.cgi?id=138675
+            rdar://problem/15779101
+
+            Patch by Jeffrey Pfau, updated and tweaked by me.
+
+            Reviewed by Anders Carlsson.
+
+            * PluginProcess/PluginControllerProxy.cpp:
+            (WebKit::PluginControllerProxy::loadURL):
+            (WebKit::PluginControllerProxy::continueStreamLoad):
+            (WebKit::PluginControllerProxy::cancelStreamLoad):
+            (WebKit::PluginControllerProxy::didEvaluateJavaScript):
+            (WebKit::PluginControllerProxy::streamWillSendRequest):
+            (WebKit::PluginControllerProxy::streamDidReceiveResponse):
+            * PluginProcess/PluginControllerProxy.h:
+            * PluginProcess/PluginControllerProxy.messages.in:
+            * WebProcess/Network/WebResourceLoader.cpp:
+            (WebKit::WebResourceLoader::willSendRequest):
+            * WebProcess/Plugins/Netscape/NetscapeBrowserFuncs.cpp:
+            (WebKit::NPN_ConvertPoint):
+            (WebKit::NPN_URLRedirectResponse):
+            (WebKit::initializeBrowserFuncs):
+            (WebKit::netscapeBrowserFuncs):
+            * WebProcess/Plugins/Netscape/NetscapePlugin.cpp:
+            (WebKit::NetscapePlugin::getAuthenticationInfo):
+            (WebKit::NetscapePlugin::registerRedirect):
+            (WebKit::NetscapePlugin::urlRedirectResponse):
+            (WebKit::NetscapePlugin::setIsPlayingAudio):
+            (WebKit::NetscapePlugin::NPP_URLNotify):
+            (WebKit::NetscapePlugin::NPP_URLRedirectNotify):
+            (WebKit::NetscapePlugin::NPP_GetValue):
+            (WebKit::NetscapePlugin::didEvaluateJavaScript):
+            (WebKit::NetscapePlugin::streamWillSendRequest):
+            (WebKit::NetscapePlugin::streamDidReceiveResponse):
+            * WebProcess/Plugins/Netscape/NetscapePlugin.h:
+            * WebProcess/Plugins/Netscape/NetscapePluginStream.cpp:
+            (WebKit::NetscapePluginStream::~NetscapePluginStream):
+            (WebKit::NetscapePluginStream::willSendRequest):
+            (WebKit::NetscapePluginStream::didReceiveResponse):
+            (WebKit::NetscapePluginStream::stop):
+            (WebKit::NetscapePluginStream::setURL):
+            (WebKit::NetscapePluginStream::cancel):
+            * WebProcess/Plugins/Netscape/NetscapePluginStream.h:
+            (WebKit::NetscapePluginStream::streamID):
+            (WebKit::NetscapePluginStream::npStream):
+            * WebProcess/Plugins/PDF/PDFPlugin.h:
+            * WebProcess/Plugins/Plugin.h:
+            * WebProcess/Plugins/PluginController.h:
+            * WebProcess/Plugins/PluginProxy.cpp:
+            (WebKit::PluginProxy::didEvaluateJavaScript):
+            (WebKit::PluginProxy::streamWillSendRequest):
+            (WebKit::PluginProxy::streamDidReceiveResponse):
+            (WebKit::PluginProxy::setPluginIsPlayingAudio):
+            (WebKit::PluginProxy::continueStreamLoad):
+            (WebKit::PluginProxy::cancelStreamLoad):
+            * WebProcess/Plugins/PluginProxy.h:
+            * WebProcess/Plugins/PluginProxy.messages.in:
+            * WebProcess/Plugins/PluginView.cpp:
+            (WebKit::PluginView::Stream::streamID):
+            (WebKit::PluginView::Stream::Stream):
+            (WebKit::PluginView::Stream::cancel):
+            (WebKit::PluginView::Stream::continueLoad):
+            (WebKit::buildHTTPHeaders):
+            (WebKit::lastModifiedDateMS):
+            (WebKit::PluginView::Stream::willSendRequest):
+            (WebKit::PluginView::Stream::didReceiveResponse):
+            (WebKit::PluginView::cancelStreamLoad):
+            (WebKit::PluginView::continueStreamLoad):
+            (WebKit::PluginView::cancelManualStreamLoad):
+            * WebProcess/Plugins/PluginView.h:
+
+2015-08-03  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187691. rdar://problem/22060183
+
+    2015-07-31  Chris Dumez  <cdumez@apple.com>
+
+            Coalesce concurrent authentication challenges for the same ProtectionSpace
+            https://bugs.webkit.org/show_bug.cgi?id=147496
+            <rdar://problem/16839069>
+
+            Reviewed by Alexey Proskuryakov.
+
+            Coalesce concurrent authentication challenges for the same ProtectionSpace.
+            Ideally, this would be done in the network layer but short term, this will
+            make sure the user no longer gets repeating authentication dialogs for the
+            same protection space.
+
+            This gets rid of a long-standing bug in WebKit / Safari where visiting a
+            site using HTTP authentication would pop up one authentication dialog for
+            each subresource being loaded from the network (especially when the main
+            resource is loaded from the cache).
+
+            * Shared/Authentication/AuthenticationManager.cpp:
+            (WebKit::canCoalesceChallenge):
+            (WebKit::AuthenticationManager::addChallengeToChallengeMap):
+            (WebKit::AuthenticationManager::shouldCoalesceChallenge):
+            (WebKit::AuthenticationManager::coalesceChallengesMatching):
+            (WebKit::AuthenticationManager::didReceiveAuthenticationChallenge):
+            (WebKit::AuthenticationManager::useCredentialForChallenge):
+            (WebKit::AuthenticationManager::useCredentialForSingleChallenge):
+            (WebKit::AuthenticationManager::continueWithoutCredentialForChallenge):
+            (WebKit::AuthenticationManager::continueWithoutCredentialForSingleChallenge):
+            (WebKit::AuthenticationManager::cancelChallenge):
+            (WebKit::AuthenticationManager::cancelSingleChallenge):
+            (WebKit::AuthenticationManager::performDefaultHandling):
+            (WebKit::AuthenticationManager::performDefaultHandlingForSingleChallenge):
+            (WebKit::AuthenticationManager::rejectProtectionSpaceAndContinue):
+            (WebKit::AuthenticationManager::rejectProtectionSpaceAndContinueForSingleChallenge):
+            (WebKit::AuthenticationManager::AuthenticationManager): Deleted.
+            * Shared/Authentication/AuthenticationManager.h:
+
+2015-08-03  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187751. rdar://problem/22018044
+
+    2015-08-03  Wenson Hsieh  <wenson_hsieh@apple.com>
+
+            Inputs with the autofocus attribute cause the keyboard to not deploy
+            https://bugs.webkit.org/show_bug.cgi?id=147555
+            <rdar://problem/22018044>
+
+            Reviewed by Andreas Kling.
+
+            Upon submitting a form by pressing "Go" on the keyboard, an <input> on the next page with the
+            autofocus attribute may become non-interactible. When attempting to tap on the input, nothing
+            seems to happen. This is because the state of WebPage upon invoking WebPage::elementDidFocus
+            indicates (incorrectly) that the input element is already focused, and therefore hits an early
+            return. To solve this, we explicitly reset m_hasFocusedDueToUserInteraction upon transitioning
+            to a new page.
+
+            * WebProcess/WebPage/WebPage.cpp:
+            (WebKit::WebPage::didStartPageTransition): On iOS, resets m_hasFocusedDueToUserInteraction as
+                well. It was previously thought that this would be handled by blur() called on the assisted
+                element when submitting a form. However, pressing "Go" on the iOS keyboard is an implicit
+                submission and does not trigger a blur event.
+
+2015-07-31  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187614. rdar://problem/22064327
+
+    2015-07-30  Eric Carlson  <eric.carlson@apple.com>
+
+            [iOS] Set AirPlay discovery mode to disabled when page is hidden
+            https://bugs.webkit.org/show_bug.cgi?id=147455
+
+            Reviewed by Enrica Casucci.
+
+            * UIProcess/ios/forms/WKAirPlayRoutePicker.mm:
+            (-[WKAirPlayRoutePicker _dismissAirPlayRoutePickerIPad]): Set discovery mode to disabled after
+              the picker has been closed.
+            (-[WKAirPlayRoutePicker showAirPlayPickerIPhone:]): Ditto.
+
+2015-07-31  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187530
+
+    2015-07-28  Chris Fleizach  <cfleizach@apple.com>
+
+            AX: iOS: VoiceOver hangs indefinitely when an JS alert appears
+            https://bugs.webkit.org/show_bug.cgi?id=147386
+
+            Reviewed by Anders Carlsson.
+
+            Support the iOS platform API to notify accessibility clients when the WebProcess is about to suspend (because of some modal dialog).
+            Luckily, we did all the hardwork for OSX a few years ago to support this paradigm.         
+
+            * Platform/IPC/mac/ConnectionMac.mm:
+            (IPC::AccessibilityProcessSuspendedNotification):
+            (IPC::Connection::willSendSyncMessage):
+            (IPC::Connection::didReceiveSyncReply):
+
+2015-07-31  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187522
+
+    2015-07-28  Said Abou-Hallawa  <sabouhallawa@apple.com>
+
+            [iOS] REGRESSION(r168075): Fullscreen web video doesn't pause on screen lock
+            https://bugs.webkit.org/show_bug.cgi?id=147269
+
+            Reviewed by Andreas Kling.
+
+            Media elements should pause when the application is going to EnterBackground
+            under lock regardless whether it is in full screen or not.
+
+            * Platform/spi/ios/UIKitSPI.h: Forward declare [UIApplication isSuspendedUnderLock].
+
+            * UIProcess/ios/WebPageProxyIOS.mm:
+            (WebKit::WebPageProxy::applicationDidEnterBackground):
+            [UIApp isSuspendedUnderLock] can only be called in the UIProcess. We need
+            to call it here and pass it to the WebPage in the WebProcess as part of the
+            ApplicationDidEnterBackground message.
+
+            * WebProcess/WebPage/WebPage.h:
+            * WebProcess/WebPage/WebPage.messages.in: Add the new parameter:
+            'isSuspendedUnderLock' to the ApplicationDidEnterBackground message.
+
+            * WebProcess/WebPage/ios/WebPageIOS.mm:
+            (WebKit::WebPage::applicationDidEnterBackground): On iOS, the WebPage needs
+            to notify the MediaSessionManagerIOS that it received the message 
+            ApplicationDidEnterBackground.
+
+2015-07-31  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187491
+
+    2015-07-28  Jer Noble  <jer.noble@apple.com>
+
+            [iOS] Notify fullscreen controller in UIProcess whether external playback is allowed
+            https://bugs.webkit.org/show_bug.cgi?id=147343
+
+            Reviewed by Brady Eidson.
+
+            Pass the boolean property wirelessVideoPlaybackDisabled across the UIProcess/WebProcess boundary.
+
+            * UIProcess/ios/WebVideoFullscreenManagerProxy.mm:
+            (WebKit::WebVideoFullscreenManagerProxy::setWirelessVideoPlaybackDisabled):
+            * WebProcess/ios/WebVideoFullscreenManager.mm:
+            (WebKit::WebVideoFullscreenInterfaceContext::setWirelessVideoPlaybackDisabled):
+            (WebKit::WebVideoFullscreenManager::WebVideoFullscreenManager):
+            (WebKit::WebVideoFullscreenManager::setWirelessVideoPlaybackDisabled):
+
+2015-07-31  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187471
+
+    2015-07-27  Tim Horton  <timothy_horton@apple.com>
+
+            First in-window viewStateChange synchronously blocks despite not previously being in-window
+            https://bugs.webkit.org/show_bug.cgi?id=147344
+            <rdar://problem/22021772>
+
+            Reviewed by Simon Fraser.
+
+            * UIProcess/WebPageProxy.cpp:
+            (WebKit::WebPageProxy::updateViewState):
+            (WebKit::WebPageProxy::dispatchViewStateChange):
+            The whole point of m_viewWasEverInWindow was so that we would not
+            synchronously wait when a view was added to a window for the first time,
+            only all subsequent times.
+
+            However, since m_viewWasEverInWindow was being set *before* being
+            checked in dispatchViewStateChange, we were always blocking. This is
+            a huge waste of main-thread time, because there's no reason to wait
+            for the first paint if you've never seen the view before (and shouldn't
+            expect it to have content).
+
+            Instead, set the flag after dispatching a view state change, so it becomes
+            "have we ever sent a view state with IsInWindow set" instead.
+
+2015-07-31  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187462
+
+    2015-07-27  Tim Horton  <timothy_horton@apple.com>
+
+            [iOS] Long press or link click can sometimes trigger during/after a preview
+            https://bugs.webkit.org/show_bug.cgi?id=147338
+            <rdar://problem/22020770>
+
+            Reviewed by Enrica Casucci.
+
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView _longPressRecognized:]):
+            Bail if we're previewing.
+
+            (-[WKContentView _dataForPreviewItemController:atPosition:type:]):
+            (-[WKContentView _presentedViewControllerForPreviewItemController:]):
+            Always avoid allowing clicks and start interaction when previewing a link.
+
+2015-07-31  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187459
+
+    2015-07-27  Andreas Kling  <akling@apple.com>
+
+            [iOS] Occasional crashes in WebPage::elementDidBlur()'s async block.
+            <https://webkit.org/b/147281>
+            <rdar://problem/21701858>
+
+            Reviewed by Anders Carlsson.
+
+            Protect the WebPage object until the dispatch_async block has finished.
+            I have no way to repro this, but there's evidence of some crashing here.
+
+            * WebProcess/WebPage/ios/WebPageIOS.mm:
+            (WebKit::WebPage::elementDidBlur):
+
+2015-07-31  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187375
+
+    2015-07-24  Anders Carlsson  <andersca@apple.com>
+
+            WKWebsiteDataStore remove methods don't properly delete cookies
+            https://bugs.webkit.org/show_bug.cgi?id=147282
+            rdar://problem/21948230
+
+            Reviewed by Sam Weinig.
+
+            * NetworkProcess/NetworkProcess.cpp:
+            (WebKit::NetworkProcess::deleteWebsiteDataForOrigins):
+            Call deleteCookiesForHostnames instead of iterating over each hostname.
+
+            * WebProcess/Cookies/WebCookieManager.cpp:
+            (WebKit::WebCookieManager::deleteCookiesForHostname):
+            Call deleteCookiesForHostnames.
+
+2015-07-30  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187565. rdar://problem/22061043
+
+    2015-07-29  Enrica Casucci  <enrica@apple.com>
+
+            Preview should not start if touch handler prevents default.
+            https://bugs.webkit.org/show_bug.cgi?id=147423
+            rdar://problem/22061043
+
+            Reviewed by Tim Horton.
+
+            We need to check if _highlightLongPressCanClick has not been reset before
+            we allow the preview. It can be reset by a touch handler preventing default.
+
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView _interactionShouldBeginFromPreviewItemController:forPosition:]):
+
+2015-07-30  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187517. rdar://problem/21645007
+
+    2015-07-28  Yongjun Zhang  <yongjun_zhang@apple.com>
+
+            Bounds in InteractionInformationAtPosition should be always in main frame coordinate space.
+            https://bugs.webkit.org/show_bug.cgi?id=147372
+
+            When we prepare the bounds for InteractionInformationAtPosition, we should convert the rect to
+            main frame space since WKContent in UIProcess expects it to be in the web view space.
+
+            Reviewed by Tim Horton.
+
+            * WebProcess/WebPage/ios/WebPageIOS.mm:
+            (WebKit::WebPage::getPositionInformation): Convert the bounding rect to main frame space if the element is inside a sub-frame.
+
+2015-07-30  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187478. rdar://problem/21838764
+
+    2015-07-27  Andreas Kling  <akling@apple.com>
+
+            WebsiteDataStore should clean up its storage in the network process when destroyed.
+            <https://webkit.org/b/147349>
+            <rdar://problem/21838764>
+
+            Reviewed by Darin Adler.
+
+            Have ~WebsiteDataStore() send a DestroyPrivateBrowsingSession message to all networking processes
+            for ephemeral sessions. This plugs a NetworkStorageSession leak that could retain a large
+            CFNetwork object graph.
+
+            This complements r187115 which did the same for network process storage owned by
+            API::Session objects.
+
+            * UIProcess/WebsiteData/WebsiteDataStore.cpp:
+            (WebKit::WebsiteDataStore::~WebsiteDataStore):
+
+2015-07-27  Babak Shafiei  <bshafiei@apple.com>
+
+        Roll out r187376.
+
+2015-07-27  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187412. rdar://problem/22003112
+
+    2015-07-26  Chris Dumez  <cdumez@apple.com>
+
+            [WK2][iOS] WebContent process main thread should have fixed priority
+            https://bugs.webkit.org/show_bug.cgi?id=147313
+            <rdar://problem/22003112>
+
+            Reviewed by Darin Adler.
+
+            WebContent process main thread should have fixed priority on iOS 9.
+            Priority decay regresses PLT and fixing the main thread's priority
+            gives up a ~3% progression on warm PLT (tested on iPhone 5s).
+
+            * WebProcess/cocoa/WebProcessCocoa.mm:
+            (WebKit::WebProcess::platformInitializeWebProcess):
+
+2015-07-27  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187376. rdar://problem/22000647
+
+    2015-07-24  Yongjun Zhang  <yongjun_zhang@apple.com>
+
+            Don't create UIWebFormAccessory if we don't require accessory view.
+            https://bugs.webkit.org/show_bug.cgi?id=147283
+
+            Don't try to intialize _formAccessoryView if requiresAccessoryView returns false since we don't
+            need it yet.
+
+            Reviewed by Dan Bernstein.
+
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView inputAccessoryView]):
+
+2015-07-27  Babak Shafiei  <bshafiei@apple.com>
+
+        Merge r187364.
+
+    2015-07-24  Anders Carlsson  <andersca@apple.com>
+
+            Networking process crash in NetworkConnectionToWebProcess::convertMainResourceLoadToDownload while attempting to download a blob
+            https://bugs.webkit.org/show_bug.cgi?id=147276
+            rdar://problem/21423353
+
+            Reviewed by Andreas Kling.
+
+            We currently don't support downloading blobs, so for now just bail if we encounter a null loader inside
+            convertMainResourceLoadToDownload (which happens when trying to download a blob URL).
+
+            * NetworkProcess/NetworkConnectionToWebProcess.cpp:
+            (WebKit::NetworkConnectionToWebProcess::didCleanupResourceLoader):
+            Rewrite the assertion to be more clear - it's fine to do an extra hash lookup in debug builds.
+
+            (WebKit::NetworkConnectionToWebProcess::convertMainResourceLoadToDownload):
+            Bail if loader is null.
+
+2015-07-26  Babak Shafiei  <bshafiei@apple.com>
+
+        Merge r187345.
+
+    2015-07-24  Simon Fraser  <simon.fraser@apple.com>
+
+            Recode.net gets into a continual resize loop in split fullscreen
+            https://bugs.webkit.org/show_bug.cgi?id=147266
+            rdar://problem/21409047
+
+            Reviewed by Tim Horton.
+
+            In split fullscreen, we use fixed layout and scale to shrink pages down to
+            fit a given width. This is re-evaluated every time the document width changes.
+            However some pages, like recode.net, end up continually resizing because
+            when laid out unconstrained they use a narrower width than when laid out with
+            a fixed layout size. In fixed layout, they actually use more width than the fixed
+            layout size.
+
+            Detect and break this cycle by just not re-scaling when we've done one fixed layout,
+            and the document is now taking more width than the fixed layout width.
+
+            * WebProcess/WebPage/mac/TiledCoreAnimationDrawingArea.mm:
+            (WebKit::TiledCoreAnimationDrawingArea::scaleViewToFitDocumentIfNeeded):
+
+2015-07-26  Babak Shafiei  <bshafiei@apple.com>
+
+        Merge r187178.
+
+    2015-07-21  Simon Fraser  <simon.fraser@apple.com>
+
+            Add logging for TiledCoreAnimationDrawingArea resizing
+            https://bugs.webkit.org/show_bug.cgi?id=147180
+
+            Reviewed by Tim Horton.
+
+            Add a "Resize" log channel for WebKit2, and use it to log data in scaleViewToFitDocumentIfNeeded().
+
+            * Platform/Logging.h:
+            * WebProcess/WebPage/mac/TiledCoreAnimationDrawingArea.mm:
+            (WebKit::TiledCoreAnimationDrawingArea::scaleViewToFitDocumentIfNeeded):
+
+2015-07-24  Jer Noble  <jer.noble@apple.com>
+
+        Merge r187251, r187252, r187262, r187263, r187272, r187289. rdar://problem/20689512
+
+    2015-07-23  Alex Christensen  <achristensen@webkit.org>
+
+            Fix 32-bit build after r187272.
+
+            * UIProcess/mac/PageClientImpl.mm:
+            (WebKit::PageClientImpl::mediaDocumentNaturalSizeChanged):
+            Added some WK_API_ENABLED.
+
+    2015-07-23  Alex Christensen  <achristensen@webkit.org>
+
+            [iOS] Unreviewed build fix after r187251.
+
+            * UIProcess/WebPageProxy.cpp:
+            (WebKit::WebPageProxy::setAllowsMediaDocumentInlinePlayback):
+            Use the correct name for the boolean to pass along to SetAllowsMediaDocumentInlinePlayback.
+
+    2015-07-21  Jer Noble  <jer.noble@apple.com>
+
+            Notify the UI delegate when a MediaDocument's natural size changes
+            https://bugs.webkit.org/show_bug.cgi?id=147182
+
+            Reviewed by Simon Fraser.
+
+            Pipe notifications of media document natural size changes up from the chrome client, through
+            to the UIProcess,  through the page client, through the WKWebView, to the UIDelegate.
+
+            * UIProcess/API/APIUIClient.h:
+            (API::UIClient::mediaDocumentNaturalSizeChanged):
+            * UIProcess/API/Cocoa/WKUIDelegatePrivate.h:
+            * UIProcess/API/Cocoa/WKWebView.mm:
+            (-[WKWebView _mediaDocumentNaturalSizeChanged:]):
+            * UIProcess/API/Cocoa/WKWebViewInternal.h:
+            * UIProcess/Cocoa/UIDelegate.h:
+            * UIProcess/Cocoa/UIDelegate.mm:
+            (WebKit::UIDelegate::setDelegate):
+            (WebKit::UIDelegate::UIClient::mediaDocumentNaturalSizeChanged):
+            * UIProcess/PageClient.h:
+            * UIProcess/WebPageProxy.cpp:
+            (WebKit::WebPageProxy::mediaDocumentNaturalSizeChanged):
+            * UIProcess/WebPageProxy.h:
+            * UIProcess/WebPageProxy.messages.in:
+            * UIProcess/ios/PageClientImplIOS.h:
+            * UIProcess/ios/PageClientImplIOS.mm:
+            (WebKit::PageClientImpl::mediaDocumentNaturalSizeChanged):
+            * UIProcess/mac/PageClientImpl.h:
+            * UIProcess/mac/PageClientImpl.mm:
+            (WebKit::PageClientImpl::mediaDocumentNaturalSizeChanged):
+            * WebProcess/WebCoreSupport/WebChromeClient.h:
+            * WebProcess/WebCoreSupport/WebChromeClient.cpp:
+            (WebKit::WebChromeClient::mediaDocumentNaturalSizeChanged):
+            * WebProcess/WebPage/WebPage.cpp:
+            (WebKit::WebPage::mediaDocumentNaturalSizeChanged):
+            * WebProcess/WebPage/WebPage.h:
+            * UIProcess/API/gtk/PageClientImpl.h: Add default, empty implementation of new pure-virtual method.
+            * UIProcess/efl/WebViewEfl.h: Ditto.
+
+    2015-07-23  Jer Noble  <jer.noble@apple.com>
+
+            Unreviewed build fix after r187251; rename flag -> allows.
+
+            * UIProcess/WebPageProxy.cpp:
+            (WebKit::WebPageProxy::setAllowsMediaDocumentInlinePlayback):
+
+    2015-07-23  Jer Noble  <jer.noble@apple.com>
+
+            [WK2] Add a WKWebView property for whether the view is displaying a media document
+            https://bugs.webkit.org/show_bug.cgi?id=147233
+
+            Reviewed by Beth Dakin.
+
+            Add a _isDisplayingStandaloneMediaDocument property, which queries the frame for whether
+            the current MIME type is one which our media engines support.
+
+            * UIProcess/API/Cocoa/WKWebView.mm:
+            (-[WKWebView _isDisplayingStandaloneMediaDocument]):
+            * UIProcess/API/Cocoa/WKWebViewPrivate.h:
+            * UIProcess/WebFrameProxy.cpp:
+            (WebKit::WebFrameProxy::isDisplayingStandaloneMediaDocument):
+            * UIProcess/WebFrameProxy.h:
+
+    2015-07-21  Jer Noble  <jer.noble@apple.com>
+
+            [iOS] Add an explicit API to allow media documents to (temporarily) play inline
+            https://bugs.webkit.org/show_bug.cgi?id=147181
+
+            Reviewed by Beth Dakin.
+
+            Add a WKWebView(Private) API which allows MediaDocuments loaded by the view to play their contents inline, regardless
+            of whether inline playback is restricted on the current device.
+
+            * UIProcess/API/Cocoa/WKWebView.mm:
+            (-[WKWebView _setRequiresUserActionForMediaPlayback:]): Added. Pass through to WebPageProxy.
+            (-[WKWebView _allowsMediaDocumentInlinePlayback]): Ditto.
+            * UIProcess/API/Cocoa/WKWebViewPrivate.h:
+            * UIProcess/WebPageProxy.cpp:
+            (WebKit::WebPageProxy::allowsMediaDocumentInlinePlayback): Simple getter.
+            (WebKit::WebPageProxy::setAllowsMediaDocumentInlinePlayback): Set, and conditionally pass the new value to WebPage.
+            * UIProcess/WebPageProxy.h:
+            * WebProcess/WebPage/WebPage.cpp:
+            (WebKit::WebPage::setAllowsMediaDocumentInlinePlayback): Set, and conditionally notify WebCore page of the change.
+            * WebProcess/WebPage/WebPage.h:
+            (WebKit::WebPage::allowsMediaDocumentInlinePlayback): Simple getter.
+            * WebProcess/WebPage/WebPage.messages.in: Add new messages.
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187268. rdar://problem/21664211
+
+    2015-07-23  Enrica Casucci  <enrica@apple.com>
+
+            Removing one incorrect annotation from the previous change.
+
+            Unreviewed.
+
+            * UIProcess/API/Cocoa/WKUIDelegatePrivate.h:
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187288. rdar://problem/21929532
+
+    2015-07-23  Dan Bernstein  <mitz@apple.com>
+
+            <rdar://problem/21929532> REGRESSION (r184026): Safari AutoFill with Contact info for phone number is broken
+            https://bugs.webkit.org/show_bug.cgi?id=147249
+
+            Reviewed by Sam Weinig.
+
+            * Shared/API/Cocoa/WKRemoteObjectCoder.mm:
+            (encodeObject): Use encodeString only for strings that encode as NSString or
+            NSMutableString. It can’t encode arbitrary NSString subclasses.
+            (decodeObject): Use decodeString for NSMutableString as well.
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187286. rdar://problem/21953359
+
+    2015-07-23  Zalan Bujtas  <zalan@apple.com>
+
+            [iOS] REGRESSION (187131): Loading CuteOverload zooms in to the top left corner.
+            https://bugs.webkit.org/show_bug.cgi?id=147251
+            rdar://problem/21953359
+
+            Calling zoomToRect() should result in essentially the same zoom scale as if we
+            called setZoomScale with the new page scale factor.
+
+            Reviewed by Benjamin Poulain.
+
+            * UIProcess/API/Cocoa/WKWebView.mm:
+            (-[WKWebView _didCommitLayerTree:]):
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187267. rdar://problem/21664211
+
+    2015-07-23  Enrica Casucci  <enrica@apple.com>
+
+            [iOS] Add another preview delegate for didDismissPreview.
+            https://bugs.webkit.org/show_bug.cgi?id=147241
+            rdar://problem/21664211
+
+            Reviewed by Tim Horton and Yongjun Zhang.
+
+            * UIProcess/API/Cocoa/WKUIDelegatePrivate.h:
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView _previewItemController:didDismissPreview:committing:]):
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187266. rdar://problem/21910578
+
+    2015-07-23  Dan Bernstein  <mitz@apple.com>
+
+            <rdar://problem/21910578> Second pass at [iOS] Keyboard shortcuts that take focus away from the web view end up typing a letter into the newly focused field
+            https://bugs.webkit.org/show_bug.cgi?id=146732
+
+            Reviewed by Darin Adler.
+
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView _interpretKeyEvent:isCharEvent:]): Rather than checking if the view is
+            first responder, which it might still be when the Web Content processes invokes this
+            callback, check if we are in editable content before forwarding the event to the keyboard.
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187255. rdar://problem/21875510
+
+    2015-07-23  Yongjun Zhang  <yongjun_zhang@apple.com>
+
+            Adopt the new _previewItemControllerDidCancelPreview delegate method.
+            https://bugs.webkit.org/show_bug.cgi?id=147238
+
+            Don't allow hightlight long press to trigger tap if the link preview is cancelled because
+            the link is not preview-able.
+
+            Reviewed by Beth Dakin.
+
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView _previewItemControllerDidCancelPreview:]):
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187250. rdar://problem/21968460
+
+    2015-07-23  Beth Dakin  <bdakin@apple.com>
+
+            Should not allow previews of 1x1 images
+            https://bugs.webkit.org/show_bug.cgi?id=147237
+            -and corresponding-
+            rdar://problem/21968460
+
+            Reviewed by Tim Horton.
+
+            1x1 images are used on some sites to cover actual images, which leads to a
+            misleading preview experience. There is not any reason why you would really
+            want to preview an image this small nor any reason to believe that the
+            preview would result in anything useful.
+            * WebProcess/WebPage/ios/WebPageIOS.mm:
+            (WebKit::WebPage::getPositionInformation):
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187248. rdar://problem/21949735
+
+    2015-07-23  Brady Eidson  <beidson@apple.com>
+
+            Crash in WebPlatformStrategies::createPingHandle - Deref a null NetworkingContext.
+            <rdar://problem/21949735> and https://bugs.webkit.org/show_bug.cgi?id=147227
+
+            Reviewed by Alexey Proskuryakov.
+
+            * WebProcess/WebCoreSupport/WebPlatformStrategies.cpp:
+            (WebKit::WebPlatformStrategies::createPingHandle): Skip it if there's a null NetworkingContext.
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187215. rdar://problem/21032083
+
+    2015-07-22  James Savage  <james.savage@apple.com>
+
+            Use updated CoreAnimation snapshot SPI.
+            https://bugs.webkit.org/show_bug.cgi?id=147197
+            <rdar://problem/21032083>
+
+            Reviewed by Tim Horton.
+            Patch by James Savage.
+
+            * Platform/spi/ios/UIKitSPI.h:
+            * UIProcess/API/Cocoa/WKWebView.mm:
+            (-[WKWebView _snapshotRect:intoImageOfWidth:completionHandler:]):
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187212. rdar://problem/21945775
+
+    2015-07-22  Timothy Horton  <timothy_horton@apple.com>
+
+            Fix the build
+
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView setupInteraction]):
+            (-[WKContentView cleanupInteraction]):
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187199. rdar://problem/21945775
+
+    2015-07-22  Tim Horton  <timothy_horton@apple.com>
+
+            Fix the build
+
+            * UIProcess/ios/WKContentViewInteraction.h:
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187198. rdar://problem/21945775
+
+    2015-07-22  Tim Horton  <timothy_horton@apple.com>
+
+            [iOS] Adjust the preview architecture
+            https://bugs.webkit.org/show_bug.cgi?id=147203
+            <rdar://problem/21945775>
+
+            Reviewed by Simon Fraser.
+
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView _dataForPreviewItemController:atPosition:type:]):
+            Link previews should win over image previews if both are possible.
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187193. rdar://problem/21945775
+
+    2015-07-22  Tim Horton  <timothy_horton@apple.com>
+
+            [iOS] Adjust the preview architecture
+            https://bugs.webkit.org/show_bug.cgi?id=147203
+            <rdar://problem/21945775>
+
+            Reviewed by Beth Dakin.
+
+            * Platform/spi/ios/UIKitSPI.h:
+            * UIProcess/API/Cocoa/WKWebView.mm:
+            (-[WKWebView _setAllowsLinkPreview:]): Deleted.
+            * UIProcess/ios/WKContentView.mm:
+            (-[WKContentView willMoveToWindow:]): Deleted.
+            * UIProcess/ios/WKContentViewInteraction.h:
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView setupInteraction]):
+            (-[WKContentView cleanupInteraction]):
+            (-[WKContentView _registerPreview]):
+            (-[WKContentView _unregisterPreview]):
+            (-[WKContentView _interactionShouldBeginFromPreviewItemController:forPosition:]):
+            (-[WKContentView _dataForPreviewItemController:atPosition:type:]):
+            (-[WKContentView _presentationRectForPreviewItemController:]):
+            (-[WKContentView _presentedViewControllerForPreviewItemController:]):
+            (-[WKContentView _previewItemController:commitPreview:]):
+            (-[WKContentView _previewItemController:willPresentPreview:forPosition:inSourceView:]):
+            (-[WKContentView _previewItemController:didDismissPreview:committing:]):
+            (-[WKContentView _presentationSnapshotForPreviewItemController:]):
+            (-[WKContentView _presentationRectsForPreviewItemController:]):
+            (-[WKContentView gestureRecognizerShouldBegin:]): Deleted.
+            (-[WKContentView _registerPreviewInWindow:]): Deleted.
+            (-[WKContentView _unregisterPreviewInWindow:]): Deleted.
+            (-[WKContentView previewViewControllerForPosition:inSourceView:]): Deleted.
+            (-[WKContentView commitPreviewViewController:]): Deleted.
+            (-[WKContentView willPresentPreviewViewController:forPosition:inSourceView:]): Deleted.
+            (-[WKContentView didDismissPreviewViewController:committing:]): Deleted.
+            Register and unregister in setup/cleanupInteraction instead of when moving between windows.
+            Implement 'shouldBegin' instead of interacting directly with the recognizer.
+            Make use of system enums instead of our own.
+            Let UIPreviewItemController handle shrink-wrapping and the indicator view.
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187174. rdar://problem/21818117
+
+    2015-07-22  Sam Weinig  <sam@webkit.org>
+
+            Encode/Decode underlying errors when serializing NSErrors
+            <rdar://problem/21818117>
+            https://bugs.webkit.org/show_bug.cgi?id=147199
+
+            Reviewed by Anders Carlsson.
+
+            * Shared/mac/WebCoreArgumentCodersMac.mm:
+            (IPC::ArgumentCoder<CertificateInfo>::decode):
+            (IPC::encodeNSError):
+            (IPC::ArgumentCoder<ResourceError>::encodePlatformData):
+            (IPC::decodeNSError):
+            (IPC::ArgumentCoder<ResourceError>::decodePlatformData):
+            Break out encoding/decoding of the NSErrors into a helpers so they can be called
+            for the underlying error.
+
+2015-07-24  Matthew Hanson  <matthew_hanson@apple.com>
+
+        Merge r187173. rdar://problem/21637698
+
+    2015-07-22  Beth Dakin  <bdakin@apple.com>
+
+            Animated images should animate in previews
+            https://bugs.webkit.org/show_bug.cgi?id=147173
+            -and corresponding-
+            rdar://problem/21637698
+
+            Reviewed by Dan Bernstein.
+
+            InteractionInformationAtPosition needs to know if it’s an animated image.
+            * Shared/InteractionInformationAtPosition.cpp:
+            (WebKit::InteractionInformationAtPosition::encode):
+            (WebKit::InteractionInformationAtPosition::decode):
+            * Shared/InteractionInformationAtPosition.h:
+
+            New delegate method to create a link preview view controller for animated
+            images.
+            * UIProcess/API/Cocoa/WKUIDelegatePrivate.h:
+
+            Treat animated images more like link previews.
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView previewViewControllerForPosition:inSourceView:]):
+
+            Set info.isAnimatedImage
+            * WebProcess/WebPage/ios/WebPageIOS.mm:
+            (WebKit::WebPage::getPositionInformation):
+
+2015-07-24  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187131
+
+    2015-07-21  Zalan Bujtas  <zalan@apple.com>
+
+            [iOS] Menu drop down such as on nike.com does not stay
+            https://bugs.webkit.org/show_bug.cgi?id=147047
+            rdar://problem/21046961
+
+            Reviewed by Benjamin Poulain.
+
+            This is a workaround for unintended scrolling while scaling.
+            (Based on Benjamin Poulain's WIP patch for webkit.org/b/136904)
+
+            In certain cases when scaling would result in moving the scrollview (which would trigger
+            a scroll event on WebCore side), zoomRect is called instead of setZoomScale to ensure
+            that the scroll position stays intact.
+
+            * UIProcess/API/Cocoa/WKWebView.mm:
+            (-[WKWebView _didCommitLayerTree:]):
+
+2015-07-24  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187136
+
+    2015-07-21  Daniel Bates  <dabates@apple.com>
+
+            Fix the build following <https://trac.webkit.org/changeset/187129>
+            (https://bugs.webkit.org/show_bug.cgi?id=147112)
+
+            * UIProcess/WebProcessProxy.cpp:
+            (WebKit::WebProcessProxy::reinstateNetworkProcessAssertionState): Guard implementation with PLATFORM(IOS)
+            since this logic is specific to the iOS port.
+
+2015-07-23  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187129
+
+    2015-07-21  Daniel Bates  <dabates@apple.com>
+
+            WTFCrash() in WebKit::WebProcess::networkConnection()
+            https://bugs.webkit.org/show_bug.cgi?id=147112
+            <rdar://problem/18477459>
+
+            Reviewed by Gavin Barraclough.
+
+            Fixes an issue where a newly launched network process may be jetsam'd because it has not
+            taken a process assertion between the time it was launched and the time when a web process
+            makes use of it.
+
+            Initially a network process does not have a process assertion. A process assertion is taken
+            (if one has not been taken) for the network process when a process assertion is taken for at
+            least one web process. When the network process crashes a WebProcess may ultimately launch a
+            new network process in WebProcess::networkConnection(). The new network process may be jetsam'd
+            immediately when the system is under some measure pressure because it has a low jetsam priority,
+            0 (since it does not have a process assertion and higher priority implies that a process is less
+            likely to be jetsam'd). And the logic in WebProcess::networkConnection() explicitly calls
+            CRASH() if the newly launched network process crashes immediately. Towards preventing the newly
+            launched network process from being jetsam'd we should obtain a process assertion for it.
+
+            * UIProcess/WebProcessPool.cpp:
+            (WebKit::WebProcessPool::WebProcessPool): Initialize m_didNetworkProcessCrash to false.
+            (WebKit::WebProcessPool::ensureNetworkProcess): If the network process crashed (m_didNetworkProcessCrash == true)
+            then tell each process in the pool to reinstate their network activity token for the new network process.
+            (WebKit::WebProcessPool::networkProcessCrashed): Set m_didNetworkProcessCrash to true when the
+            network process crashed.
+            * UIProcess/WebProcessPool.h:
+            * UIProcess/WebProcessProxy.cpp:
+            (WebKit::WebProcessProxy::reinstateNetworkProcessAssertionState): Added.
+            (WebKit::WebProcessProxy::didSetAssertionState): Add assert to ensure we never have both
+            a background- and foreground- activity token for the network process.
+            * UIProcess/WebProcessProxy.h:
+
+2015-07-23  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187117
+
+    2015-07-21  Tim Horton  <timothy_horton@apple.com>
+
+            [iOS] Avoid using a TextIndicator if there are non-text things to indicate
+            https://bugs.webkit.org/show_bug.cgi?id=147152
+            <rdar://problem/21921061>
+
+            Reviewed by Beth Dakin.
+
+            * UIProcess/ios/WKContentViewInteraction.mm:
+            (-[WKContentView willPresentPreviewViewController:forPosition:inSourceView:]):
+            * WebProcess/WebPage/ios/WebPageIOS.mm:
+            (WebKit::shouldUseTextIndicatorForLink):
+            (WebKit::WebPage::getPositionInformation):
+            Fall back to a rectangular area instead of a TextIndicator if there are any
+            non-inline elements inside the link.
+
+2015-07-23  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187115
+
+    2015-07-21  Andreas Kling  <akling@apple.com>
+
+            API::Session should clean up its storage in the network process when destroyed.
+            <https://webkit.org/b/147139>
+            <rdar://problem/21838764>
+
+            Reviewed by Anders Carlsson.
+
+            Have ~Session() send a DestroyPrivateBrowsingSession message to all networking processes
+            for ephemeral sessions. This plugs a NetworkStorageSession leak that could retain a large
+            CFNetwork object graph.
+
+            * UIProcess/API/APISession.cpp:
+            (API::Session::~Session):
+
+2015-07-23  Lucas Forschler  <lforschler@apple.com>
+
+        Merge r187045
+
+    2015-07-20  Antti Koivisto  <antti@apple.com>
+
+            NSURLCache fallback does not work on iOS due to sandboxing
+            https://bugs.webkit.org/show_bug.cgi?id=146314
+            <rdar://problem/21433691>
+
+            Reviewed by Anders Carlsson.
+
+            This broke with earlier cache path computation changes.
+
+            * NetworkProcess/cocoa/NetworkProcessCocoa.mm:
+            (WebKit::NetworkProcess::platformInitializeNetworkProcessCocoa):
+
+                NSURLCache path is relative to the container cache path so "." is sufficient.
+                This puts the cache files under
+                <container>/Library/Caches/com.apple.WebKit.Networking/
+
+== Rolled over to ChangeLog-2015-07-23 ==

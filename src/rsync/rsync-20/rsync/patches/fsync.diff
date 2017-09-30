@@ -1,0 +1,85 @@
+This patch from Sami Farin lets you specify --fsync if you want fsync()
+to be called on every file we write.
+
+--- orig/options.c	2004-09-23 17:42:07
++++ options.c	2004-07-03 20:18:13
+@@ -38,6 +38,7 @@ int make_backups = 0;
+  **/
+ int whole_file = -1;
+ 
++int do_fsync = 0;
+ int archive_mode = 0;
+ int keep_dirlinks = 0;
+ int copy_links = 0;
+@@ -240,6 +241,7 @@ void usage(enum logcode F)
+   rprintf(F," -b, --backup                make backups (see --suffix & --backup-dir)\n");
+   rprintf(F,"     --backup-dir            make backups into this directory\n");
+   rprintf(F,"     --suffix=SUFFIX         backup suffix (default %s w/o --backup-dir)\n",BACKUP_SUFFIX);
++  rprintf(F,"     --fsync                 fsync every written file\n");
+   rprintf(F," -u, --update                update only (don't overwrite newer files)\n");
+   rprintf(F,"     --inplace               update destination files inplace (SEE MAN PAGE)\n");
+   rprintf(F," -K, --keep-dirlinks         treat symlinked dir on receiver as dir\n");
+@@ -346,6 +348,7 @@ static struct poptOption long_options[] 
+   {"safe-links",       0,  POPT_ARG_NONE,   &safe_symlinks, 0, 0, 0 },
+   {"help",            'h', POPT_ARG_NONE,   0,              'h', 0, 0 },
+   {"backup",          'b', POPT_ARG_NONE,   &make_backups, 0, 0, 0 },
++  {"fsync",            0,  POPT_ARG_NONE,   &do_fsync, 0, 0, 0 },
+   {"dry-run",         'n', POPT_ARG_NONE,   &dry_run, 0, 0, 0 },
+   {"sparse",          'S', POPT_ARG_NONE,   &sparse_files, 0, 0, 0 },
+   {"cvs-exclude",     'C', POPT_ARG_NONE,   &cvs_exclude, 0, 0, 0 },
+@@ -1078,6 +1081,9 @@ void server_options(char **args,int *arg
+ 		args[ac++] = tmpdir;
+ 	}
+ 
++	if (do_fsync && am_sender)
++		args[ac++] = "--fsync";
++
+ 	if (compare_dest && am_sender) {
+ 		/* the server only needs this option if it is not the sender,
+ 		 *   and it may be an older version that doesn't know this
+--- orig/receiver.c	2004-09-21 09:40:27
++++ receiver.c	2004-07-16 20:13:31
+@@ -36,6 +36,7 @@ extern int preserve_hard_links;
+ extern int preserve_perms;
+ extern int cvs_exclude;
+ extern int io_error;
++extern int do_fsync;
+ extern char *tmpdir;
+ extern char *partial_dir;
+ extern char *compare_dest;
+@@ -305,6 +306,12 @@ static int receive_data(int f_in, char *
+ 		exit_cleanup(RERR_FILEIO);
+ 	}
+ 
++	if (do_fsync && fd != -1 && fsync(fd) != 0) {
++		rsyserr(FERROR, errno, "fsync failed on %s",
++			full_fname(fname));
++		exit_cleanup(RERR_FILEIO);
++	}
++
+ 	sum_end(file_sum1);
+ 
+ 	if (mapbuf)
+--- orig/util.c	2004-09-07 21:45:30
++++ util.c	2004-07-03 20:18:13
+@@ -33,6 +33,7 @@ extern int module_id;
+ extern int modify_window;
+ extern char *partial_dir;
+ extern struct exclude_list_struct server_exclude_list;
++extern int do_fsync;
+ 
+ int sanitize_paths = 0;
+ 
+@@ -298,6 +299,12 @@ int copy_file(char *source, char *dest, 
+ 		return -1;
+ 	}
+ 
++	if (do_fsync && fsync(ofd) < 0) {
++		rsyserr(FERROR, errno, "fsync failed on %s",
++			full_fname(dest));
++		return -1;
++	}
++
+ 	return 0;
+ }
+ 

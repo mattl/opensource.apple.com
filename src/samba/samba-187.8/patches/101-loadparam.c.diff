@@ -1,0 +1,46 @@
+Index: samba/source/param/loadparm.c
+===================================================================
+--- samba/source/param/loadparm.c.orig
++++ samba/source/param/loadparm.c
+@@ -302,6 +302,7 @@ typedef struct {
+ 	BOOL bDisableNetbios;
+ 	BOOL bUseKerberosKeytab;
+ 	BOOL bDeferSharingViolations;
++	BOOL bOpenDirectory;
+ 	BOOL bEnablePrivileges;
+ 	BOOL bASUSupport;
+ 	BOOL bUsershareOwnerOnly;
+@@ -1294,6 +1295,8 @@ static struct parm_struct parm_table[] =
+ 	{"winbind offline logon", P_BOOL, P_GLOBAL, &Globals.bWinbindOfflineLogon, NULL, NULL, FLAG_ADVANCED},
+ 	{"winbind normalize names", P_BOOL, P_GLOBAL, &Globals.bWinbindNormalizeNames, NULL, NULL, FLAG_ADVANCED},
+ 
++	{"opendirectory", P_BOOL, P_GLOBAL, &Globals.bOpenDirectory, NULL, NULL, FLAG_ADVANCED},
++
+ 	{NULL,  P_BOOL,  P_NONE,  NULL,  NULL,  NULL,  0}
+ };
+ 
+@@ -1656,6 +1659,8 @@ static void init_globals(BOOL first_time
+ 	Globals.bDeferSharingViolations = True;
+ 	string_set(&Globals.smb_ports, SMB_PORTS);
+ 
++	Globals.bOpenDirectory = True;
++
+ 	Globals.bEnablePrivileges = True;
+ 	Globals.bHostMSDfs        = True;
+ 	Globals.bASUSupport       = False;
+@@ -2153,6 +2158,7 @@ FN_GLOBAL_INTEGER(lp_algorithmic_rid_bas
+ FN_GLOBAL_INTEGER(lp_name_cache_timeout, &Globals.name_cache_timeout)
+ FN_GLOBAL_INTEGER(lp_client_signing, &Globals.client_signing)
+ FN_GLOBAL_INTEGER(lp_server_signing, &Globals.server_signing)
++FN_GLOBAL_BOOL(lp_opendirectory, &Globals.bOpenDirectory)
+ 
+ /* local prototypes */
+ 
+@@ -5570,6 +5576,7 @@ static void set_default_server_announce_
+ 	default_server_announce |= SV_TYPE_WORKSTATION;
+ 	default_server_announce |= SV_TYPE_SERVER;
+ 	default_server_announce |= SV_TYPE_SERVER_UNIX;
++	default_server_announce |= SV_TYPE_PRINTQ_SERVER;
+ 
+ 	/* note that the flag should be set only if we have a 
+ 	   printer service but nmbd doesn't actually load the 

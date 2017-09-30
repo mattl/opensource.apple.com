@@ -1,0 +1,3 @@
+#compdef -equal-
+
+_wanted commands expl command compadd -k commands

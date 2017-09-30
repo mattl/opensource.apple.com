@@ -1,0 +1,5 @@
+DISTFILES_SRC='
+    .distfiles
+    check_exports difflog.pl helpfiles mkdisttree.sh reporter
+    preconfig
+'

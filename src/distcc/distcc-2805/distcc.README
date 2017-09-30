@@ -1,0 +1,131 @@
+distcc 3.1 Xcode integration
+Mark Mentovai and Tom Van Lenten
+2009 March 13 - 2009 April 15
+
+THE DEAL
+--------
+As of 3.1.2, Xcode bundles a fork of an older version of distcc,
+2.18.5-Apple.1.  Apple distcc has several changes that allow it to integrate
+well with Xcode, including Bonjour-based service advertisement, server
+capability querying, precompiled header support, and tweaks to handle
+some features unique to Apple gcc and how Xcode calls it.
+
+distcc 2.18 is from the 2004 era, and distcc has been improved in the
+intervening five years.  Most notably, distcc 3 supports pump mode, which
+allows preprocessing to be offloaded to distccd servers instead of requiring
+that it always be done locally.
+
+This project attempts to realign Apple distcc (including Apple-specific
+changes to distcc 2.18) with the current released version of distcc, 3.1,
+which includes pump mode.
+
+BUILD
+-----
+mkdir distcc.obj
+cd distcc.obj
+CFLAGS="-g -Wall" sh ../distcc/configure --prefix=/usr
+make
+
+Note that the --prefix=/usr is more critical than it may appear.  The prefix
+is actually used to locate the distcc_compilers file for --host-info capability
+sharing.
+
+To build the full Xcode integration package on non-Macs, add
+--enable-xcode-integration to the configure command line.  This allows non-Mac
+distccd servers to assist in Xcode-driven Mac builds, provided that the
+proper toolchain and SDKs are available.  See the other projects in this
+directory (specifically, gcc_42 and cctools) for details.
+
+This reintegration does not support precompiled prefix headers or the
+Apple-specific "indirect" modifications to handle precompiled headers.
+Ordinary (non-precompiled) prefix header injection is supported.
+
+RUNNING DISTCCD
+---------------
+This distccd is invoked slightly differently from Apple distccd.  The
+USE_XCODE_SELECT_PATH environment variable is no longer used.  distccd built
+with Xcode integration will normally be invoked as:
+
+distccd --daemon --zeroconf --allow 0.0.0.0/0
+
+The distccd launch daemon at /System/Library/LaunchDaemons/distccd.plist
+should be modified if it is to be used with this version of distccd.  The
+USE_XCODE_SELECT_PATH environment variable should be removed and the
+--min-disk-free command line argument and its value should be removed (as
+they control precompiled prefix header caching).  The --zeroconf and
+--allow command line arguments should be added.
+
+To run distccd on a non-Mac for Xcode integration, provide a --system-version
+argument to allow Xcode to choose the host.  For example,
+--system-version "10.5.6 (9G55, i386)".  Hopefully, in the future, Xcode
+will no longer check system version, and this will become unnecessary.
+
+INTEGRATING WITH XCODE
+----------------------
+Move /usr/bin/distccd and /Deveoper/usr/bin/distcc out of the way, and replace
+them with the new versions you've built.  /usr/bin/distccd needs to be
+replaced even on systems that will not serve as distccd servers because Xcode
+calls "distccd --host-info" to determine what the local capabilities are when
+attempting to find suitable distccd servers.  One of the things that Xcode
+tries matching is the distccd version.
+
+Provided that your projects do not rely on precompiled prefix headers, you
+should now be using the updated version of distcc and distccd.  Projects that
+use precompiled prefix headers must turn them off by clearing the
+"Precompile Prefix Header" checkbox in Xcode's build settings.  This setting
+corresponds to the GCC_PRECOMPILE_PREFIX_HEADER project file setting.  Prefix
+header injection is still supported, but the prefix header cannot be
+precompiled.
+
+Note that pump mode is not yet enabled at this point.  Read on.
+
+ENABLING PUMP MODE
+------------------
+Here's where the build speed-ups come in.  Pump mode is enabled by running
+a local "include server" for the duration of the build.  The include server
+must be started up before the build begins, and shut down when the build is
+complete.  The include server is responsible for computing and caching
+header dependencies on distcc's behalf, and expressing them to distcc so that
+it may distribute headers to distccd servers.  This scheme relieves the
+build host of the burden of performing all preprocessing locally.
+
+Pump mode is generally managed by the "pump" script, which expects the
+DISTCC_HOSTS environment variable to be set.  In addition, in order to enable
+pump mode, each host in the DISTCC_HOSTS list must contain ",lzo,cpp" in its
+specification.  This conflicts with Xcode's setting of the DISTCC_HOSTS
+environment variable: Xcode does not place ",lzo,cpp".  As a workaround,
+place the real distcc binary at /Developer/usr/bin/distcc_real, and put
+distcc_xcode.sh at /Developer/usr/bin/distcc.  This shell script wrapper
+around distcc attempts to determine if it looks like pump mode is desired,
+and if so, it rewrites DISTCC_HOSTS as set by Xcode to add ",lzo,cpp" to
+the host specifications.  It may be worthwhile to move /usr/bin/distcc to
+/usr/bin/distcc_real and place distcc_xcode.sh at /usr/bin/distcc as well.
+
+Because the include server's lifetime must be scoped exactly to a single
+build operation, it currently works best with the "xcodebuild" command-line
+tool.  For example, I run:
+
+DISTCC_HOSTS="heinous.local,lzo,cpp/6 selecty.local,lzo,cpp/6 rimz.local,lzo,cpp/4 dome.local,lzo,cpp/4" .../distcc.obj/pump xcodebuild
+
+pump starts up the include server and sets the INCLUDE_SERVER_PORT environment
+variable, and then runs xcodebuild.  xcodebuild will rewrite DISTCC_HOSTS in a
+way that would disable pump mode, but that's fixed up by the distcc_xcode.sh
+shell script.  The build then proceeds with pump mode active, which should
+result in a noticeable speed improvement as well as a more responsive local
+system.  When xcodebuild exits, pump will stop the include server.
+
+INTEGRATING PUMP MODE INTO XCODE
+--------------------------------
+For pump-mode integration into Xcode proper, Xcode should behave differently
+when pump mode is desired:
+
+ - It should add ,lzo,cpp to each host specification in DISTCC_HOSTS.
+ - It should start up the include server by setting DISTCC_HOSTS and running
+   "pump --startup" as a build begins.  pump will print some environment
+   variables that should be set for the duration of the build.
+ - When Xcode runs distcc, distcc will find the INCLUDE_SERVER_PORT environment
+   variable and the ,lzo,cpp tags in DISTCC_HOSTS and operate in pump mode.
+ - When a build finishes, Xcode should run "pump --shutdown" with the
+   environment varaiables provided by "pump --startup" still intact.  pump
+   will stop the include server referenced by INCLUDE_SERVER_PID and will clean
+   up the include server's directory identified by INCLUDE_SERVER_DIR.

@@ -1,0 +1,12 @@
+LIBRARY_STYLE = STATIC
+STRIP_ON_INSTALL = NO
+BEFORE_INSTALL += debug profile
+AFTER_INSTALL = after_install
+DEFSFILES = notify_ipc.defs
+OTHER_OFILES = notify_ipcUser.o
+
+# In case we ever need it again
+# export CCOMPILER = /usr/bin/gcc-X.X
+# NEXTSTEP_OBJCPLUS_COMPILER = $(CCOMPILER)
+export CCOMPILER = /usr/bin/gcc-3.5
+NEXTSTEP_OBJCPLUS_COMPILER = $(CCOMPILER)

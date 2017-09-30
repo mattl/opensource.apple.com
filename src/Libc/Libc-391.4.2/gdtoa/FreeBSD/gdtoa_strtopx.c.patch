@@ -1,0 +1,42 @@
+--- gdtoa_strtopx.c.orig	2005-01-20 20:12:37.000000000 -0800
++++ gdtoa_strtopx.c	2005-10-08 17:10:15.000000000 -0700
+@@ -29,6 +29,8 @@
+ /* Please send bug reports to David M. Gay (dmg at acm dot org,
+  * with " at " changed at "@" and " dot " changed to ".").	*/
+ 
++#include "xlocale_private.h"
++
+ #include "gdtoaimp.h"
+ 
+ #undef _0
+@@ -53,9 +55,9 @@
+ 
+  int
+ #ifdef KR_headers
+-strtopx(s, sp, V) CONST char *s; char **sp; void *V;
++strtopx(s, sp, V, loc) CONST char *s; char **sp; void *V; locale_t loc;
+ #else
+-strtopx(CONST char *s, char **sp, void *V)
++strtopx(CONST char *s, char **sp, void *V, locale_t loc)
+ #endif
+ {
+ 	static FPI fpi = { 64, 1-16383-64+1, 32766 - 16383 - 64 + 1, 1, SI };
+@@ -64,7 +66,7 @@
+ 	int k;
+ 	UShort *L = (UShort*)V;
+ 
+-	k = strtodg(s, sp, &fpi, &exp, bits);
++	k = strtodg(s, sp, &fpi, &exp, bits, loc);
+ 	switch(k & STRTOG_Retmask) {
+ 	  case STRTOG_NoNumber:
+ 	  case STRTOG_Zero:
+@@ -87,7 +89,8 @@
+ 
+ 	  case STRTOG_Infinite:
+ 		L[_0] = 0x7fff;
+-		L[_1] = L[_2] = L[_3] = L[_4] = 0;
++		L[_1] = 0x8000;
++		L[_2] = L[_3] = L[_4] = 0;
+ 		break;
+ 
+ 	  case STRTOG_NaN:

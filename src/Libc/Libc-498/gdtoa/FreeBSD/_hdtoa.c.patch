@@ -1,0 +1,69 @@
+--- _hdtoa.c.orig	2006-08-14 16:12:46.000000000 -0700
++++ _hdtoa.c	2006-08-14 23:02:39.000000000 -0700
+@@ -55,7 +55,7 @@
+ 			*s = 1;
+ 			return (1);
+ 		}
+-		++*s;
++		*s = 0;
+ 	}
+ 	++*s;
+ 	return (0);
+@@ -223,12 +223,17 @@
+ 	union IEEEl2bits u;
+ 	char *s, *s0;
+ 	int bufsize;
++#ifdef LDBL_HEAD_TAIL_PAIR
++	uint32_t bits[4];
++	int i, pos;
++#endif /* LDBL_HEAD_TAIL_PAIR */
+ 
+ 	u.e = e;
+ 	*sign = u.bits.sign;
+ 
+ 	switch (fpclassify(e)) {
+ 	case FP_NORMAL:
++	case FP_SUPERNORMAL:
+ 		*decpt = u.bits.exp - LDBL_ADJ;
+ 		break;
+ 	case FP_ZERO:
+@@ -270,6 +275,19 @@
+ 	 */
+ 	for (s = s0 + bufsize - 1; s > s0 + sigfigs - 1; s--)
+ 		*s = 0;
++#ifdef LDBL_HEAD_TAIL_PAIR
++	_ldbl2array32dd(u, bits);
++	i = 0;
++	pos = 8;
++	for (; s > s0; s--) {
++		*s = bits[i] & 0xf;
++		bits[i] >>= 4;
++		if (--pos <= 0) {
++			i++;
++			pos = 8;
++		}
++	}
++#else /* LDBL_HEAD_TAIL_PAIR */
+ 	for (; s > s0 + sigfigs - (LDBL_MANL_SIZE / 4) - 1 && s > s0; s--) {
+ 		*s = u.bits.manl & 0xf;
+ 		u.bits.manl >>= 4;
+@@ -278,6 +296,7 @@
+ 		*s = u.bits.manh & 0xf;
+ 		u.bits.manh >>= 4;
+ 	}
++#endif /* LDBL_HEAD_TAIL_PAIR */
+ 
+ 	/*
+ 	 * At this point, we have snarfed all the bits in the
+@@ -285,7 +304,11 @@
+ 	 * (partial) nibble, which is dealt with by the next
+ 	 * statement.  We also tack on the implicit normalization bit.
+ 	 */
++#ifdef LDBL_HEAD_TAIL_PAIR
++	*s = bits[i];
++#else /* LDBL_HEAD_TAIL_PAIR */
+ 	*s = u.bits.manh | (1U << ((LDBL_MANT_DIG - 1) % 4));
++#endif /* LDBL_HEAD_TAIL_PAIR */
+ 
+ 	/* If ndigits < 0, we are expected to auto-size the precision. */
+ 	if (ndigits < 0) {

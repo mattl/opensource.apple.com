@@ -1,0 +1,194 @@
+Index: samba/source/printing/print_cups.c
+===================================================================
+RCS file: /cvs/root/samba/samba/source/printing/print_cups.c,v
+retrieving revision 1.1.1.6
+diff -u -d -b -r1.1.1.6 print_cups.c
+--- samba/source/printing/print_cups.c.orig	2003/12/18 22:01:21	1.1.1.6
++++ samba/source/printing/print_cups.c	2004/06/12 01:56:05
+@@ -82,13 +82,18 @@
+ 	char		*name,		/* printer-name attribute */
+ 			*make_model,	/* printer-make-and-model attribute */
+ 			*info;		/* printer-info attribute */
++	int remote;         /* filter out remote printers and classes */
+ 	static const char *requested[] =/* Requested attributes */
+ 			{
+ 			  "printer-name",
+ 			  "printer-make-and-model",
+-			  "printer-info"
++			  "printer-info",
++			  "printer-type"
+ 			};       
+ 
++	char*   printerprefsfile = "/Library/Preferences/com.apple.printservice.plist";
++	Boolean displayPrinter = true;
++	CFArrayRef smbQarray = NULL;
+ 
+ 	DEBUG(5,("cups_printer_fn(%p)\n", fn));
+ 
+@@ -148,8 +153,26 @@
+ 		return;
+ 	}
+ 
++
++	CFDataRef xmlData = NULL;
++	CFURLRef prefsurl = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (const UInt8*)printerprefsfile, (CFIndex)strlen(printerprefsfile), false);
++	Boolean printerprefs = CFURLCreateDataAndPropertiesFromResource(kCFAllocatorDefault, prefsurl, &xmlData, NULL, NULL, NULL);
++	CFStringRef printername = NULL;
++
++	if (printerprefs) {
++		CFPropertyListRef plist = CFPropertyListCreateFromXMLData(kCFAllocatorDefault, xmlData, kCFPropertyListImmutable, NULL);
++		CFRelease(xmlData);
++		if (plist) {
++			CFDictionaryRef dict = (CFDictionaryRef)plist;
++			smbQarray = (CFArrayRef)CFDictionaryGetValue(dict, CFSTR("smbSharedQueues"));
++			CFRetain(smbQarray);
++			CFRelease(plist);
++		}
++	}
++
+ 	for (attr = response->attrs; attr != NULL;)
+ 	{
++		displayPrinter = true;
+ 	       /*
+ 		* Skip leading attributes until we hit a printer...
+ 		*/
+@@ -167,12 +190,13 @@
+ 		name       = NULL;
+ 		make_model = NULL;
+ 		info       = NULL;
++		remote     = 0;
+ 
+ 		while (attr != NULL && attr->group_tag == IPP_TAG_PRINTER)
+ 		{
+         		if (strcmp(attr->name, "printer-name") == 0 &&
+ 			    attr->value_tag == IPP_TAG_NAME)
+-				name = attr->values[0].string.text;
++				info = attr->values[0].string.text; /* printer-name is the CUPS ID */
+ 
+         		if (strcmp(attr->name, "printer-make-and-model") == 0 &&
+ 			    attr->value_tag == IPP_TAG_TEXT)
+@@ -180,8 +204,12 @@
+ 
+         		if (strcmp(attr->name, "printer-info") == 0 &&
+ 			    attr->value_tag == IPP_TAG_TEXT)
+-				info = attr->values[0].string.text;
++				name = attr->values[0].string.text;  /* printer-info is the CUPS descriptive name we use for sharing */
+ 
++        		if (strcmp(attr->name, "printer-type") == 0 &&
++			    attr->value_tag == IPP_TAG_ENUM)
++				remote = attr->values[0].integer & CUPS_PRINTER_REMOTE;
++
+         		attr = attr->next;
+ 		}
+ 
+@@ -190,15 +218,28 @@
+ 		*/
+ 
+ 		if (name == NULL)
+-			break;
++			continue;
++
++ 		if (remote != 0)
++			continue;
++		
++		if (info == NULL)
++			continue;
++			
++		if (smbQarray) {
++			printername = CFStringCreateWithCString( kCFAllocatorDefault, info, kCFStringEncodingUTF8 );
++			if (!CFArrayContainsValue (smbQarray, CFRangeMake(0, CFArrayGetCount(smbQarray)), printername))
++				displayPrinter = false;						
++			CFRelease(printername);
++		}
+ 
++		if (displayPrinter) {
+  		if (info == NULL || !info[0])
+ 			(*fn)(name, make_model);
+ 		else
+ 			(*fn)(name, info);
+-		
+-
+ 	}
++	}
+ 
+ 	ippDelete(response);
+ 
+@@ -244,6 +285,7 @@
+ 
+ 	for (attr = response->attrs; attr != NULL;)
+ 	{
++		displayPrinter = true;
+ 	       /*
+ 		* Skip leading attributes until we hit a printer...
+ 		*/
+@@ -261,12 +303,14 @@
+ 		name       = NULL;
+ 		make_model = NULL;
+ 		info       = NULL;
++		remote     = 0;
++
+ 
+ 		while (attr != NULL && attr->group_tag == IPP_TAG_PRINTER)
+ 		{
+         		if (strcmp(attr->name, "printer-name") == 0 &&
+ 			    attr->value_tag == IPP_TAG_NAME)
+-				name = attr->values[0].string.text;
++				info = attr->values[0].string.text; /* printer-name is the CUPS ID */
+ 
+         		if (strcmp(attr->name, "printer-make-and-model") == 0 &&
+ 			    attr->value_tag == IPP_TAG_TEXT)
+@@ -274,8 +318,12 @@
+ 
+         		if (strcmp(attr->name, "printer-info") == 0 &&
+ 			    attr->value_tag == IPP_TAG_TEXT)
+-				info = attr->values[0].string.text;
++				name = attr->values[0].string.text;  /* printer-info is the CUPS descriptive name we use for sharing */
+ 
++        		if (strcmp(attr->name, "printer-type") == 0 &&
++			    attr->value_tag == IPP_TAG_ENUM)
++				remote = attr->values[0].integer & CUPS_PRINTER_REMOTE;
++
+         		attr = attr->next;
+ 		}
+ 
+@@ -284,14 +332,27 @@
+ 		*/
+ 
+ 		if (name == NULL)
+-			break;
++			continue;
++
++ 		if (remote != 0)
++			continue;
+ 
++		if (info == NULL)
++			continue;
++			
++		if (smbQarray) {
++			printername = CFStringCreateWithCString( kCFAllocatorDefault, info, kCFStringEncodingUTF8 );
++			if (!CFArrayContainsValue (smbQarray, CFRangeMake(0, CFArrayGetCount(smbQarray)), printername))
++				displayPrinter = false;						
++			CFRelease(printername);
++		}
++
++		if (displayPrinter) {
+  		if (info == NULL || !info[0])
+ 			(*fn)(name, make_model);
+ 		else
+ 			(*fn)(name, info);
+-		
+-
++		}
+ 	}
+ 
+ 	ippDelete(response);
+@@ -301,6 +362,9 @@
+ 	*/
+ 
+ 	httpClose(http);
++
++	if (smbQarray)
++		CFRelease(smbQarray);
+ }
+ 
+ 

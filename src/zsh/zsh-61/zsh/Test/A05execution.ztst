@@ -1,0 +1,218 @@
+%prep
+
+  storepath=($path)
+
+  mkdir command.tmp command.tmp/dir1 command.tmp/dir2
+
+  cd command.tmp
+
+  print '#!/bin/sh\necho This is top' >tstcmd
+
+  print '#!/bin/sh\necho This is dir1' >dir1/tstcmd
+
+  print '#!/bin/sh\necho This is dir2' >dir2/tstcmd
+
+  chmod 755 tstcmd dir1/tstcmd dir2/tstcmd
+
+%test
+  ./tstcmd
+0:./prog execution
+>This is top
+
+  path=($ZTST_testdir/command.tmp/dir1
+        $ZTST_testdir/command.tmp/dir2
+        .)
+  tstcmd
+  path=($storepath)
+0:path (1)
+>This is dir1
+
+  path=(. command.tmp/dir{1,2})
+  tstcmd
+  path=($storepath)
+0:path (2)
+>This is top
+
+  functst() { print $# arguments:; print -l $*; }
+  functst "Eines Morgens" "als Gregor Samsa"
+  functst ""
+  functst "aus unrühigen Träumen erwachte"
+  foo="fand er sich in seinem Bett"
+  bar=
+  rod="zu einem ungeheuren Ungeziefer verwandelt."
+  functst $foo $bar $rod
+# set up alias for next test
+  alias foo='print This is alias one'
+0:function argument passing
+>2 arguments:
+>Eines Morgens
+>als Gregor Samsa
+>1 arguments:
+>
+>1 arguments:
+>aus unrühigen Träumen erwachte
+>2 arguments:
+>fand er sich in seinem Bett
+>zu einem ungeheuren Ungeziefer verwandelt.
+
+  alias foo='print This is alias two'
+  fn() { foo; }
+  fn
+0:Aliases in functions
+>This is alias one
+
+  foo='Global foo'
+  traptst() { local foo="Local foo"; trap 'print $foo' EXIT; }
+  traptst
+0:EXIT trap environment
+>Global foo
+
+  functst() { return 0; print Ha ha; return 1; }
+  functst
+0:return (1)
+
+  functst() { return 1; print Ho ho; return 0; }
+  functst
+1:return (2)
+
+  unfunction functst
+  fpath=(.)
+  print "print This is functst." >functst
+  autoload functst
+  functst
+0:autoloading (1)
+>This is functst.
+
+  unfunction functst
+  print "functst() { print This, too, is functst; }; print Hello." >functst
+  typeset -fu functst
+  functst
+  functst
+0:autoloading with initialization
+>Hello.
+>This, too, is functst
+
+  unfunction functst
+  print "print Yet another version" >functst
+  functst() { autoload -X; }
+  functst
+0:autoloading via -X
+>Yet another version
+
+  chpwd() { print Changed to $PWD; }
+  cd .
+  unfunction chpwd
+0q:chpwd
+>Changed to $ZTST_testdir/command.tmp
+
+  chpwd() { print chpwd: changed to $PWD; }
+  chpwdfn1()  { print chpwdfn1: changed to $PWD; }
+  chpwdfn2()  { print chpwdfn2: changed to $PWD; }
+  chpwd_functions=(chpwdfn1 '' chpwdnonexistentfn chpwdfn2)
+  cd .
+  unfunction chpwd
+  unset chpwd_functions
+0q:chpwd_functions
+>chpwd: changed to $ZTST_testdir/command.tmp
+>chpwdfn1: changed to $ZTST_testdir/command.tmp
+>chpwdfn2: changed to $ZTST_testdir/command.tmp
+
+# Hard to test periodic, precmd and preexec non-interactively.
+
+  fn() { TRAPEXIT() { print Exit; }; }
+  fn
+0:TRAPEXIT
+>Exit
+
+  unsetopt DEBUG_BEFORE_CMD
+  unfunction fn
+  print 'TRAPDEBUG() {
+      print Line $LINENO
+    }
+    :
+    unfunction TRAPDEBUG
+  ' > fn
+  autoload fn
+  fn
+  rm fn
+0:TRAPDEBUG
+>Line 1
+>Line 1
+
+  unsetopt DEBUG_BEFORE_CMD
+  unfunction fn
+  print 'trap '\''print Line $LINENO'\'' DEBUG
+    :
+    trap - DEBUG
+  ' > fn
+  autoload fn
+  fn
+  rm fn
+0:trap DEBUG
+>Line 1
+>Line 2
+
+  TRAPZERR() { print Command failed; }
+  true
+  false
+  true
+  false
+  unfunction TRAPZERR
+0:TRAPZERR
+>Command failed
+>Command failed
+
+  trap 'print Command failed again.' ZERR
+  true
+  false
+  true
+  false
+  trap - ZERR
+0:trap ZERR
+>Command failed again.
+>Command failed again.
+
+  false
+  sleep 1000 &
+  print $?
+  kill $!
+0:Status reset by starting a backgrounded command
+>0
+
+  { setopt MONITOR } 2>/dev/null
+  [[ -o MONITOR ]] || print -u $ZTST_fd 'Unable to change MONITOR option'
+  repeat 2048; do (return 2 |
+                   return 1 |
+                   while true; do
+                             false
+                             break
+                           done;
+                   print "${pipestatus[@]}")
+	ZTST_hashmark
+  done | sort | uniq -c | sed 's/^ *//'
+0:Check whether `$pipestatus[]' behaves.
+>2048 2 1 0
+F:This test checks for a bug in `$pipestatus[]' handling.  If it breaks then
+F:the bug is still there or it reappeared. See workers-29973 for details.
+
+  { setopt MONITOR } 2>/dev/null
+  externFunc() { awk >/dev/null 2>&1; true; }
+  false | true | false | true | externFunc
+  echo $pipestatus
+0:Check $pipestatus with a known difficult case
+>1 0 1 0 0
+F:This similar test was triggering a reproducible failure with pipestatus.
+
+  { unsetopt MONITOR } 2>/dev/null
+  coproc { read -Et 5 || kill -INT $$ }
+  print -u $ZTST_fd 'This test takes 5 seconds to fail...'
+  { printf "%d\n" {1..20000} } | ( read -E )
+  hang(){ printf "%d\n" {2..20000} | cat }; hang | ( read -E )
+  print -p done
+  read -Ep
+0:Bug regression: piping a shell construct to an external process may hang
+>1
+>2
+>done
+F:This test checks for a file descriptor leak that could cause the left
+F:side of a pipe to block on write after the right side has exited

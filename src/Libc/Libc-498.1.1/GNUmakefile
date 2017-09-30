@@ -1,0 +1,5 @@
+all:
+	@bsdmake
+
+.DEFAULT:
+	@bsdmake $@

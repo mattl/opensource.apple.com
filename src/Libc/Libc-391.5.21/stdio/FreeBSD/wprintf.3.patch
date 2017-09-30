@@ -1,0 +1,75 @@
+--- wprintf.3.orig	Fri Mar 11 17:09:07 2005
++++ wprintf.3	Fri Mar 11 17:03:23 2005
+@@ -87,6 +87,12 @@
+ write to the wide character string
+ .Fa ws .
+ .Pp
++Extended locale versions of these functions are documented in
++.Xr wprintf_l 3 .
++See
++.Xr xlocale 3
++for more information.
++.Pp
+ These functions write the output under the control of a
+ .Fa format
+ string that specifies how subsequent arguments
+@@ -224,6 +230,20 @@
+ .Xr localeconv 3 .
+ .El
+ .It
++An optional separator character (
++.Cm \ , | \;  | \ : | _
++) used for separating multiple values when printing an AltiVec vector,
++or other multi-value unit.
++.Pp
++NOTE: This is an AltiVec only extension onto the
++.Fn printf
++specification.
++Behaviour of these values for
++.Fn printf 
++is only defined for operating systems conforming to the 
++AltiVec Technology Programming Interface Manual.
++(At time of writing this includes only Mac OS X 10.2 and later.)
++.It
+ An optional decimal digit string specifying a minimum field width.
+ If the converted value has fewer characters than the field width, it will
+ be padded with spaces on the left (or right, if the left-adjustment
+@@ -314,6 +334,28 @@
+ .It Sy Modifier Ta Cm c Ta Cm s
+ .It Cm l No (ell) Ta Vt wint_t Ta Vt "wchar_t *"
+ .El
++.Pp
++The AltiVec Technology Programming Interface Manual also defines five additional length modifiers
++which can be used (in place of the conventional length modifiers) for the printing of AltiVec vectors:
++.Bl -tag -compact
++.It Cm v
++Treat the argument as a vector value, unit length will be determined by the conversion
++specifier (default = 16 8-bit units for all integer conversions, 
++4 32-bit units for floating point conversions).
++.It Cm vh, hv
++Treat the argument as a vector of 8 16-bit units.
++.It Cm vl, lv
++Treat the argument as a vector of 4 32-bit units.
++.El
++.Pp
++NOTE: The vector length specifiers are AltiVec only extensions onto the
++.Fn printf
++specification.
++Behaviour of these values for
++.Fn printf 
++is only defined for operating systems conforming to the 
++AltiVec Technology Programming Interface Manual.
++(At time of writing this includes only Mac OS X 10.2 and later.)
+ .It
+ A character that specifies the type of conversion to be applied.
+ .El
+@@ -602,7 +644,8 @@
+ .Xr putwc 3 ,
+ .Xr setlocale 3 ,
+ .Xr wcsrtombs 3 ,
+-.Xr wscanf 3
++.Xr wscanf 3 ,
++.Xr wprintf_l 3
+ .Sh STANDARDS
+ Subject to the caveats noted in the
+ .Sx BUGS

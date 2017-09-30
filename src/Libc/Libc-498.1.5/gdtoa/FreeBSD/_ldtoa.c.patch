@@ -1,0 +1,90 @@
+--- _ldtoa.c.orig	2004-06-03 15:17:18.000000000 -0700
++++ _ldtoa.c	2005-10-09 00:09:11.000000000 -0700
+@@ -46,7 +46,7 @@
+ __ldtoa(long double *ld, int mode, int ndigits, int *decpt, int *sign,
+     char **rve)
+ {
+-	static FPI fpi = {
++	static FPI fpi0 = {
+ 		LDBL_MANT_DIG,			/* nbits */
+ 		LDBL_MIN_EXP - LDBL_MANT_DIG,	/* emin */
+ 		LDBL_MAX_EXP - LDBL_MANT_DIG,	/* emax */
+@@ -61,28 +61,55 @@
+ 	char *ret;
+ 	union IEEEl2bits u;
+ 	uint32_t bits[(LDBL_MANT_DIG + 31) / 32];
++	FPI *fpi = &fpi0, fpi1;
++#ifdef Honor_FLT_ROUNDS
++	int rounding = Flt_Rounds;
++#endif
++#if defined(__ppc__) || defined(__ppc64__)
++	int type;
++#endif /* defined(__ppc__) || defined(__ppc64__) */
+ 
+ 	u.e = *ld;
++#if defined(__ppc__) || defined(__ppc64__)
++	/*
++	 * Subnormal head-tail doubles don't seem to be converted correctly
++	 * by gdtoa.  So we multiply by 10^32 to make them normal then
++	 * subtract 32 from the exponent later.
++	 */
++	if ((type = __fpclassify(u.e)) == FP_NORMAL && __fpclassifyd(u.d[1]) == FP_SUBNORMAL)
++		type = FP_SUBNORMAL;
++	if (type == FP_SUBNORMAL)
++		u.e *= 1.0e32L;
++#endif /* defined(__ppc__) || defined(__ppc64__) */
+ 	*sign = u.bits.sign;
+ 	be = u.bits.exp - (LDBL_MAX_EXP - 1) - (LDBL_MANT_DIG - 1);
+ 	LDBL_TO_ARRAY32(u, bits);
+ 
++#if defined(__ppc__) || defined(__ppc64__)
++	switch (type) {
++	case FP_SUBNORMAL:
++#else /* !defined(__ppc__) && !defined(__ppc64__) */
+ 	switch (fpclassify(u.e)) {
++#endif /* defined(__ppc__) || defined(__ppc64__) */
+ 	case FP_NORMAL:
++	case FP_SUPERNORMAL:
+ 		kind = STRTOG_Normal;
++/* For ppc/ppc64 and head-tail long double, the implicit bit is already there */
++#if !defined(__ppc__) && !defined(__ppc64__)
+ #ifdef	LDBL_IMPLICIT_NBIT
+ 		bits[LDBL_MANT_DIG / 32] |= 1 << ((LDBL_MANT_DIG - 1) % 32);
+ #endif /* LDBL_IMPLICIT_NBIT */
++#endif /* !defined(__ppc__) && !defined(__ppc64__) */
+ 		break;
+ 	case FP_ZERO:
+ 		kind = STRTOG_Zero;
+ 		break;
++#if !defined(__ppc__) && !defined(__ppc64__)
+ 	case FP_SUBNORMAL:
+ 		kind = STRTOG_Denormal;
+-#ifdef	LDBL_IMPLICIT_NBIT
+ 		be++;
+-#endif
+ 		break;
++#endif /* !defined(__ppc__) && !defined(__ppc64__) */
+ 	case FP_INFINITE:
+ 		kind = STRTOG_Infinite;
+ 		break;
+@@ -93,8 +120,19 @@
+ 		abort();
+ 	}
+ 
+-	ret = gdtoa(&fpi, be, (ULong *)bits, &kind, mode, ndigits, decpt, rve);
++#ifdef Honor_FLT_ROUNDS
++	if (rounding != fpi0.rounding) {
++		fpi1 = fpi0; /* for thread safety */
++		fpi1.rounding = rounding;
++		fpi = &fpi1;
++		}
++#endif /* Honor_FLT_ROUNDS */
++	ret = gdtoa(fpi, be, (ULong *)bits, &kind, mode, ndigits, decpt, rve);
+ 	if (*decpt == -32768)
+ 		*decpt = INT_MAX;
++#if defined(__ppc__) || defined(__ppc64__)
++	else if (type == FP_SUBNORMAL)
++		*decpt -= 32;
++#endif /* defined(__ppc__) || defined(__ppc64__) */
+ 	return ret;
+ }

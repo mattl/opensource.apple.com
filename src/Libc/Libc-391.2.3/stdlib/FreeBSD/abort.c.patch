@@ -1,0 +1,11 @@
+--- abort.c.orig	2003-08-16 04:43:57.000000000 -0700
++++ abort.c	2004-10-26 17:29:31.000000000 -0700
+@@ -45,7 +45,7 @@
+ #include <pthread.h>
+ #include "un-namespace.h"
+ 
+-void (*__cleanup)();
++extern void (*__cleanup)();
+ 
+ void
+ abort()

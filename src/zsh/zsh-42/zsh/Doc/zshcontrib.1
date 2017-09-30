@@ -1,0 +1,1812 @@
+.TH "ZSHCONTRIB" "1" "January 13, 2005" "zsh 4\&.2\&.3"
+.SH "NAME"
+zshcontrib \- user contributions to zsh
+.\" Yodl file: Zsh/contrib.yo
+.SH "DESCRIPTION"
+.PP
+The Zsh source distribution includes a number of items contributed by the
+user community\&.  These are not inherently a part of the shell, and some
+may not be available in every zsh installation\&.  The most significant of
+these are documented here\&.  For documentation on other contributed items
+such as shell functions, look for comments in the function source files\&.
+.PP
+.PP
+.SH "UTILITIES"
+.PP
+.SS "Accessing On\-Line Help"
+.PP
+The key sequence \fBESC h\fP is normally bound by ZLE to execute the
+\fBrun\-help\fP widget (see
+\fIzshzle\fP(1))\&.  This invokes the \fBrun\-help\fP command with the command word from the
+current input line as its argument\&.  By default, \fBrun\-help\fP is an alias
+for the \fBman\fP command, so this often fails when the command word is a
+shell builtin or a user\-defined function\&.  By redefining the \fBrun\-help\fP
+alias, one can improve the on\-line help provided by the shell\&.
+.PP
+The \fBhelpfiles\fP utility, found in the \fBUtil\fP directory of the
+distribution, is a Perl program that can be used to process the zsh manual
+to produce a separate help file for each shell builtin and for many other
+shell features as well\&.  The autoloadable \fBrun\-help\fP function, found in
+\fBFunctions/Misc\fP, searches for these helpfiles and performs several
+other tests to produce the most complete help possible for the command\&.
+.PP
+There may already be a directory of help files on your system; look in
+\fB/usr/share/zsh\fP or \fB/usr/local/share/zsh\fP and subdirectories below
+those, or ask your system administrator\&.
+.PP
+To create your own help files with \fBhelpfiles\fP, choose or create a
+directory where the individual command help files will reside\&.  For
+example, you might choose \fB~/zsh_help\fP\&.  If you unpacked the zsh
+distribution in your home directory, you would use the commands:
+.PP
+.RS
+.nf
+\fBmkdir ~/zsh_help
+cd ~/zsh_help
+man zshall | colcrt \- | \e 
+perl ~/zsh\-4\&.2\&.3/Util/helpfiles\fP
+.fi
+.RE
+.PP
+Next, to use the \fBrun\-help\fP function, you need to add lines something
+like the following to your \fB\&.zshrc\fP or equivalent startup file:
+.PP
+.RS
+.nf
+\fBunalias run\-help
+autoload run\-help
+HELPDIR=~/zsh_help\fP
+.fi
+.RE
+.PP
+The \fBHELPDIR\fP parameter tells \fBrun\-help\fP where to look for the help
+files\&.  If your system already has a help file directory installed, set
+\fBHELPDIR\fP to the path of that directory instead\&.
+.PP
+Note that in order for `\fBautoload run\-help\fP' to work, the \fBrun\-help\fP
+file must be in one of the directories named in your \fBfpath\fP array (see
+\fIzshparam\fP(1))\&.  This should already be the case if you have a standard zsh
+installation; if it is not, copy \fBFunctions/Misc/run\-help\fP to an
+appropriate directory\&.
+.PP
+.SS "Recompiling Functions"
+.PP
+If you frequently edit your zsh functions, or periodically update your zsh
+installation to track the latest developments, you may find that function
+digests compiled with the \fBzcompile\fP builtin are frequently out of date
+with respect to the function source files\&.  This is not usually a problem,
+because zsh always looks for the newest file when loading a function, but
+it may cause slower shell startup and function loading\&.  Also, if a digest
+file is explicitly used as an element of \fBfpath\fP, zsh won't check whether
+any of its source files has changed\&.
+.PP
+The \fBzrecompile\fP autoloadable function, found in \fBFunctions/Misc\fP, can
+be used to keep function digests up to date\&.
+.PP
+.PD 0
+.TP
+.PD 0
+\fBzrecompile\fP [ \fB\-qt\fP ] [ \fIname\fP \&.\&.\&. ]
+.TP
+.PD
+\fBzrecompile\fP [ \fB\-qt\fP ] \fB\-p\fP \fIargs\fP [ \fB\-\fP\fB\-\fP \fIargs\fP \&.\&.\&. ]
+This tries to find \fB*\&.zwc\fP files and automatically re\-compile them if at
+least one of the original files is newer than the compiled file\&.  This
+works only if the names stored in the compiled files are full paths or are
+relative to the directory that contains the \fB\&.zwc\fP file\&.
+.RS
+.PP
+In the first form, each \fIname\fP is the name of a compiled file or a
+directory containing \fB*\&.zwc\fP files that should be checked\&.  If no
+arguments are given, the directories and \fB*\&.zwc\fP files in \fBfpath\fP are
+used\&.
+.PP
+When \fB\-t\fP is given, no compilation is performed, but a return status of
+zero (true) is set if there are files that need to be re\-compiled and
+non\-zero (false) otherwise\&.  The \fB\-q\fP option quiets the chatty output
+that describes what \fBzrecompile\fP is doing\&.
+.PP
+Without the \fB\-t\fP option, the return status is zero if all files that
+needed re\-compilation could be compiled and non\-zero if compilation for at
+least one of the files failed\&.
+.PP
+If the \fB\-p\fP option is given, the \fIargs\fP are interpreted as one
+or more sets of arguments for \fBzcompile\fP, separated by `\fB\-\fP\fB\-\fP'\&.
+For example:
+.PP
+.RS
+.nf
+\fBzrecompile \-p \e 
+           \-R ~/\&.zshrc \-\- \e 
+           \-M ~/\&.zcompdump \-\- \e 
+           ~/zsh/comp\&.zwc ~/zsh/Completion/*/_*\fP
+.fi
+.RE
+.PP
+This compiles \fB~/\&.zshrc\fP into \fB~/\&.zshrc\&.zwc\fP if that doesn't exist or
+if it is older than \fB~/\&.zshrc\fP\&. The compiled file will be marked for
+reading instead of mapping\&. The same is done for \fB~/\&.zcompdump\fP and
+\fB~/\&.zcompdump\&.zwc\fP, but this compiled file is marked for mapping\&. The
+last line re\-creates the file \fB~/zsh/comp\&.zwc\fP if any of the files
+matching the given pattern is newer than it\&.
+.PP
+Without the \fB\-p\fP option, \fBzrecompile\fP does not create function digests
+that do not already exist, nor does it add new functions to the digest\&.
+.RE
+.RE
+.PP
+The following shell loop is an example of a method for creating function
+digests for all functions in your \fBfpath\fP, assuming that you have write
+permission to the directories:
+.PP
+.RS
+.nf
+\fBfor ((i=1; i <= $#fpath; ++i)); do
+  dir=$fpath[i]
+  zwc=${dir:t}\&.zwc
+  if [[ $dir == (\&.|\&.\&.) || $dir == (\&.|\&.\&.)/* ]]; then
+    continue
+  fi
+  files=($dir/*(N\-\&.))
+  if [[ \-w $dir:h && \-n $files ]]; then
+    files=(${${(M)files%/*/*}#/})
+    if ( cd $dir:h &&
+         zrecompile \-p \-U \-z $zwc $files ); then
+      fpath[i]=$fpath[i]\&.zwc
+    fi
+  fi
+done\fP
+.fi
+.RE
+.PP
+The \fB\-U\fP and \fB\-z\fP options are appropriate for functions in the default
+zsh installation \fBfpath\fP; you may need to use different options for your
+personal function directories\&.
+.PP
+Once the digests have been created and your \fBfpath\fP modified to refer to
+them, you can keep them up to date by running \fBzrecompile\fP with no
+arguments\&.
+.PP
+.SS "Keyboard Definition"
+.PP
+The large number of possible combinations of keyboards, workstations,
+terminals, emulators, and window systems makes it impossible for zsh to
+have built\-in key bindings for every situation\&.  The \fBzkbd\fP utility,
+found in Functions/Misc, can help you quickly create key bindings for your
+configuration\&.
+.PP
+Run \fBzkbd\fP either as an autoloaded function, or as a shell script:
+.PP
+.RS
+.nf
+\fBzsh \-f ~/zsh\-4\&.2\&.3/Functions/Misc/zkbd\fP
+.fi
+.RE
+.PP
+When you run \fBzkbd\fP, it first asks you to enter your terminal type; if
+the default it offers is correct, just press return\&.  It then asks you to
+press a number of different keys to determine characteristics of your
+keyboard and terminal; \fBzkbd\fP warns you if it finds anything out of the
+ordinary, such as a Delete key that sends neither \fB^H\fP nor \fB^?\fP\&.
+.PP
+The keystrokes read by \fBzkbd\fP are recorded as a definition for an
+associative array named \fBkey\fP, written to a file in the subdirectory
+\fB\&.zkbd\fP within either your \fBHOME\fP or \fBZDOTDIR\fP directory\&.  The name
+of the file is composed from the \fBTERM\fP, \fBVENDOR\fP and \fBOSTYPE\fP
+parameters, joined by hyphens\&.
+.PP
+You may read this file into your \fB\&.zshrc\fP or another startup file with
+the "source" or "\&." commands, then reference the \fBkey\fP parameter in
+bindkey commands, like this:
+.PP
+.RS
+.nf
+\fBsource ${ZDOTDIR:\-$HOME}/\&.zkbd/$TERM\-$VENDOR\-$OSTYPE
+[[ \-n ${key[Left]} ]] && bindkey "${key[Left]}" backward\-char
+[[ \-n ${key[Right]} ]] && bindkey "${key[Right]}" forward\-char
+# etc\&.\fP
+.fi
+.RE
+.PP
+Note that in order for `\fBautoload zkbd\fP' to work, the \fBzkdb\fP file must
+be in one of the directories named in your \fBfpath\fP array (see
+\fIzshparam\fP(1))\&.  This should already be the case if you have a standard zsh
+installation; if it is not, copy \fBFunctions/Misc/zkbd\fP to an
+appropriate directory\&.
+.PP
+.SS "Dumping Shell State"
+.PP
+Occasionally you may encounter what appears to be a bug in the shell,
+particularly if you are using a beta version of zsh or a development
+release\&.  Usually it is sufficient to send a description of the
+problem to one of the zsh mailing lists (see
+\fIzsh\fP(1)), but sometimes one of the zsh developers will need to recreate your
+environment in order to track the problem down\&.
+.PP
+The script named \fBreporter\fP, found in the \fBUtil\fP directory of the
+distribution, is provided for this purpose\&.  (It is also possible to
+\fBautoload reporter\fP, but \fBreporter\fP is not installed in \fBfpath\fP
+by default\&.)  This script outputs a detailed dump of the shell state,
+in the form of another script that can be read with `\fBzsh \-f\fP' to
+recreate that state\&.
+.PP
+To use \fBreporter\fP, read the script into your shell with the `\fB\&.\fP'
+command and redirect the output into a file:
+.PP
+.RS
+.nf
+\fB\&. ~/zsh\-4\&.2\&.3/Util/reporter > zsh\&.report\fP
+.fi
+.RE
+.PP
+You should check the \fBzsh\&.report\fP file for any sensitive information
+such as passwords and delete them by hand before sending the script to the
+developers\&.  Also, as the output can be voluminous, it's best to wait for
+the developers to ask for this information before sending it\&.
+.PP
+You can also use \fBreporter\fP to dump only a subset of the shell state\&.
+This is sometimes useful for creating startup files for the first time\&.
+Most of the output from reporter is far more detailed than usually is
+necessary for a startup file, but the \fBaliases\fP, \fBoptions\fP, and
+\fBzstyles\fP states may be useful because they include only changes from
+the defaults\&.  The \fBbindings\fP state may be useful if you have created
+any of your own keymaps, because \fBreporter\fP arranges to dump the keymap
+creation commands as well as the bindings for every keymap\&.
+.PP
+As is usual with automated tools, if you create a startup file with
+\fBreporter\fP, you should edit the results to remove unnecessary commands\&.
+Note that if you're using the new completion system, you should \fInot\fP
+dump the \fBfunctions\fP state to your startup files with \fBreporter\fP; use
+the \fBcompdump\fP function instead (see
+\fIzshcompsys\fP(1))\&.
+.PP
+.PD 0
+.TP
+.PD
+\fBreporter\fP [ \fIstate\fP \&.\&.\&. ]
+Print to standard output the indicated subset of the current shell state\&.
+The \fIstate\fP arguments may be one or more of:
+.RS
+.PP
+.PD 0
+.TP
+\fBall\fP
+Output everything listed below\&.
+.TP
+\fBaliases\fP
+Output alias definitions\&.
+.TP
+\fBbindings\fP
+Output ZLE key maps and bindings\&.
+.TP
+\fBcompletion\fP
+Output old\-style \fBcompctl\fP commands\&.
+New completion is covered by \fBfunctions\fP and \fBzstyles\fP\&.
+.TP
+\fBfunctions\fP
+Output autoloads and function definitions\&.
+.TP
+\fBlimits\fP
+Output \fBlimit\fP commands\&.
+.TP
+\fBoptions\fP
+Output \fBsetopt\fP commands\&.
+.TP
+\fBstyles\fP
+Same as \fBzstyles\fP\&.
+.TP
+\fBvariables\fP
+Output shell parameter assignments, plus \fBexport\fP
+commands for any environment variables\&.
+.TP
+\fBzstyles\fP
+Output \fBzstyle\fP commands\&.
+.PD
+.PP
+If the \fIstate\fP is omitted, \fBall\fP is assumed\&.
+.RE
+.PP
+With the exception of `\fBall\fP', every \fIstate\fP can be abbreviated by
+any prefix, even a single letter; thus \fBa\fP is the same as \fBaliases\fP,
+\fBz\fP is the same as \fBzstyles\fP, etc\&.
+.RE
+.PP
+.SH "PROMPT THEMES"
+.PP
+.SS "Installation"
+.PP
+You should make sure all the functions from the \fBFunctions/Prompts\fP
+directory of the source distribution are available; they all begin with
+the string `\fBprompt_\fP' except for the special function`\fBpromptinit\fP'\&.
+You also need the `\fBcolors\fP' function from \fBFunctions/Misc\fP\&.  All of
+these functions may already have been installed on your system; if not,
+you will need to find them and copy them\&.  The directory should appear as
+one of the elements of the \fBfpath\fP array (this should already be the
+case if they were installed), and at least the function \fBpromptinit\fP
+should be autoloaded; it will autoload the rest\&.  Finally, to initialize
+the use of the system you need to call the \fBpromptinit\fP function\&.  The
+following code in your \fB\&.zshrc\fP will arrange for this; assume the
+functions are stored in the directory \fB~/myfns\fP:
+.PP
+.RS
+.nf
+\fBfpath=(~/myfns $fpath)
+autoload \-U promptinit
+promptinit\fP
+.fi
+.RE
+.PP
+.SS "Theme Selection"
+.PP
+Use the \fBprompt\fP command to select your preferred theme\&.  This command
+may be added to your \fB\&.zshrc\fP following the call to \fBpromptinit\fP in
+order to start zsh with a theme already selected\&.
+.PP
+.PD 0
+.TP
+.PD 0
+\fBprompt\fP [ \fB\-c\fP | \fB\-l\fP ]
+.TP
+.PD 0
+\fBprompt\fP [ \fB\-p\fP | \fB\-h\fP ] [ \fItheme\fP \&.\&.\&. ]
+.TP
+.PD
+\fBprompt\fP [ \fB\-s\fP ] \fItheme\fP [ \fIarg\fP \&.\&.\&. ]
+Set or examine the prompt theme\&.  With no options and a \fItheme\fP
+argument, the theme with that name is set as the current theme\&.  The
+available themes are determined at run time; use the \fB\-l\fP option to see
+a list\&.  The special \fItheme\fP `\fBrandom\fP' selects at random one of the
+available themes and sets your prompt to that\&.
+.RS
+.PP
+In some cases the \fItheme\fP may be modified by one or more arguments,
+which should be given after the theme name\&.  See the help for each theme
+for descriptions of these arguments\&.
+.PP
+Options are:
+.PP
+.PD 0
+.TP
+\fB\-c\fP
+Show the currently selected theme and its parameters, if any\&.
+.TP
+\fB\-l\fP
+List all available prompt themes\&.
+.TP
+\fB\-p\fP
+Preview the theme named by \fItheme\fP, or all themes if no
+\fItheme\fP is given\&.
+.TP
+\fB\-h\fP
+Show help for the theme named by \fItheme\fP, or for the
+\fBprompt\fP function if no \fItheme\fP is given\&.
+.TP
+\fB\-s\fP
+Set \fItheme\fP as the current theme and save state\&.
+.PD
+.RE
+.TP
+\fBprompt_\fP\fItheme\fP\fB_setup\fP
+Each available \fItheme\fP has a setup function which is called by the
+\fBprompt\fP function to install that theme\&.  This function may define
+other functions as necessary to maintain the prompt, including functions
+used to preview the prompt or provide help for its use\&.  You should not
+normally call a theme's setup function directly\&.
+.PP
+.SH "ZLE FUNCTIONS"
+.PP
+.SS "Widgets"
+.PP
+These functions all implement user\-defined ZLE widgets (see
+\fIzshzle\fP(1)) which can be bound to keystrokes in interactive shells\&.  To use them,
+your \fB\&.zshrc\fP should contain lines of the form
+.PP
+.RS
+.nf
+\fBautoload \fIfunction\fP
+zle \-N \fIfunction\fP\fP
+.fi
+.RE
+.PP
+followed by an appropriate \fBbindkey\fP command to associate the function
+with a key sequence\&.  Suggested bindings are described below\&.
+.PP
+.PD 0
+.TP
+.PD
+bash\-style word functions
+If you are looking for functions to implement moving over and editing
+words in the manner of bash, where only alphanumeric characters are
+considered word characters, you can use the functions described in
+the next section\&.  The following is sufficient:
+.RS
+.PP
+.RS
+.nf
+\fBautoload \-U select\-word\-style
+select\-word\-style bash\fP
+.fi
+.RE
+.PP
+.RE
+.TP
+.PD 0
+\fBforward\-word\-match\fP, \fBbackward\-word\-match\fP
+.TP
+.PD 0
+\fBkill\-word\-match\fP, \fBbackward\-kill\-word\-match\fP
+.TP
+.PD 0
+\fBtranspose\-words\-match\fP, \fBcapitalize\-word\-match\fP
+.TP
+.PD 0
+\fBup\-case\-word\-match\fP, \fBdown\-case\-word\-match\fP
+.TP
+.PD
+\fBselect\-word\-style\fP, \fBmatch\-words\-by\-style\fP
+The eight `\fB\-match\fP' functions are drop\-in replacements for the
+builtin widgets without the suffix\&.  By default they behave in a similar
+way\&.  However, by the use of styles and the function \fBselect\-word\-style\fP,
+the way words are matched can be altered\&.
+.RS
+.PP
+The simplest way of configuring the functions is to use
+\fBselect\-word\-style\fP, which can either be called as a normal function with
+the appropriate argument, or invoked as a user\-defined widget that will
+prompt for the first character of the word style to be used\&.  The first
+time it is invoked, the eight \fB\-match\fP functions will automatically
+replace the builtin versions, so they do not need to be loaded explicitly\&.
+.PP
+The word styles available are as follows\&.  Only the first character
+is examined\&.
+.PP
+.PD 0
+.TP
+.PD
+\fBbash\fP
+Word characters are alphanumeric characters only\&.
+.TP
+\fBnormal\fP
+As in normal shell operation:  word characters are alphanumeric characters
+plus any characters present in the string given by the parameter
+\fB$WORDCHARS\fP\&.
+.TP
+\fBshell\fP
+Words are complete shell command arguments, possibly including complete
+quoted strings, or any tokens special to the shell\&.
+.TP
+\fBwhitespace\fP
+Words are any set of characters delimited by whitespace\&.
+.TP
+\fBdefault\fP
+Restore the default settings; this is usually the same as `\fBnormal\fP'\&.
+.PP
+More control can be obtained using the \fBzstyle\fP command, as described in
+\fIzshmodules\fP(1)\&.  Each style is looked up in the
+context \fB:zle:\fP\fIwidget\fP where \fIwidget\fP is the name of the
+user\-defined widget, not the name of the function implementing it, so in
+the case of the definitions supplied by \fBselect\-word\-style\fP the
+appropriate contexts are \fB:zle:forward\-word\fP, and so on\&.  The function
+\fBselect\-word\-style\fP itself always defines styles for the context
+`\fB:zle:*\fP' which can be overridden by more specific (longer) patterns as
+well as explicit contexts\&.
+.PP
+The style \fBword\-style\fP specifies the rules to use\&.  This may have the
+following values\&.
+.PP
+.PD 0
+.TP
+.PD
+\fBnormal\fP
+Use the standard shell rules, i\&.e\&. alphanumerics and \fB$WORDCHARS\fP, unless
+overridden by the styles \fBword\-chars\fP or \fBword\-class\fP\&.
+.TP
+\fBspecified\fP
+Similar to \fBnormal\fP, but \fIonly\fP the specified characters, and not also
+alphanumerics, are considered word characters\&.
+.TP
+\fBunspecified\fP
+The negation of specified\&.  The given characters are those which will
+\fInot\fP be considered part of a word\&.
+.TP
+\fBshell\fP
+Words are obtained by using the syntactic rules for generating shell
+command arguments\&.  In addition, special tokens which are never command
+arguments such as `\fB()\fP' are also treated as words\&.
+.TP
+\fBwhitespace\fP
+Words are whitespace\-delimited strings of characters\&.
+.PP
+The first three of those styles usually use \fB$WORDCHARS\fP, but the value
+in the parameter can be overridden by the style \fBword\-chars\fP, which works
+in exactly the same way as \fB$WORDCHARS\fP\&.  In addition, the style
+\fBword\-class\fP uses character class syntax to group characters and takes
+precedence over \fBword\-chars\fP if both are set\&.  The \fBword\-class\fP style
+does not include the surrounding brackets of the character class; for
+example, `\fB\-:[:alnum:]\fP' is a valid \fBword\-class\fP to include all
+alphanumerics plus the characters `\fB\-\fP' and `\fB:\fP'\&.  Be careful
+including `\fB]\fP', `\fB^\fP' and `\fB\-\fP' as these are special inside
+character classes\&.
+.PP
+The final style is \fBskip\-chars\fP\&.  This is mostly useful for
+\fBtranspose\-words\fP and similar functions\&.  If set, it gives a count of
+characters starting at the cursor position which will not be considered
+part of the word and are treated as space, regardless of what they actually
+are\&.  For example, if
+.PP
+.RS
+.nf
+\fBzstyle ':zle:transpose\-words' skip\-chars 1\fP
+.fi
+.RE
+.PP
+has been set, and \fBtranspose\-words\-match\fP is called with the cursor on
+the \fIX\fP of \fBfoo\fP\fIX\fP\fBbar\fP, where \fIX\fP can be any character, then
+the resulting expression is \fBbar\fP\fIX\fP\fBfoo\fP\&.
+.PP
+Here are some examples of use of the styles, actually taken from the
+simplified interface in \fBselect\-word\-style\fP:
+.PP
+.RS
+.nf
+\fBzstyle ':zle:*' word\-style standard
+zstyle ':zle:*' word\-chars ''\fP
+.fi
+.RE
+.PP
+Implements bash\-style word handling for all widgets, i\&.e\&. only
+alphanumerics are word characters; equivalent to setting
+the parameter \fBWORDCHARS\fP empty for the given context\&.
+.PP
+.RS
+.nf
+\fBstyle ':zle:*kill*' word\-style space\fP
+.fi
+.RE
+.PP
+Uses space\-delimited words for widgets with the word `kill' in the name\&.
+Neither of the styles \fBword\-chars\fP nor \fBword\-class\fP is used in this case\&.
+.PP
+The word matching and all the handling of \fBzstyle\fP settings is actually
+implemented by the function \fBmatch\-words\-by\-style\fP\&.  This can be used to
+create new user\-defined widgets\&.  The calling function should set the local
+parameter \fBcurcontext\fP to \fB:zle:\fP\fIwidget\fP, create the local
+parameter \fBmatched_words\fP and call \fBmatch\-words\-by\-style\fP with no
+arguments\&.  On return, \fBmatched_words\fP will be set to an array with the
+elements: (1) the start of the line (2) the word before the cursor (3) any
+non\-word characters between that word and the cursor (4) any non\-word
+character at the cursor position plus any remaining non\-word characters
+before the next word, including all characters specified by the
+\fBskip\-chars\fP style, (5) the word at or following the cursor (6) any
+non\-word characters following that word (7) the remainder of the line\&.  Any
+of the elements may be an empty string; the calling function should test
+for this to decide whether it can perform its function\&.
+.PP
+It is possible to pass options with arguments to \fBmatch\-words\-by\-style\fP
+to override the use of styles\&.  The options are:
+.PD 0
+.TP
+\fB\-w\fP
+\fIword\-style\fP
+.TP
+\fB\-s\fP
+\fIskip\-chars\fP
+.TP
+\fB\-c\fP
+\fIword\-class\fP
+.TP
+\fB\-C\fP
+\fIword\-chars\fP
+.PD
+.PP
+For example, \fBmatch\-words\-by\-style \-w shell \-c 0\fP may be used to
+extract the command argument around the cursor\&.
+.RE
+.TP
+\fBdelete\-whole\-word\-match\fP
+This is another function which works like the \fB\-match\fP functions
+described immediately above, i\&.e\&. using styles to decide the word
+boundaries\&.  However, it is not a replacement for any existing function\&.
+.RS
+.PP
+The basic behaviour is to delete the word around the cursor\&.  There is no
+numeric prefix handling; only the single word around the cursor is
+considered\&.  If the widget contains the string \fBkill\fP, the removed text
+will be placed in the cutbuffer for future yanking\&.  This can be obtained
+by defining \fBkill\-whole\-word\-match\fP as follows:
+.PP
+.RS
+.nf
+\fBzle \-N kill\-whole\-word\-match delete\-whole\-word\-match\fP
+.fi
+.RE
+.PP
+and then binding the widget \fBkill\-whole\-word\-match\fP\&.
+.RE
+.TP
+\fBcopy\-earlier\-word\fP
+This widget works like a combination of \fBinsert\-last\-word\fP and
+\fBcopy\-prev\-shell\-word\fP\&.  Repeated invocations of the widget retrieve
+earlier words on the relevant history line\&.  With a numeric argument
+\fIN\fP, insert the \fIN\fPth word from the history line; \fIN\fP may be
+negative to count from the end of the line\&.
+.RS
+.PP
+If \fBinsert\-last\-word\fP has been used to retrieve the last word on a
+previous history line, repeated invocations will replace that word with
+earlier words from the same line\&.
+.PP
+Otherwise, the widget applies to words on the line currently being edited\&.
+The \fBwidget\fP style can be set to the name of another widget that should
+be called to retrieve words\&.  This widget must accept the same three
+arguments as \fBinsert\-last\-word\fP\&.
+.RE
+.TP
+\fBcycle\-completion\-positions\fP
+After inserting an unambiguous string into the command line, the new
+function based completion system may know about multiple places in
+this string where characters are missing or differ from at least one
+of the possible matches\&.  It will then place the cursor on the
+position it considers to be the most interesting one, i\&.e\&. the one
+where one can disambiguate between as many matches as possible with as 
+little typing as possible\&.
+.RS
+.PP
+This widget allows the cursor to be easily moved to the other interesting
+spots\&.  It can be invoked repeatedly to cycle between all positions
+reported by the completion system\&.
+.RE
+.TP
+\fBedit\-command\-line\fP
+Edit the command line using your visual editor, as in \fBksh\fP\&.
+.RS
+.PP
+.RS
+.nf
+\fBbindkey \-M vicmd v edit\-command\-line\fP
+.fi
+.RE
+.RE
+.TP
+\fBhistory\-search\-end\fP
+This function implements the widgets
+\fBhistory\-beginning\-search\-backward\-end\fP and
+\fBhistory\-beginning\-search\-forward\-end\fP\&.  These commands work by first
+calling the corresponding builtin widget (see
+`History Control' in \fIzshzle\fP(1)) and then moving the cursor to the end of the line\&.  The original cursor
+position is remembered and restored before calling the builtin widget a
+second time, so that the same search is repeated to look farther through
+the history\&.
+.RS
+.PP
+Although you \fBautoload\fP only one function, the commands to use it are
+slightly different because it implements two widgets\&.
+.PP
+.RS
+.nf
+\fBzle \-N history\-beginning\-search\-backward\-end \e 
+       history\-search\-end
+zle \-N history\-beginning\-search\-forward\-end \e 
+       history\-search\-end
+bindkey '\ee^P' history\-beginning\-search\-backward\-end
+bindkey '\ee^N' history\-beginning\-search\-forward\-end\fP
+.fi
+.RE
+.RE
+.TP
+\fBhistory\-pattern\-search\fP
+The function \fBhistory\-pattern\-search\fP implements widgets which prompt
+for a pattern with which to search the history backwards or forwards\&.  The
+pattern is in the usual zsh format, however the first character may be
+\fB^\fP to anchor the search to the start of the line, and the last character
+may be \fB$\fP to anchor the search to the end of the line\&.  If the
+search was not anchored to the end of the line the cursor is positioned
+just after the pattern found\&.
+.RS
+.PP
+The commands to create bindable widgets are similar to those in the
+example immediately above:
+.PP
+.RS
+.nf
+\fBautoload \-U history\-pattern\-search
+zle \-N history\-pattern\-search\-backward history\-pattern\-search
+zle \-N history\-pattern\-search\-forward history\-pattern\-search\fP
+.fi
+.RE
+.RE
+.TP
+\fBup\-line\-or\-beginning\-search\fP, \fBdown\-line\-or\-beginning\-search\fP
+These widgets are similar to the builtin functions \fBup\-line\-or\-search\fP
+and \fBdown\-line\-or\-search\fP:  if in a multiline buffer they move up or
+down within the buffer, otherwise they search for a history line matching
+the start of the current line\&.  In this case, however, they search for
+a line which matches the current line up to the current cursor position, in
+the manner of \fBhistory\-beginning\-search\-backward\fP and \fB\-forward\fP, rather
+than the first word on the line\&.
+.TP
+\fBincarg\fP
+Typing the keystrokes for this widget with the cursor placed on or to the
+left of an integer causes that integer to be incremented by one\&.  With a
+numeric prefix argument, the number is incremented by the amount of the
+argument (decremented if the prefix argument is negative)\&.  The shell
+parameter \fBincarg\fP may be set to change the default increment something
+other than one\&.
+.RS
+.PP
+.RS
+.nf
+\fBbindkey '^X+' incarg\fP
+.fi
+.RE
+.RE
+.TP
+\fBincremental\-complete\-word\fP
+This allows incremental completion of a word\&.  After starting this
+command, a list of completion choices can be shown after every character
+you type, which you can delete with \fB^H\fP or \fBDEL\fP\&.  Pressing return
+accepts the completion so far and returns you to normal editing (that is,
+the command line is \fInot\fP immediately executed)\&.  You can hit \fBTAB\fP to
+do normal completion, \fB^G\fP to abort back to the state when you started,
+and \fB^D\fP to list the matches\&.
+.RS
+.PP
+This works only with the new function based completion system\&.
+.PP
+.RS
+.nf
+\fBbindkey '^Xi' incremental\-complete\-word\fP
+.fi
+.RE
+.RE
+.TP
+\fBinsert\-files\fP
+This function allows you type a file pattern, and see the results of the
+expansion at each step\&.  When you hit return, all expansions are inserted
+into the command line\&.
+.RS
+.PP
+.RS
+.nf
+\fBbindkey '^Xf' insert\-files\fP
+.fi
+.RE
+.RE
+.TP
+.PD 0
+\fBnarrow\-to\-region [ \-p\fP \fIpre\fP \fB] [ \-P\fP \fIpost\fP \fB]\fP
+.TP
+.PD 0
+    \fB[ \-S\fP \fIstatepm\fP \fB| \-R\fP \fIstatepm\fP \fB] [ \-n ] [\fP \fIstart\fP \fIend\fP \fB]\fP)
+.TP
+.PD
+\fBnarrow\-to\-region\-invisible\fP
+Narrow the editable portion of the buffer to the region between the cursor
+and the mark, which may be in either order\&.  The region may not be empty\&.
+.RS
+.PP
+\fBnarrow\-to\-region\fP may be used as a widget or called as a function from a
+user\-defined widget; by default, the text outside the editable area remains
+visible\&.  A \fBrecursive\-edit\fP is performed and the original widening
+status is then restored\&.  Various options and arguments are available when
+it is called as a function\&.
+.PP
+The options \fB\-p\fP \fIpretext\fP and \fB\-P\fP \fIposttext\fP may be
+used to replace the text before and after the display for the duration of
+the function; either or both may be an empty string\&.
+.PP
+If the option \fB\-n\fP is also given, \fIpretext\fP or \fIposttext\fP will only
+be inserted if there is text before or after the region respectively which
+will be made invisible\&.
+.PP
+Two numeric arguments may be given which will be used instead of the cursor
+and mark positions\&.
+.PP
+The option \fB\-S\fP \fIstatepm\fP is used to narrow according to the other
+options while saving the original state in the parameter with name
+\fIstatepm\fP, while the option \fB\-R\fP \fIstatepm\fP is used to restore the
+state from the parameter; note in both cases the \fIname\fP of the parameter
+is required\&.  In the second case, other options and arguments are
+irrelevant\&.  When this method is used, no \fBrecursive\-edit\fP is performed;
+the calling widget should call this function with the option \fB\-S\fP,
+perform its own editing on the command line or pass control to the user
+via `\fBzle recursive\-edit\fP', then call this function with the option
+\fB\-R\fP\&.  The argument \fIstatepm\fP must be a suitable name for an ordinary
+parameter, except that parameters beginning with the prefix \fB_ntr_\fP are
+reserved for use within \fBnarrow\-to\-region\fP\&.  Typically the parameter will
+be local to the calling function\&.
+.PP
+\fBnarrow\-to\-region\-invisible\fP is a simple widget which calls
+\fBnarrow\-to\-region\fP with arguments which replace any text outside the
+region with `\fB\&.\&.\&.\fP'\&.
+.PP
+The display is restored (and the widget returns) upon any zle command
+which would usually cause the line to be accepted or aborted\&.  Hence an
+additional such command is required to accept or abort the current line\&.
+.PP
+The return status of both widgets is zero if the line was accepted, else
+non\-zero\&.
+.PP
+Here is a trivial example of a widget using this feature\&.
+.RS
+.nf
+\fBlocal state
+narrow\-to\-region \-p $'Editing restricted region\en' \e 
+  \-P '' \-S state
+zle recursive\-edit
+narrow\-to\-region \-R state\fP
+.fi
+.RE
+.RE
+.TP
+\fBpredict\-on\fP
+This set of functions implements predictive typing using history search\&.
+After \fBpredict\-on\fP, typing characters causes the editor to look backward
+in the history for the first line beginning with what you have typed so
+far\&.  After \fBpredict\-off\fP, editing returns to normal for the line found\&.
+In fact, you often don't even need to use \fBpredict\-off\fP, because if the
+line doesn't match something in the history, adding a key performs
+standard completion, and then inserts itself if no completions were found\&.
+However, editing in the middle of a line is liable to confuse prediction;
+see the \fBtoggle\fP style below\&.
+.RS
+.PP
+With the function based completion system (which is needed for this), you
+should be able to type \fBTAB\fP at almost any point to advance the cursor
+to the next ``interesting'' character position (usually the end of the
+current word, but sometimes somewhere in the middle of the word)\&.  And of
+course as soon as the entire line is what you want, you can accept with
+return, without needing to move the cursor to the end first\&.
+.PP
+The first time \fBpredict\-on\fP is used, it creates several additional
+widget functions:
+.PP
+.PD 0
+.TP
+\fBdelete\-backward\-and\-predict\fP
+Replaces the \fBbackward\-delete\-char\fP
+widget\&.  You do not need to bind this yourself\&.
+.TP
+\fBinsert\-and\-predict\fP
+Implements predictive typing by replacing the
+\fBself\-insert\fP widget\&.  You do not need to bind this yourself\&.
+.TP
+\fBpredict\-off\fP
+Turns off predictive typing\&.
+.PD
+.PP
+Although you \fBautoload\fP only the \fBpredict\-on\fP function, it is
+necessary to create a keybinding for \fBpredict\-off\fP as well\&.
+.PP
+.RS
+.nf
+\fBzle \-N predict\-on
+zle \-N predict\-off
+bindkey '^X^Z' predict\-on
+bindkey '^Z' predict\-off\fP
+.fi
+.RE
+.RE
+.TP
+\fBread\-from\-minibuffer\fP
+This is most useful when called as a function from inside a widget, but will
+work correctly as a widget in its own right\&.  It prompts for a value
+below the current command line; a value may be input using all of the
+standard zle operations (and not merely the restricted set available
+when executing, for example, \fBexecute\-named\-cmd\fP)\&.  The value is then
+returned to the calling function in the parameter \fB$REPLY\fP and the
+editing buffer restored to its previous state\&.  If the read was aborted
+by a keyboard break (typically \fB^G\fP), the function returns status 1
+and \fB$REPLY\fP is not set\&.
+.RS
+.PP
+If one argument is supplied to the function it is taken as a prompt,
+otherwise `\fB? \fP' is used\&.  If two arguments are supplied, they are the
+prompt and the initial value of \fB$LBUFFER\fP, and if a third argument is
+given it is the initial value of \fB$RBUFFER\fP\&.  This provides a default
+value and starting cursor placement\&.  Upon return the entire buffer is the
+value of \fB$REPLY\fP\&.
+.PP
+One option is available: `\fB\-k\fP \fInum\fP' specifies that \fInum\fP
+characters are to be read instead of a whole line\&.  The line editor is not
+invoked recursively in this case, so depending on the terminal settings
+the input may not be visible, and only the input keys are placed in
+\fB$REPLY\fP, not the entire buffer\&.  Note that unlike the \fBread\fP builtin
+\fInum\fP must be given; there is no default\&.
+.PP
+The name is a slight misnomer, as in fact the shell's own minibuffer is
+not used\&.  Hence it is still possible to call \fBexecuted\-named\-cmd\fP and
+similar functions while reading a value\&.
+.RE
+.TP
+\fBreplace\-string\fP, \fBreplace\-pattern\fP
+The function \fBreplace\-string\fP implements two widgets\&.
+If defined under the same name as the function, it prompts for two
+strings; the first (source) string will be replaced by the second
+everywhere it occurs in the line editing buffer\&.
+.RS
+.PP
+If the widget name contains the word `\fBpattern\fP', for example by
+defining the widget using the command `\fBzle \-N replace\-pattern
+replace\-string\fP', then the replacement is done by pattern matching\&.  All
+zsh extended globbing patterns can be used in the source string; note
+that unlike filename generation the pattern does not need to match an
+entire word, nor do glob qualifiers have any effect\&.  In addition, the
+replacement string can contain parameter or command substitutions\&.
+Furthermore, a `\fB&\fP' in the replacement string will be replaced with
+the matched source string, and a backquoted digit `\fB\e\fP\fIN\fP' will be
+replaced by the \fIN\fPth parenthesised expression matched\&.  The form
+`\fB\e{\fP\fIN\fP\fB}\fP' may be used to protect the digit from following
+digits\&.
+.PP
+For example, starting from the line:
+.PP
+.RS
+.nf
+\fBprint This line contains fan and fond\fP
+.fi
+.RE
+.PP
+and invoking \fBreplace\-pattern\fP with the source string `\fBf(?)n\fP' and
+the replacment string `\fBc\e1r\fP' produces the not very useful line:
+.PP
+.RS
+.nf
+\fBprint This line contains car and cord\fP
+.fi
+.RE
+.PP
+The range of the replacement string can be limited by using the
+\fBnarrow\-to\-region\-invisible\fP widget\&.  One limitation of the current
+version is that \fBundo\fP will cycle through changes to the replacement
+and source strings before undoing the replacement itself\&.
+.RE
+.TP
+\fBsmart\-insert\-last\-word\fP
+This function may replace the \fBinsert\-last\-word\fP widget, like so:
+.RS
+.PP
+.RS
+.nf
+\fBzle \-N insert\-last\-word smart\-insert\-last\-word\fP
+.fi
+.RE
+.PP
+With a numeric prefix, or when passed command line arguments in a call
+from another widget, it behaves like \fBinsert\-last\-word\fP, except that
+words in comments are ignored when \fBINTERACTIVE_COMMENTS\fP is set\&.
+.PP
+Otherwise, the rightmost ``interesting'' word from the previous command is
+found and inserted\&.  The default definition of ``interesting'' is that the
+word contains at least one alphabetic character, slash, or backslash\&.
+This definition may be overridden by use of the \fBmatch\fP style\&.  The
+context used to look up the style is the widget name, so usually the
+context is \fB:insert\-last\-word\fP\&.  However, you can bind this function to
+different widgets to use different patterns:
+.PP
+.RS
+.nf
+\fBzle \-N insert\-last\-assignment smart\-insert\-last\-word
+zstyle :insert\-last\-assignment match '[[:alpha:]][][[:alnum:]]#=*'
+bindkey '\ee=' insert\-last\-assignment\fP
+.fi
+.RE
+.RE
+.RE
+.PP
+.SS "Styles"
+.PP
+The behavior of several of the above widgets can be controlled by the use
+of the \fBzstyle\fP mechanism\&.  In particular, widgets that interact with
+the completion system pass along their context to any completions that
+they invoke\&.
+.PP
+.PD 0
+.TP
+.PD
+\fBbreak\-keys\fP
+This style is used by the \fBincremental\-complete\-word\fP widget\&. Its value
+should be a pattern, and all keys matching this pattern will cause the
+widget to stop incremental completion without the key having any further
+effect\&. Like all styles used directly by
+\fBincremental\-complete\-word\fP, this style is looked up using the
+context `\fB:incremental\fP'\&.
+.TP
+\fBcompleter\fP
+The \fBincremental\-complete\-word\fP and \fBinsert\-and\-predict\fP widgets set
+up their top\-level context name before calling completion\&.  This allows
+one to define different sets of completer functions for normal completion
+and for these widgets\&.  For example, to use completion, approximation and
+correction for normal completion, completion and correction for
+incremental completion and only completion for prediction one could use:
+.RS
+.PP
+.RS
+.nf
+\fBzstyle ':completion:*' completer \e 
+        _complete _correct _approximate
+zstyle ':completion:incremental:*' completer \e 
+        _complete _correct
+zstyle ':completion:predict:*' completer \e 
+        _complete\fP
+.fi
+.RE
+.PP
+It is a good idea to restrict the completers used in prediction, because
+they may be automatically invoked as you type\&.  The \fB_list\fP and
+\fB_menu\fP completers should never be used with prediction\&.  The
+\fB_approximate\fP, \fB_correct\fP, \fB_expand\fP, and \fB_match\fP completers may
+be used, but be aware that they may change characters anywhere in the word
+behind the cursor, so you need to watch carefully that the result is what
+you intended\&.
+.RE
+.TP
+\fBcursor\fP
+The \fBinsert\-and\-predict\fP widget uses this style, in the context
+`\fB:predict\fP', to decide where to place the cursor after completion has
+been tried\&.  Values are:
+.RS
+.PP
+.PD 0
+.TP
+.PD
+\fBcomplete\fP
+The cursor is left where it was when completion finished, but only if
+it is after a character equal to the one just inserted by the user\&.  If 
+it is after another character, this value is the same as `\fBkey\fP'\&.
+.TP
+\fBkey\fP
+The cursor is left
+after the \fIn\fPth occurrence of the character just inserted, where
+\fIn\fP is the number of times that character appeared in the word
+before completion was attempted\&.  In short, this has the effect of
+leaving the cursor after the character just typed even if the
+completion code found out that no other characters need to be inserted 
+at that position\&.
+.PP
+Any other value for this style unconditionally leaves the cursor at the
+position where the completion code left it\&.
+.RE
+.TP
+\fBlist\fP
+When using the \fBincremental\-complete\-word\fP widget, this style says
+if the matches should be listed on every key press (if they fit on the 
+screen)\&.  Use the context prefix `\fB:completion:incremental\fP'\&.
+.RS
+.PP
+The \fBinsert\-and\-predict\fP widget uses this style to decide if the
+completion should be shown even if there is only one possible completion\&.
+This is done if the value of this style is the string \fBalways\fP\&.  In this
+case the context is `\fB:predict\fP' (\fInot\fP `\fB:completion:predict\fP')\&.
+.RE
+.TP
+\fBmatch\fP
+This style is used by \fBsmart\-insert\-last\-word\fP to provide a pattern
+(using full \fBEXTENDED_GLOB\fP syntax) that matches an interesting word\&.
+The context is the name of the widget to which \fBsmart\-insert\-last\-word\fP
+is bound (see above)\&.  The default behavior of \fBsmart\-insert\-last\-word\fP
+is equivalent to:
+.RS
+.PP
+.RS
+.nf
+\fBzstyle :insert\-last\-word match '*[[:alpha:]/\e\e]*'\fP
+.fi
+.RE
+.PP
+However, you might want to include words that contain spaces:
+.PP
+.RS
+.nf
+\fBzstyle :insert\-last\-word match '*[[:alpha:][:space:]/\e\e]*'\fP
+.fi
+.RE
+.PP
+Or include numbers as long as the word is at least two characters long:
+.PP
+.RS
+.nf
+\fBzstyle :insert\-last\-word match '*([[:digit:]]?|[[:alpha:]/\e\e])*'\fP
+.fi
+.RE
+.PP
+The above example causes redirections like "2>" to be included\&.
+.RE
+.TP
+\fBprompt\fP
+The \fBincremental\-complete\-word\fP widget shows the value of this
+style in the status line during incremental completion\&.  The string
+value may contain any of the following substrings in the manner of
+the \fBPS1\fP and other prompt parameters:
+.RS
+.PP
+.PD 0
+.TP
+.PD
+\fB%c\fP
+Replaced by the name of the completer function that generated the
+matches (without the leading underscore)\&.
+.TP
+\fB%l\fP
+When the \fBlist\fP style is set,
+replaced by `\fB\&.\&.\&.\fP' if the list of matches is too long to fit on the
+screen and with an empty string otherwise\&.  If the \fBlist\fP style is
+`false' or not set, `\fB%l\fP' is always removed\&.
+.TP
+\fB%n\fP
+Replaced by the number of matches generated\&.
+.TP
+\fB%s\fP
+Replaced by `\fB\-no match\-\fP', `\fB\-no prefix\-\fP', or an empty string
+if there is no completion matching the word on the line, if the
+matches have no common prefix different from the word on the line, or
+if there is such a common prefix, respectively\&.
+.TP
+\fB%u\fP
+Replaced by the unambiguous part of all matches, if there
+is any, and if it is different from the word on the line\&.
+.PP
+Like `\fBbreak\-keys\fP', this uses the `\fB:incremental\fP' context\&.
+.RE
+.TP
+\fBstop\-keys\fP
+This style is used by the \fBincremental\-complete\-word\fP widget\&.  Its value
+is treated similarly to the one for the \fBbreak\-keys\fP style (and uses 
+the same context: `\fB:incremental\fP')\&.  However, in
+this case all keys matching the pattern given as its value will stop
+incremental completion and will then execute their usual function\&.
+.TP
+\fBtoggle\fP
+This boolean style is used by \fBpredict\-on\fP and its related widgets in
+the context `\fB:predict\fP'\&.  If set to one of the standard `true' values,
+predictive typing is automatically toggled off in situations where it is
+unlikely to be useful, such as when editing a multi\-line buffer or after
+moving into the middle of a line and then deleting a character\&.  The
+default is to leave prediction turned on until an explicit call to
+\fBpredict\-off\fP\&.
+.TP
+\fBverbose\fP
+This boolean style is used by \fBpredict\-on\fP and its related widgets in
+the context `\fB:predict\fP'\&.  If set to one of the standard `true' values,
+these widgets display a message below the prompt when the predictive state
+is toggled\&.  This is most useful in combination with the \fBtoggle\fP style\&.
+The default does not display these messages\&.
+.TP
+\fBwidget\fP
+This style is similar to the \fBcommand\fP style: For widget functions that
+use \fBzle\fP to call other widgets, this style can sometimes be used to
+override the widget which is called\&.  The context for this style is the
+name of the calling widget (\fInot\fP the name of the calling function,
+because one function may be bound to multiple widget names)\&.
+.RS
+.PP
+.RS
+.nf
+\fBzstyle :copy\-earlier\-word widget smart\-insert\-last\-word\fP
+.fi
+.RE
+.PP
+Check the documentation for the calling widget or function to determine
+whether the \fBwidget\fP style is used\&.
+.RE
+.RE
+.PP
+.SH "MIME FUNCTIONS"
+.PP
+Three functions are available to provide handling of files recognised by
+extension, for example to dispatch a file \fBtext\&.ps\fP when executed as a
+command to an appropriate viewer\&.
+.PP
+.PD 0
+.TP
+.PD 0
+\fBzsh\-mime\-setup [\-flv]\fP
+.TP
+.PD
+\fBzsh\-mime\-handler\fP
+These two functions use the files \fB~/\&.mime\&.types\fP and \fB/etc/mime\&.types\fP,
+which associate types and extensions, as well as \fB~/\&.mailcap\fP and
+\fB/etc/mailcap\fP files, which associate types and the programs that
+handle them\&.  These are provided on many systems with the Multimedia
+Internet Mail Extensions\&.
+.RS
+.PP
+To enable the system, the function \fBzsh\-mime\-setup\fP should be
+autoloaded and run\&.  This allows files with extensions to be treated
+as executable; such files be completed by the function completion system\&.
+The function \fBzsh\-mime\-handler\fP should not need to be called by the
+user\&.
+.PP
+The system works by setting up suffix aliases with `\fBalias \-s\fP'\&.
+Suffix aliases already installed by the user will not be overwritten\&.
+.PP
+Repeated calls to \fBzsh\-mime\-setup\fP do not override the existing
+mapping between suffixes and executable files unless the option \fB\-f\fP
+is given\&.  Note, however, that this does not override existing suffix
+aliases assigned to handlers other than \fBzsh\-mime\-handler\fP\&.
+Calling \fBzsh\-mime\-setup\fP with the option \fB\-l\fP lists the existing
+mapping without altering it\&.  Calling \fBzsh\-mime\-setup\fP with the option
+\fB\-v\fP causes verbose output to be shown during the setup operation\&.
+.PP
+The system respects the \fBmailcap\fP flags \fBneedsterminal\fP and
+\fBcopiousoutput\fP, see \fImailcap\fP(4)\&.
+.PP
+The functions use the following styles, which are defined with the
+\fBzstyle\fP builtin command (see \fIzshmodules\fP(1))\&.  They should be defined
+before \fBzsh\-mime\-setup\fP is run\&.  The contexts used all
+start with \fB:mime:\fP, with additional components in some cases\&.
+It is recommended that a trailing \fB*\fP (suitably quoted) be appended
+to style patterns in case the system is extended in future\&.  Some
+examples are given below\&.
+.PD 0
+.TP
+.PD
+mime\-types
+A list of files in the format of \fB~/\&.mime\&.types\fP and
+\fB/etc/mime\&.types\fP to be read during setup, replacing the default list
+which consists of those two files\&.  The context is \fB:mime:\fP\&.
+A \fB+\fP in the list will be replaced by the default files\&.
+.TP
+mailcap
+A list of files in the format of \fB~/\&.mailcap\fP and
+\fB/etc/mailcap\fP to be read during setup, replacing the default list
+which consists of those two files\&.  The context is \fB:mime:\fP\&.
+A \fB+\fP in the list will be replaced by the default files\&.
+.TP
+handler
+Specifies a handler for a suffix; the suffix is given by the context as
+\fB:mime:\&.\fP\fIsuffix\fP\fB:\fP, and the format of the handler is exactly
+that in \fBmailcap\fP\&.  Note in particular the `\fB\&.\fP' and trailing colon
+to distinguish this use of the context\&.  This overrides any handler
+specified by the \fBmailcap\fP files\&.  If the handler requires a terminal,
+the \fBflags\fP style should be set to include the word \fBneedsterminal\fP,
+or if the output is to be displayed through a pager (but not if the
+handler is itself a pager), it should include \fBcopiousoutput\fP\&.
+.TP
+flags
+Defines flags to go with a handler; the context is as for the
+\fBhandler\fP style, and the format is as for the flags in \fBmailcap\fP\&.
+.TP
+pager
+If set, will be used instead of \fB$PAGER\fP or \fBmore\fP to handle
+suffixes where the \fBcopiousoutput\fP flag is set\&.  The context is
+as for \fBhandler\fP, i\&.e\&. \fB:mime:\&.\fP\fIsuffix\fP\fB:\fP for handling
+a file with the given \fIsuffix\fP\&.
+.PP
+Examples:
+.PP
+.RS
+.nf
+\fBzstyle ':mime:*' mailcap ~/\&.mailcap /usr/local/etc/mailcap
+zstyle ':mime:\&.txt' handler less %s
+zstyle ':mime:\&.txt' flags needsterminal\fP
+.fi
+.RE
+.PP
+When \fBzsh\-mime\-setup\fP is subsequently run, it will look for
+\fBmailcap\fP entries in the two files given\&.  Files of suffix \fB\&.txt\fP
+will be handled by running `\fBless\fP \fIfile\&.txt\fP'\&.  The flag
+\fBneedsterminal\fP is set to show that this program must run attached to a
+terminal\&.
+.PP
+As there are several steps to dispatching a command, the following
+should be checked if attempting to execute a file by extension
+\fB\&.\fP\fIext\fP does not have the expected effect\&.
+starteit()
+eit()(
+The command `\fBalias \-s\fP \fIext\fP' should show
+`\fBps=zsh\-mime\-handler\fP'\&.  If it shows something else, another suffix
+alias was already installed and was not overwritten\&.  If it shows
+nothing, no handler was installed:  this is most likely because no
+handler was found in the \fB\&.mime\&.types\fP and \fBmailcap\fP combination for
+\fB\&.ext\fP files\&.  In that case, appropriate handling should be added to
+\fB~/\&.mime\&.types\fP and \fBmailcap\fP\&.
+)
+eit()(
+If the extension is handled by \fBzsh\-mime\-handler\fP but the file is
+not opened correctly, either the handler defined for the type is
+incorrect, or the flags associated with it are in appropriate\&.  Running
+\fBzsh\-mime\-setup \-l\fP will show the handler and, if there are any, the
+flags\&.  A \fB%s\fP in the handler is replaced by the file (suitably quoted
+if necessary)\&.  Check that the handler program listed lists and can
+be run in the way shown\&.  Also check that the flags \fBneedsterminal\fP or
+\fBcopiousoutput\fP are set if the handler needs to be run under a
+terminal; the second flag is used if the output should be sent to a pager\&.
+An example of a suitable \fBmailcap\fP entry for such a program is:
+.PP
+.RS
+.nf
+\fBtext/html; /usr/bin/lynx '%s'; needsterminal\fP
+.fi
+.RE
+)
+endeit()
+.RE
+.TP
+\fBpick\-web\-browser\fP
+This function is separate from the two MIME functions described above
+and can be assigned directly to a suffix:
+.RS
+.PP
+.RS
+.nf
+\fBautoload \-U pick\-web\-browser
+alias \-s html=pick\-web\-browser\fP
+.fi
+.RE
+.PP
+It is provided as an intelligent front end to dispatch a web browser\&.
+It will check if an X Windows display is available, and if so
+if there is already a browser running which can accept a remote
+connection\&.  In that case, the file will be displayed in that browser;
+you should check explicitly if it has appeared in the running browser's
+window\&.  Otherwise, it will start a new browser according to a builtin
+set of preferences\&.
+.PP
+Alternatively, \fBpick\-web\-browser\fP can be run as a zsh script\&.
+.PP
+Two styles are available to customize the choice of browsers:
+\fBx\-browsers\fP when running under the X Windows System, and
+\fBtty\-browsers\fP otherwise\&.  These are arrays in decreasing order
+of preference consiting of the command name under which to start the
+browser\&.  They are looked up in the context \fB:mime:\fP (which may
+be extended in future, so appending `\fB*\fP' is recommended)\&.  For
+example,
+.PP
+.RS
+.nf
+\fBzstyle ':mime:*' x\-browsers opera konqueror netscape\fP
+.fi
+.RE
+.PP
+specifies that \fBpick\-web\-browser\fP should first look for a runing
+instance of Opera, Konqueror or Netscape, in that order, and if it
+fails to find any should attempt to start Opera\&.
+.RE
+.RE
+.PP
+.SH "OTHER FUNCTIONS"
+.PP
+There are a large number of helpful functions in the \fBFunctions/Misc\fP
+directory of the zsh distribution\&.  Most are very simple and do not
+require documentation here, but a few are worthy of special mention\&.
+.PP
+.SS "Descriptions"
+.PP
+.PD 0
+.TP
+.PD
+\fBcolors\fP
+This function initializes several associative arrays to map color names to
+(and from) the ANSI standard eight\-color terminal codes\&.  These are used
+by the prompt theme system (see above)\&.  You seldom should need to run
+\fBcolors\fP more than once\&.
+.RS
+.PP
+The eight base colors are: black, red, green, yellow, blue, magenta, cyan,
+and white\&.  Each of these has codes for foreground and background\&.  In
+addition there are eight intensity attributes: bold, faint, standout,
+underline, blink, reverse, and conceal\&.  Finally, there are six codes used
+to negate attributes: none (reset all attributes to the defaults), normal
+(neither bold nor faint), no\-standout, no\-underline, no\-blink, and
+no\-reverse\&.
+.PP
+Some terminals do not support all combinations of colors and intensities\&.
+.PP
+The associative arrays are:
+.PP
+.PD 0
+.TP
+.PD 0
+color
+.TP
+.PD
+colour
+Map all the color names to their integer codes, and integer codes to the
+color names\&.  The eight base names map to the foreground color codes, as
+do names prefixed with `\fBfg\-\fP', such as `\fBfg\-red\fP'\&.  Names prefixed
+with `\fBbg\-\fP', such as `\fBbg\-blue\fP', refer to the background codes\&.  The
+reverse mapping from code to color yields base name for foreground codes
+and the \fBbg\-\fP form for backgrounds\&.
+.RS
+.PP
+Although it is a misnomer to call them `colors', these arrays also map the
+other fourteen attributes from names to codes and codes to names\&.
+.RE
+.TP
+.PD 0
+fg
+.TP
+.PD 0
+fg_bold
+.TP
+.PD
+fg_no_bold
+Map the eight basic color names to ANSI terminal escape sequences that set
+the corresponding foreground text properties\&.  The \fBfg\fP sequences change
+the color without changing the eight intensity attributes\&.
+.TP
+.PD 0
+bg
+.TP
+.PD 0
+bg_bold
+.TP
+.PD
+bg_no_bold
+Map the eight basic color names to ANSI terminal escape sequences that set
+the corresponding background properties\&.  The \fBbg\fP sequences change the
+color without changing the eight intensity attributes\&.
+.PP
+In addition, the scalar parameters \fBreset_color\fP and \fBbold_color\fP are
+set to the ANSI terminal escapes that turn off all attributes and turn on
+bold intensity, respectively\&.
+.RE
+.TP
+\fBfned\fP \fIname\fP
+Same as \fBzed \-f\fP\&.  This function does not appear in the zsh
+distribution, but can be created by linking \fBzed\fP to the name \fBfned\fP
+in some directory in your \fBfpath\fP\&.
+.TP
+\fBis\-at\-least\fP \fIneeded\fP [ \fIpresent\fP ]
+Perform a greater\-than\-or\-equal\-to comparison of two strings having the
+format of a zsh version number; that is, a string of numbers and text with
+segments separated by dots or dashes\&.  If the \fIpresent\fP string is not
+provided, \fB$ZSH_VERSION\fP is used\&.  Segments are paired left\-to\-right in
+the two strings with leading non\-number parts ignored\&.  If one string has
+fewer segments than the other, the missing segments are considered zero\&.
+.RS
+.PP
+This is useful in startup files to set options and other state that are
+not available in all versions of zsh\&.
+.PP
+.RS
+.nf
+\fBis\-at\-least 3\&.1\&.6\-15 && setopt NO_GLOBAL_RCS
+is\-at\-least 3\&.1\&.0 && setopt HIST_REDUCE_BLANKS
+is\-at\-least 2\&.6\-17 || print "You can't use is\-at\-least here\&."\fP
+.fi
+.RE
+.RE
+.TP
+\fBnslookup\fP [ \fIarg\fP \&.\&.\&. ]
+This wrapper function for the \fBnslookup\fP command requires the
+\fBzsh/zpty\fP module (see
+\fIzshmodules\fP(1))\&.  It behaves exactly like the standard \fBnslookup\fP
+except that it provides customizable prompts (including a right\-side
+prompt) and completion of nslookup commands, host names, etc\&. (if you use
+the function\-based completion system)\&.  Completion styles may be set with
+the context prefix `\fB:completion:nslookup\fP'\&.
+.RS
+.PP
+See also the \fBpager\fP, \fBprompt\fP and \fBrprompt\fP styles below\&.
+.RE
+.TP
+\fBrun\-help\fP
+See `Accessing On\-Line Help'
+above\&.
+.TP
+\fBtetris\fP
+Zsh was once accused of not being as complete as Emacs,
+because it lacked a Tetris game\&.  This function was written to
+refute this vicious slander\&.
+.RS
+.PP
+This function must be used as a ZLE widget:
+.PP
+.RS
+.nf
+\fBautoload \-U tetris
+zle \-N tetris
+bindkey \fIkeys\fP tetris\fP
+.fi
+.RE
+.PP
+To start a game, execute the widget by typing the \fIkeys\fP\&.  Whatever command
+line you were editing disappears temporarily, and your keymap is also
+temporarily replaced by the Tetris control keys\&.  The previous editor state
+is restored when you quit the game (by pressing `\fBq\fP') or when you lose\&.
+.PP
+If you quit in the middle of a game, the next invocation of the \fBtetris\fP
+widget will continue where you left off\&.  If you lost, it will start a new
+game\&.
+.RE
+.TP
+\fBzargs\fP [ \fIoption\fP \&.\&.\&. \fB\-\fP\fB\-\fP ] [ \fIinput\fP \&.\&.\&. ] [ \fB\-\fP\fB\-\fP \fIcommand\fP [ \fIarg\fP \&.\&.\&. ] ]
+This function works like GNU xargs, except that instead of reading lines
+of arguments from the standard input, it takes them from the command line\&.
+This is useful because zsh, especially with recursive glob operators,
+often can construct a command line for a shell function that is longer
+than can be accepted by an external command\&.
+.RS
+.PP
+The \fIoption\fP list represents options of the \fBzargs\fP command itself,
+which are the same as those of \fBxargs\fP\&.  The \fIinput\fP list is the
+collection of strings (often file names) that become the arguments of the
+\fBcommand\fP, analogous to the standard input of \fBxargs\fP\&.  Finally, the
+\fIarg\fP list consists of those arguments (usually options) that are
+passed to the \fIcommand\fP each time it runs\&.  The \fIarg\fP list precedes
+the elements from the \fBinput\fP list in each run\&.  If no \fIcommand\fP is
+provided, then no \fIarg\fP list may be provided, and in that event the
+default command is `\fBprint\fP' with arguments `\fB\-r \-\fP\fB\-\fP'\&.
+.PP
+For example, to get a long \fBls\fP listing of all plain files in the
+current directory or its subdirectories:
+.PP
+.RS
+.nf
+\fBautoload \-U zargs
+zargs \-\- **/*(\&.) \-\- ls \-l\fP
+.fi
+.RE
+.PP
+Note that `\fB\-\fP\fB\-\fP' is used both to mark the end of the \fIoption\fP
+list and to mark the end of the \fIinput\fP list, so it must appear twice
+whenever the \fIinput\fP list may be empty\&.  If there is guaranteed to be
+at least one \fIinput\fP and the first \fIinput\fP does not begin with a
+`\fB\-\fP', then the first `\fB\-\fP\fB\-\fP' may be omitted\&.
+.PP
+In the event that the string `\fB\-\fP\fB\-\fP' is or may be an \fIinput\fP, the
+\fB\-e\fP option may be used to change the end\-of\-inputs marker\&.  Note that
+this does \fInot\fP change the end\-of\-options marker\&.  For example, to use
+`\fB\&.\&.\fP' as the marker:
+.PP
+.RS
+.nf
+\fBzargs \-e\&.\&. \-\- **/*(\&.) \&.\&. ls \-l\fP
+.fi
+.RE
+.PP
+This is a good choice in that example because no plain file can be named
+`\fB\&.\&.\fP', but the best end\-marker depends on the circumstances\&.
+.PP
+For details of the other \fBzargs\fP options, see \fIxargs\fP(1) or run
+\fBzargs\fP with the \fB\-\fP\fB\-help\fP option\&.
+.RE
+.TP
+\fBzcalc\fP [ \fIexpression\fP \&.\&.\&. ]
+A reasonably powerful calculator based on zsh's arithmetic evaluation
+facility\&.  The syntax is similar to that of formulae in most programming
+languages; see
+the section `Arithmetic Evaluation' in \fIzshmisc\fP(1) for details\&.  The mathematical
+library \fBzsh/mathfunc\fP will be loaded if it is available; see
+the section `The zsh/mathfunc Module' in \fIzshmodules\fP(1)\&.  The mathematical functions
+correspond to the raw system libraries, so trigonometric functions are
+evaluated using radians, and so on\&.
+.RS
+.PP
+Each line typed is evaluated as an expression\&.  The prompt shows a number,
+which corresponds to a positional parameter where the result of that
+calculation is stored\&.  For example, the result of the calculation on the
+line preceded by `\fB4> \fP' is available as \fB$4\fP\&.  Full command line
+editing, including the history of previous calculations, is available; the
+history is saved in the file \fB~/\&.zcalc_history\fP\&.  To exit, enter a blank
+line or type `\fBq\fP' on its own\&.
+.PP
+If arguments are given to \fBzcalc\fP on start up, they are used to prime the
+first few positional parameters\&.  A visual indication of this is given when
+the calculator starts\&.
+.PP
+The constants \fBPI\fP (3\&.14159\&.\&.\&.) and \fBE\fP (2\&.71828\&.\&.\&.) are provided\&.
+Parameter assignment is possible, but note that all parameters will be put
+into the global namespace\&.
+.PP
+An extra facility is provided for changing the default output base\&.  Use,
+for example, `\fB[#16]\fP' to display hexadecimal output preceded by an
+indication of the base, or `\fB[##16]\fP' just to display the raw number in
+the given base\&.  Bases themselves are always specified in decimal\&.
+`\fB[#]\fP' restores the normal output format\&.
+.PP
+The output base can be initialised by passing the option `\fB\-#\fP\fIbase\fP',
+for example `\fBzcalc \-#16\fP' (the `\fB#\fP' may have to be quoted, depending
+on the globbing options set)\&.
+.PP
+The prompt is configurable via the parameter \fBZCALCPROMPT\fP, which
+undergoes standard prompt expansion\&.  The index of the current entry is
+stored locally in the first element of the array \fBpsvar\fP, which can be
+referred to in \fBZCALCPROMPT\fP as `\fB%1v\fP'\&.  The default prompt is
+`\fB%1v> \fP'\&.
+.PP
+See the comments in the function for a few extra tips\&.
+.RE
+.TP
+.PD 0
+\fBzed\fP [ \fB\-f\fP ] \fIname\fP
+.TP
+.PD
+\fBzed \-b\fP
+This function uses the ZLE editor to edit a file or function\&.
+.RS
+.PP
+Only one \fIname\fP argument is allowed\&.
+If the \fB\-f\fP option is given, the name is taken to be that of
+a function; if the function is marked for autoloading, \fBzed\fP searches
+for it in the \fBfpath\fP and loads it\&.  Note that functions edited this way
+are installed into the current shell, but \fInot\fP written back to the
+autoload file\&.
+.PP
+Without \fB\-f\fP, \fIname\fP is the path name of the file to edit, which need
+not exist; it is created on write, if necessary\&.
+.PP
+While editing, the function sets the main keymap to \fBzed\fP and the
+vi command keymap to \fBzed\-vicmd\fP\&.  These will be copied from the existing
+\fBmain\fP and \fBvicmd\fP keymaps if they do not exist the first time \fBzed\fP
+is run\&.  They can be used to provide special key bindings used only in zed\&.
+.PP
+If it creates the keymap, \fBzed\fP rebinds the return key to insert a line
+break and `\fB^X^W\fP' to accept the edit in the \fBzed\fP keymap, and binds
+`\fBZZ\fP' to accept the edit in the \fBzed\-vicmd\fP keymap\&.
+.PP
+The bindings alone can be installed by running `\fBzed \-b\fP'\&.  This is
+suitable for putting into a startup file\&.  Note that, if rerun,
+this will overwrite the existing \fBzed\fP and \fBzed\-vicmd\fP keymaps\&.
+.PP
+Completion is available, and styles may be set with the context prefix
+`\fB:completion:zed\fP'\&.
+.PP
+A zle widget \fBzed\-set\-file\-name\fP is available\&.  This can be called by
+name from within zed using `\fB\eex zed\-set\-file\-name\fP' (note, however, that
+because of zed's rebindings you will have to type \fB^j\fP at the end instead
+of the return key), or can be bound to a key in either of the \fBzed\fP or
+\fBzed\-vicmd\fP keymaps after `\fBzed \-b\fP' has been run\&.  When the widget is
+called, it prompts for a new name for the file being edited\&.  When zed
+exits the file will be written under that name and the original file will
+be left alone\&.  The widget has no effect with `\fBzed \-f\fP'\&.
+.PP
+While \fBzed\-set\-file\-name\fP is running, zed uses the keymap
+\fBzed\-normal\-keymap\fP, which is linked from the main keymap in effect
+at the time zed initialised its bindings\&.  (This is to make the return key
+operate normally\&.)  The result is that if the main keymap has been changed,
+the widget won't notice\&.  This is not a concern for most users\&.
+.RE
+.TP
+.PD 0
+\fBzcp\fP [ \fB\-finqQvwW\fP ] \fIsrcpat\fP \fIdest\fP
+.TP
+.PD
+\fBzln\fP [ \fB\-finqQsvwW\fP ] \fIsrcpat\fP \fIdest\fP
+Same as \fBzmv \-C\fP and \fBzmv \-L\fP, respectively\&.  These functions do not
+appear in the zsh distribution, but can be created by linking \fBzmv\fP to
+the names \fBzcp\fP and \fBzln\fP in some directory in your \fBfpath\fP\&.
+.TP
+\fBzkbd\fP
+See `Keyboard Definition'
+above\&.
+.TP
+\fBzmv\fP [ \fB\-finqQsvwW\fP ] [ \-C | \-L | \-M | \-p \fIprogram\fP ] [ \-o \fIoptstring\fP ] \fIsrcpat\fP \fIdest\fP 
+Move (usually, rename) files matching the pattern \fIsrcpat\fP to
+corresponding files having names of the form given by \fIdest\fP, where
+\fIsrcpat\fP contains parentheses surrounding patterns which will be
+replaced in turn by $1, $2, \&.\&.\&. in \fIdest\fP\&.  For example,
+.RS
+.PP
+.RS
+.nf
+\fBzmv '(*)\&.lis' '$1\&.txt'\fP
+.fi
+.RE
+.PP
+renames `\fBfoo\&.lis\fP' to `\fBfoo\&.txt\fP', `\fBmy\&.old\&.stuff\&.lis\fP' to
+`\fBmy\&.old\&.stuff\&.txt\fP', and so on\&.
+.PP
+The pattern is always treated as an \fBEXTENDED_GLOB\fP pattern\&.  Any file
+whose name is not changed by the substitution is simply ignored\&.  Any
+error (a substitution resulted in an empty string, two substitutions gave
+the same result, the destination was an existing regular file and \fB\-f\fP
+was not given) causes the entire function to abort without doing anything\&.
+.PP
+Options:
+.PP
+.PD 0
+.TP
+\fB\-f\fP
+Force overwriting of destination files\&.  Not currently
+passed down to the \fBmv\fP/\fBcp\fP/\fBln\fP command due to vagaries of
+implementations (but you can use \fB\-o\-f\fP to do that)\&.
+.TP
+\fB\-i\fP
+Interactive: show each line to be executed and ask the user
+whether to execute it\&.  `Y' or `y' will execute it, anything else will
+skip it\&.  Note that you just need to type one character\&.
+.TP
+\fB\-n\fP
+No execution: print what would happen, but don't do it\&.
+.TP
+\fB\-q\fP
+Turn bare glob qualifiers off: now assumed by default, so
+this has no effect\&.
+.TP
+\fB\-Q\fP
+Force bare glob qualifiers on\&.  Don't turn this on unless
+you are actually using glob qualifiers in a pattern\&.
+.TP
+\fB\-s\fP
+Symbolic, passed down to \fBln\fP; only works with \fB\-L\fP\&.
+.TP
+\fB\-v\fP
+Verbose: print each command as it's being executed\&.
+.TP
+\fB\-w\fP
+Pick out wildcard parts of the pattern, as described above,
+and implicitly add parentheses for referring to them\&.
+.TP
+\fB\-W\fP
+Just like \fB\-w\fP, with the addition of turning wildcards in
+the replacement pattern into sequential ${1} \&.\&. ${N} references\&.
+.TP
+\fB\-C\fP
+.TP
+\fB\-L\fP
+.TP
+\fB\-M\fP
+Force \fBcp\fP, \fBln\fP or \fBmv\fP, respectively, regardless of
+the name of the function\&.
+.TP
+\fB\-p\fP \fIprogram\fP
+Call \fIprogram\fP instead of \fBcp\fP, \fBln\fP or
+\fBmv\fP\&.  Whatever it does, it should at least understand the form
+`\fIprogram\fP \fB\-\fP\fB\-\fP \fIoldname\fP \fInewname\fP'
+where \fIoldname\fP and \fInewname\fP are filenames generated by \fBzmv\fP\&.
+.TP
+\fB\-o\fP \fIoptstring\fP
+The \fIoptstring\fP is split into words and
+passed down verbatim to the \fBcp\fP, \fBln\fP or \fBmv\fP command called to
+perform the work\&.  It should probably begin with a `\fB\-\fP'\&.
+.PD
+.PP
+For more complete examples and other implementation details, see the
+\fBzmv\fP source file, usually located in one of the directories named in
+your \fBfpath\fP, or in \fBFunctions/Misc/zmv\fP in the zsh distribution\&.
+.RE
+.TP
+\fBzrecompile\fP
+See `Recompiling Functions'
+above\&.
+.TP
+\fBzstyle+\fP \fIcontext\fP \fIstyle\fP \fIvalue\fP [ + \fIsubcontext\fP \fIstyle\fP \fIvalue\fP \&.\&.\&. ]
+This makes defining styles a bit simpler by using a single `\fB+\fP' as a
+special token that allows you to append a context name to the previously
+used context name\&.  Like this:
+.RS
+.PP
+.RS
+.nf
+\fBzstyle+ ':foo:bar' style1 value1 \e 
+      + ':baz'     style2 value2 \e 
+      + ':frob'    style3 value3\fP
+.fi
+.RE
+.PP
+This defines `style1' with `value1' for the context \fB:foo:bar\fP as usual,
+but it also defines `style2' with `value2' for the context
+\fB:foo:bar:baz\fP and `style3' with `value3' for \fB:foo:bar:frob\fP\&.  Any
+\fIsubcontext\fP may be the empty string to re\-use the first context
+unchanged\&.
+.RE
+.RE
+.PP
+.SS "Styles"
+.PP
+.PD 0
+.TP
+.PD
+\fBinsert\-tab\fP
+The \fBzed\fP function \fIsets\fP this style in context `\fB:completion:zed:*\fP'
+to turn off completion when \fBTAB\fP is typed at the beginning of a line\&.
+You may override this by setting your own value for this context and style\&.
+.TP
+\fBpager\fP
+The \fBnslookup\fP function looks up this style in the context
+`\fB:nslookup\fP' to determine the program used to display output that does
+not fit on a single screen\&.
+.TP
+.PD 0
+\fBprompt\fP
+.TP
+.PD
+\fBrprompt\fP
+The \fBnslookup\fP function looks up this style in the context
+`\fB:nslookup\fP' to set the prompt and the right\-side prompt, respectively\&.
+The usual expansions for the \fBPS1\fP and \fBRPS1\fP parameters may be used
+(see
+\fIzshmisc\fP(1))\&.

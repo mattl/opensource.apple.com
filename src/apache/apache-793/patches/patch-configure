@@ -1,0 +1,25 @@
+--- configure.orig	2006-04-21 20:54:22.000000000 -0700
++++ configure	2006-05-23 15:01:18.000000000 -0700
+@@ -5816,8 +5816,8 @@
+       case $libtoolversion in
+           *1.[45]* | *[2-9].[0-9]*)
+               SH_LIBTOOL='$(LIBTOOL)'
+-              SHLTCFLAGS="-prefer-pic"
+-              LTCFLAGS="-prefer-non-pic -static"
++              SHLTCFLAGS=""
++              LTCFLAGS="-mdynamic-no-pic"
+               ;;
+           *)
+               SH_LIBTOOL='$(SHELL) $(top_builddir)/shlibtool $(LTFLAGS)'
+--- configure.orig	2013-07-15 09:44:10.000000000 -0700
++++ configure	2014-01-25 00:17:00.000000000 -0800
+@@ -23814,7 +23814,7 @@
+       sharedobjs=yes
+       shared=yes
+       DSO_MODULES="$DSO_MODULES slotmem_shm"
+-      if test "most" = "yes" ; then
++      if test "$_apmod_required" = "yes" ; then
+         ENABLED_DSO_MODULES="${ENABLED_DSO_MODULES},slotmem_shm"
+       fi
+       ;;
+

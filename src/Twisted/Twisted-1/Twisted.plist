@@ -1,0 +1,22 @@
+<plist version="1.0">
+<dict>
+	<key>OpenSourceProject</key>
+	<string>Twisted</string>
+	<key>OpenSourceVersion</key>
+	<string>2.0.1</string>
+	<key>OpenSourceWebsiteURL</key>
+	<string>http://www.twistedmatrix.com/</string>
+	<key>OpenSourceURL</key>
+	<string>http://tmrc.mit.edu/mirror/twisted/Twisted/2.0/Twisted-2.0.1.tar.bz2</string>
+	<key>OpenSourceMD5</key>
+	<string>6cf0ebb84731f8c2c45ea125efda77fe</string>
+	<key>OpenSourceImportDate</key>
+	<string>2005-08-11</string>
+	<key>OpenSourceModifications</key>
+	<array/>
+	<key>OpenSourceLicense</key>
+	<string>MIT</string>
+	<key>OpenSourceLicenseFile</key>
+	<string>Twisted.txt</string>
+</dict>
+</plist>

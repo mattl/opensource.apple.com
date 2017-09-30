@@ -1,0 +1,160 @@
+/*
+ * Copyright (c) 2000-2003 Apple Computer, Inc. All rights reserved.
+ *
+ * @APPLE_LICENSE_HEADER_START@
+ * 
+ * Copyright (c) 1999-2003 Apple Computer, Inc.  All Rights Reserved.
+ * 
+ * This file contains Original Code and/or Modifications of Original Code
+ * as defined in and that are subject to the Apple Public Source License
+ * Version 2.0 (the 'License'). You may not use this file except in
+ * compliance with the License. Please obtain a copy of the License at
+ * http://www.opensource.apple.com/apsl/ and read it before using this
+ * file.
+ * 
+ * The Original Code and all software distributed under the License are
+ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
+ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
+ * Please see the License for the specific language governing rights and
+ * limitations under the License.
+ * 
+ * @APPLE_LICENSE_HEADER_END@
+ */
+
+/*
+ * Modification History
+ *
+ * June 1, 2001			Allan Nathanson <ajn@apple.com>
+ * - public API conversion
+ *
+ * June 20, 2000		Allan Nathanson <ajn@apple.com>
+ * - initial revision
+ */
+
+#include "configd.h"
+#include "session.h"
+
+__private_extern__
+int
+__SCDynamicStoreTouchValue(SCDynamicStoreRef store, CFStringRef key)
+{
+	SCDynamicStorePrivateRef	storePrivate	= (SCDynamicStorePrivateRef)store;
+	int				sc_status;
+	CFDataRef			value;
+
+	if (_configd_verbose) {
+		SCLog(TRUE, LOG_DEBUG, CFSTR("__SCDynamicStoreTouchValue:"));
+		SCLog(TRUE, LOG_DEBUG, CFSTR("  key = %@"), key);
+	}
+
+	if (!store || (storePrivate->server == MACH_PORT_NULL)) {
+		return kSCStatusNoStoreSession;	/* you must have an open session to play */
+	}
+
+	if (_configd_trace) {
+		SCTrace(TRUE, _configd_trace, CFSTR("touch   : %5d : %@\n"), storePrivate->server, key);
+	}
+
+	/*
+	 * 1. Ensure that we hold the lock.
+	 */
+	sc_status = __SCDynamicStoreLock(store, TRUE);
+	if (sc_status != kSCStatusOK) {
+		return sc_status;
+	}
+
+	/*
+	 * 2. Grab the current (or establish a new) store entry for this key.
+	 */
+	sc_status = __SCDynamicStoreCopyValue(store, key, &value, TRUE);
+	switch (sc_status) {
+		case kSCStatusNoKey : {
+			CFDateRef	now;
+
+			/* store entry does not exist, create */
+
+			now = CFDateCreate(NULL, CFAbsoluteTimeGetCurrent());
+			SCLog(_configd_verbose, LOG_DEBUG, CFSTR("  new time stamp = %@"), now);
+			(void) _SCSerialize(now, &value, NULL, NULL);
+			CFRelease(now);
+			break;
+		}
+
+		case kSCStatusOK : {
+			CFDateRef	now;
+
+			/* store entry exists */
+
+			(void) _SCUnserialize((CFPropertyListRef *)&now, value, NULL, NULL);
+			if (isA_CFDate(now)) {
+				/* the value is a CFDate, update the time stamp */
+				CFRelease(now);
+				CFRelease(value);
+				now = CFDateCreate(NULL, CFAbsoluteTimeGetCurrent());
+				SCLog(_configd_verbose, LOG_DEBUG, CFSTR("  new time stamp = %@"), now);
+				(void) _SCSerialize(now, &value, NULL, NULL);
+			} /* else, we'll just save the data (again) to bump the instance */
+			CFRelease(now);
+
+			break;
+		}
+		default :
+			SCLog(_configd_verbose, LOG_DEBUG, CFSTR("  __SCDynamicStoreCopyValue(): %s"), SCErrorString(sc_status));
+			goto done;
+	}
+
+	sc_status = __SCDynamicStoreSetValue(store, key, value, TRUE);
+	CFRelease(value);
+
+    done :
+
+	/*
+	 * 8. Release our lock.
+	 */
+	__SCDynamicStoreUnlock(store, TRUE);
+
+	return kSCStatusOK;
+}
+
+
+__private_extern__
+kern_return_t
+_configtouch(mach_port_t 		server,
+	     xmlData_t			keyRef,		/* raw XML bytes */
+	     mach_msg_type_number_t	keyLen,
+	     int			*sc_status
+)
+{
+	serverSessionRef	mySession = getSession(server);
+	CFStringRef		key;		/* key  (un-serialized) */
+
+	if (_configd_verbose) {
+		SCLog(TRUE, LOG_DEBUG, CFSTR("Touch key in configuration database."));
+		SCLog(TRUE, LOG_DEBUG, CFSTR("  server = %d"), server);
+	}
+
+	/* un-serialize the key */
+	if (!_SCUnserializeString(&key, NULL, (void *)keyRef, keyLen)) {
+		*sc_status = kSCStatusFailed;
+		return KERN_SUCCESS;
+	}
+
+	if (!isA_CFString(key)) {
+		*sc_status = kSCStatusInvalidArgument;
+		CFRelease(key);
+		return KERN_SUCCESS;
+	}
+
+	if (!mySession) {
+		*sc_status = kSCStatusNoStoreSession;	/* you must have an open session to play */
+		CFRelease(key);
+		return KERN_SUCCESS;
+	}
+
+	*sc_status = __SCDynamicStoreTouchValue(mySession->store, key);
+	CFRelease(key);
+
+	return KERN_SUCCESS;
+}

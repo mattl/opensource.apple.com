@@ -1,0 +1,46 @@
+emulate -L zsh
+setopt extendedglob
+
+local opt keys
+integer stat
+
+while getopts "k:" opt; do
+  case $opt in
+    # Read the given number of keys.  This is a bit
+    # ropey for more than a single key.
+    (k)
+    keys=$OPTARG
+    ;;
+
+    (*)
+    return 1
+    ;;
+  esac
+done
+(( OPTIND > 1 )) && shift $(( OPTIND - 1 ))
+
+local savelbuffer=$LBUFFER saverbuffer=$RBUFFER
+local savepredisplay=$PREDISPLAY savepostdisplay=$POSTDISPLAY
+
+LBUFFER="$2"
+RBUFFER="$3"
+PREDISPLAY="$PREDISPLAY$savelbuffer$saverbuffer$POSTDISPLAY
+${1:-? }"
+POSTDISPLAY=
+
+if [[ -n $keys ]]; then
+  zle -R
+  read -k $keys
+  stat=$?
+else
+  zle recursive-edit -K main
+  stat=$?
+  (( stat )) || REPLY=$BUFFER
+fi
+
+LBUFFER=$savelbuffer
+RBUFFER=$saverbuffer
+PREDISPLAY=$savepredisplay
+POSTDISPLAY=$savepostdisplay
+
+return $stat

@@ -1,0 +1,1 @@
+FreeBSD/strncat.c

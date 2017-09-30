@@ -1,0 +1,147 @@
+#compdef lynx
+
+local curcontext="$curcontext" state line ret=1
+typeset -A opt_args
+
+_arguments -C \
+  '-accept_all_cookies' \
+  '-anonymous' \
+  '-assume_charset=:character set:' \
+  '-assume_local_charset=:character set:' \
+  '-assume_unrec_charset=:character set:' \
+  '-auth=:username\:password:' \
+  '-base' \
+  '-bibp=:bibp server:_urls' \
+  '-blink' \
+  '-book' \
+  '-buried_news' \
+  '-cache=:number of documents:' \
+  '-case' \
+  '-center' \
+  '-cfg=:configuration file:_files' \
+  '-child' \
+  '-cmd_log=:keystroke log:_files' \
+  '-cmd_script=:keystroke log:_files' \
+  '-color' \
+  '-connect_timeout=:connection timeout (seconds):' \
+  '-cookie_file=:cookie file:_files' \
+  '-cookie_save_file=:cookie file:_files' \
+  '-cookies' \
+  '-core' \
+  '-crawl' \
+  '-curses_pads' \
+  '-debug_partial' \
+  '-display=:display:_x_display' \
+  '-display_charset=:character set:' \
+  '-dont_wrap_pre' \
+  '-dump' \
+  '-editor=:editor:_command_names -e' \
+  '-emacskeys' \
+  '-enable_scrollback' \
+  '-error_file=:error file:_files' \
+  '-exec' \
+  '-fileversions' \
+  '-force_empty_hrefless_a' \
+  '-force_html' \
+  '-force_secure' \
+  '-forms_options' \
+  '-from' \
+  '-ftp' \
+  '-get_data' \
+  '-head' \
+  '-help' \
+  '-hiddenlinks=:option:(merge listonly ignore)' \
+  '-historical' \
+  '-homepage=:URL:->html' \
+  '-image_links' \
+  '-index=:URL:->html' \
+  '-ismap' \
+  '-justify' \
+  '-link=:starting count:' \
+  '-localhost' \
+  '-locexec' \
+  '-lss=:color-style file:_files' \
+  '-mime_header' \
+  '-minimal' \
+  '-newschunksize=:number of news articles:' \
+  '-newsmaxchunk=:maximum number of news articles:' \
+  '-nobold' \
+  '-nobrowse' \
+  '-nocc' \
+  '-nocolor' \
+  '-noexec' \
+  '-nofilereferer' \
+  '-nolist' \
+  '-nolog' \
+  '-nonrestarting_sigwinch' \
+  '-nopause' \
+  '-noprint' \
+  '-noredir' \
+  '-noreferer' \
+  '-noreverse' \
+  '-nosocks' \
+  '-nostatus' \
+  '-nounderline' \
+  '-number_fields' \
+  '-number_links' \
+  '-partial' \
+  '-partial_thres=:number of lines:' \
+  '-pauth=:username\:password:' \
+  '-popup' \
+  '-post_data' \
+  '-preparsed' \
+  '-prettysrc' \
+  '-print' \
+  '-pseudo_inlines' \
+  '-raw' \
+  '-realm' \
+  '-reload' \
+  '-restrictions=:options:->restrictions' \
+  '-resubmit_posts' \
+  '-rlogin' \
+  '-scrollbar' \
+  '-scrollbar_arrow' \
+  '-selective' \
+  '-short_url' \
+  '-show_cursor' \
+  '-show_rate' \
+  '-soft_dquotes' \
+  '-source' \
+  '-stack_dump' \
+  '-startfile_ok' \
+  '-stdin' \
+  '-tagsoup' \
+  '-telnet' \
+  '-term=:terminal name:_terminals' \
+  '-tlog' \
+  '-tna' \
+  '-trace' \
+  '-trace_mask=:trace mask:(0 1 2 3 4 5 6 7)' \
+  '-traversal' \
+  '-trim_input_fields' \
+  '-underscore' \
+  '-use_mouse' \
+  '-useragent=:user-agent header:' \
+  '-validate' \
+  '-verbose' \
+  '-version' \
+  '-vikeys' \
+  '-width=:number of columns:' \
+  '-with_backspaces' \
+  ':URL:->html' && ret=0
+
+case "$state" in
+restrictions)
+  _values -s ',' 'restriction' \
+    all bookmark bookmark_exec change_exec_perms default dired_support \
+    disk_save dotfiles download editor exec exec_frozen externals file_url \
+    goto inside_ftp inside_news inside_rlogin inside_telnet jump mail \
+    multibook news_post options_save outside_ftp outside_news outside_rlogin \
+    outside_telnet print shell suspend telnet_port useragent && return
+  ;;
+html)
+  _alternative 'files:file:_files -g "*.x#html#(-.)"' 'urls:URL:_urls' && return
+  ;;
+esac
+
+return ret
