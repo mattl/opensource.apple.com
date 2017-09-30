@@ -1,0 +1,617 @@
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_Container_iterator.3 ./man/netsnmp_Container_iterator.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_Container_iterator.3	2005-01-24 11:46:16.000000000 -0800
++++ ./man/netsnmp_Container_iterator.3	2005-10-28 10:02:14.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-Container_iterator \- 
++netsnmp_Container_iterator \- Iterator for net-snmp containers.
+ .SS "Typedefs"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_agent.3 ./man/netsnmp_agent.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_agent.3	2005-01-24 11:46:16.000000000 -0800
++++ ./man/netsnmp_agent.3	2005-10-28 09:43:33.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-The Net-SNMP agent \- The snmp agent responds to SNMP queries from management stations.  
++netsnmp_agent \- The snmp agent responds to SNMP queries from management stations.  
+ 
+ .PP
+ .SS "Modules"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_agent_registry.3 ./man/netsnmp_agent_registry.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_agent_registry.3	2005-01-24 11:46:16.000000000 -0800
++++ ./man/netsnmp_agent_registry.3	2005-10-28 09:44:22.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-Maintain a registry of MIB subtrees, together with related information regarding mibmodule, sessions, etc \- 
++netsnmp_agent_registry \- Maintain a registry of MIB subtrees, together with related information regarding mibmodule, sessions, etc 
+ .SS "Data Structures"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_agent_trap.3 ./man/netsnmp_agent_trap.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_agent_trap.3	2005-01-24 11:46:17.000000000 -0800
++++ ./man/netsnmp_agent_trap.3	2005-10-28 09:44:44.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-Trap generation routines for mib modules to use \- 
++netsnmp_agent_trap \- Trap generation routines for mib modules to use
+ .SS "Data Structures"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_asn1_packet_parse.3 ./man/netsnmp_asn1_packet_parse.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_asn1_packet_parse.3	2005-01-24 11:46:27.000000000 -0800
++++ ./man/netsnmp_asn1_packet_parse.3	2005-10-28 09:45:01.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-asn1 parsing and datatype manipulation routines. \- 
++netsnmp_asn1_packet_parse \- asn1 parsing and datatype manipulation routines.
+ .SS "Defines"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_baby_steps.3 ./man/netsnmp_baby_steps.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_baby_steps.3	2005-01-24 11:46:27.000000000 -0800
++++ ./man/netsnmp_baby_steps.3	2005-10-28 09:45:24.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-baby_steps: calls your handler in baby_steps for set processing. \- 
++netsnmp_baby_steps \- calls your handler in baby_steps for set processing.
+ .SS "Functions"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_bulk_to_next.3 ./man/netsnmp_bulk_to_next.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_bulk_to_next.3	2005-01-24 11:46:27.000000000 -0800
++++ ./man/netsnmp_bulk_to_next.3	2005-10-28 10:00:06.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-bulk_to_next: convert GETBULK requests into GETNEXT requests for the handler. \- The only purpose of this handler is to convert a GETBULK request to a GETNEXT request.  
++netsnmp_bulk_to_next \- convert GETBULK requests into GETNEXT requests for the handler.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_cache_handler.3 ./man/netsnmp_cache_handler.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_cache_handler.3	2005-01-24 11:46:27.000000000 -0800
++++ ./man/netsnmp_cache_handler.3	2005-10-28 10:04:40.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-cache_handler: Maintains a cache of data for use by lower level handlers. \- This helper checks to see whether the data has been loaded 'recently' (according to the timeout for that particular cache) and calls the registered 'load_cache' routine if necessary.  
++netsnmp_cache_handler \- Maintains a cache of data for use by lower level handlers.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_callback.3 ./man/netsnmp_callback.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_callback.3	2005-01-24 11:46:27.000000000 -0800
++++ ./man/netsnmp_callback.3	2005-10-28 10:05:01.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-A generic callback mechanism \- 
++netsnmp_callback \- A generic callback mechanism.
+ .SS "Functions"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_container.3 ./man/netsnmp_container.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_container.3	2005-01-24 11:46:27.000000000 -0800
++++ ./man/netsnmp_container.3	2005-10-28 10:05:24.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-null_container: Helps you implement specialized \- containers.  
++netsnmp_container \- Helps you implement specialized containers.  
+ 
+ .PP
+ .SS "Modules"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_data_list.3 ./man/netsnmp_data_list.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_data_list.3	2005-01-24 11:46:27.000000000 -0800
++++ ./man/netsnmp_data_list.3	2005-10-28 10:05:42.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-generic linked-list data handling with a string as a key. \- 
++netsnmp_data_list \- generic linked-list data handling with a string as a key.
+ .SS "Functions"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_debug.3 ./man/netsnmp_debug.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_debug.3	2005-01-24 11:46:28.000000000 -0800
++++ ./man/netsnmp_debug.3	2005-10-28 10:06:04.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-debug: print out debugging information about the handler chain being called. \- This is a useful module for run-time debugging of requests as the pass this handler in a calling chain.  
++netsnmp_debug \- print out debugging information about the handler chain being called.
+ 
+ .PP
+ .SS "handler"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_default_store.3 ./man/netsnmp_default_store.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_default_store.3	2005-01-24 11:46:28.000000000 -0800
++++ ./man/netsnmp_default_store.3	2005-10-28 10:06:55.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-storage space for defaults \- The purpose of the default storage is three-fold:.  
++netsnmp_default_store \- storage space for defaults.
+ 
+ .PP
+ .SS "Data Structures"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_example_scalar_int.3 ./man/netsnmp_example_scalar_int.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_example_scalar_int.3	2002-04-20 00:30:14.000000000 -0700
++++ ./man/netsnmp_example_scalar_int.3	2005-10-28 10:07:33.000000000 -0700
+@@ -2,8 +2,8 @@
+ .ad l
+ .nh
+ .SH NAME
+-example_scalar_int: instantiates a few example scalars. \- This example merely creates some scalar registrations that allows some simple variables to be accessed via SNMP. 
+-More...
++netsnmp_example_scalar_int \- instantiates a few example scalars.
++
+ .SS "Functions"
+ 
+ .in +1c
+@@ -23,4 +23,4 @@
+ .PP
+ snmpset localhost netSnmpExampleInteger.0 = 1234 netSnmpExampleScalars = 1234
+ .PP
+-snmpget localhost netSnmpExampleInteger.0 netSnmpExampleScalars = 1234 
+\ No newline at end of file
++snmpget localhost netSnmpExampleInteger.0 netSnmpExampleScalars = 1234 
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_handler.3 ./man/netsnmp_handler.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_handler.3	2005-01-24 11:46:28.000000000 -0800
++++ ./man/netsnmp_handler.3	2005-10-28 10:08:00.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-Net-SNMP Agent handler and extensibility API \- The basic theory goes something like this: In the past, with the original mib module api (which derived from the original CMU SNMP code) the underlying mib modules were passed very little information (only the truly most basic information about a request).  
++netsnmp_handler \- Net-SNMP Agent handler and extensibility API.
+ 
+ .PP
+ .SS "Modules"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_instance.3 ./man/netsnmp_instance.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_instance.3	2005-01-24 11:46:29.000000000 -0800
++++ ./man/netsnmp_instance.3	2005-10-28 10:08:26.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-instance: process individual MIB instances easily. \- 
++netsnmp_instance \- process individual MIB instances easily.
+ .SS "Functions"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_iterator_info_s.3 ./man/netsnmp_iterator_info_s.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_iterator_info_s.3	2005-01-24 11:46:30.000000000 -0800
++++ ./man/netsnmp_iterator_info_s.3	2005-10-28 10:08:46.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-iterator_info_s \- Holds iterator information containing functions which should be called by the iterator_handler to loop over your data set and sort it in a SNMP specific manner.  
++netsnmp_iterator_info_s \- Holds iterator information containing functions which should be called by the iterator_handler to loop over your data set and sort it in a SNMP specific manner.  
+ 
+ .PP
+ .SH SYNOPSIS
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_leaf.3 ./man/netsnmp_leaf.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_leaf.3	2005-01-24 11:46:30.000000000 -0800
++++ ./man/netsnmp_leaf.3	2005-10-28 10:09:06.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-leaf_handlers: process individual leaf objects \- A group of handlers to implement individual leaf objects and instances (both scalar objects, and individual objects and instances within a table).  
++netsnmp_leaf \- process individual leaf objects. 
+ 
+ .PP
+ .SS "Modules"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_library.3 ./man/netsnmp_library.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_library.3	2005-01-24 11:46:31.000000000 -0800
++++ ./man/netsnmp_library.3	2005-10-28 10:09:36.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-The Net-SNMP library \- 
++netsnmp_library \- The Net-SNMP library
+ .SS "Modules"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_mib_handler_methods.3 ./man/netsnmp_mib_handler_methods.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_mib_handler_methods.3	2002-04-20 00:30:14.000000000 -0700
++++ ./man/netsnmp_mib_handler_methods.3	2005-10-28 10:09:49.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-mib_handler_methods \- Defines the subhandlers to be called by the multiplexer helper. 
++netsnmp_mib_handler_methods \- Defines the subhandlers to be called by the multiplexer helper. 
+ .SH SYNOPSIS
+ .br
+ .PP
+@@ -16,4 +16,4 @@
+ 
+ .SH "AUTHOR"
+ .PP 
+-Generated automatically by Doxygen for net-snmp from the source code.
+\ No newline at end of file
++Generated automatically by Doxygen for net-snmp from the source code.
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_mib_utilities.3 ./man/netsnmp_mib_utilities.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_mib_utilities.3	2005-01-24 11:46:32.000000000 -0800
++++ ./man/netsnmp_mib_utilities.3	2005-10-28 10:10:05.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-mib parsing and datatype manipulation routines. \- 
++netsnmp_mib_utilities \- mib parsing and datatype manipulation routines.
+ .SS "Data Structures"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_mode_end_call.3 ./man/netsnmp_mode_end_call.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_mode_end_call.3	2005-01-24 11:46:36.000000000 -0800
++++ ./man/netsnmp_mode_end_call.3	2005-10-28 10:10:30.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-mode_end_call: at the end of a series of requests, call another handler hook. \- Handlers that want to loop through a series of requests and then receive a callback at the end of a particular MODE can use this helper to make this possible.  
++netsnmp_mode_end_call \- at the end of a series of requests, call another handler hook.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_multiplexer.3 ./man/netsnmp_multiplexer.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_multiplexer.3	2005-01-24 11:46:36.000000000 -0800
++++ ./man/netsnmp_multiplexer.3	2005-10-28 10:10:52.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-multiplexer: splits mode requests into calls to different handlers. \- The multiplexer helper lets you split the calling chain depending on the calling mode (get vs getnext vs set).  
++netsnmp_multiplexer \- splits mode requests into calls to different handlers.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_oid_stash.3 ./man/netsnmp_oid_stash.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_oid_stash.3	2005-01-24 11:46:38.000000000 -0800
++++ ./man/netsnmp_oid_stash.3	2005-10-28 10:11:48.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-Store and retrieve data referenced by an OID. \- This is essentially a way of storing data associated with a given OID.  
++netsnmp_oid_stash \- Store and retrieve data referenced by an OID.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_old_api.3 ./man/netsnmp_old_api.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_old_api.3	2005-01-24 11:46:49.000000000 -0800
++++ ./man/netsnmp_old_api.3	2005-10-28 10:12:04.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-old_api: Calls mib module code written in the old style of code. \- This is a backwards compatilibity module that allows code written in the old API to be run under the new handler based architecture.  
++netsnmp_old_api \- Calls mib module code written in the old style of code.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_read_config.3 ./man/netsnmp_read_config.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_read_config.3	2005-01-24 11:46:49.000000000 -0800
++++ ./man/netsnmp_read_config.3	2005-10-28 10:12:21.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-parsing various configuration files at run time \- The read_config related functions are a fairly extensible system of parsing various configuration files at the run time.  
++netsnmp_read_config \- parsing various configuration files at run time. 
+ 
+ .PP
+ .SS "Defines"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_read_only.3 ./man/netsnmp_read_only.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_read_only.3	2005-01-24 11:46:49.000000000 -0800
++++ ./man/netsnmp_read_only.3	2005-10-28 10:12:43.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-read_only: make your handler read_only automatically \- The only purpose of this handler is to return an appropriate error for any requests passed to it in a SET mode.  
++netsnmp_read_only \- make your handler read_only automatically.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_row_merge.3 ./man/netsnmp_row_merge.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_row_merge.3	2005-01-24 11:46:50.000000000 -0800
++++ ./man/netsnmp_row_merge.3	2005-10-28 10:13:02.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-row_merge: Calls sub handlers with request for one row at a time. \- This helper splits a whole bunch of requests into chunks based on the row index that they refer to, and passes all requests for a given row to the lower handlers.  
++netsnmp_row_merge \- Calls sub handlers with request for one row at a time.
+ 
+ .PP
+ .SS "Defines"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_scalar.3 ./man/netsnmp_scalar.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_scalar.3	2005-01-24 11:46:50.000000000 -0800
++++ ./man/netsnmp_scalar.3	2005-10-28 10:13:21.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-scalar: process scalars easily. \- 
++netsnmp_scalar \- process scalars easily.
+ .SS "Functions"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_scalar_group_group.3 ./man/netsnmp_scalar_group_group.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_scalar_group_group.3	2005-01-24 11:46:50.000000000 -0800
++++ ./man/netsnmp_scalar_group_group.3	2005-10-28 10:13:37.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-scalar_group: process groups of scalars. \- 
++netsnmp_scalar_group_group \- process groups of scalars.
+ .SS "Functions"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_serialize.3 ./man/netsnmp_serialize.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_serialize.3	2005-01-24 11:46:51.000000000 -0800
++++ ./man/netsnmp_serialize.3	2005-10-28 10:13:58.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-serialize: Calls sub handlers one request at a time. \- This functionally passes in one request at a time into lower handlers rather than a whole bunch of requests at once.  
++netsnmp_serialize \- Calls sub handlers one request at a time.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_set_data.3 ./man/netsnmp_set_data.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_set_data.3	2003-10-17 16:33:39.000000000 -0700
++++ ./man/netsnmp_set_data.3	2005-10-28 10:14:27.000000000 -0700
+@@ -2,8 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-set_data: helps storing and retriving of data during set transactions \- The set_data helper. 
+-More...
++netsnmp_serialize \- helps storing and retriving of data during set transactions.
+ .SS "Data Structures"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_agent.3 ./man/netsnmp_snmp_agent.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_agent.3	2005-01-24 11:46:51.000000000 -0800
++++ ./man/netsnmp_snmp_agent.3	2005-10-28 10:14:43.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-net-snmp agent related processing \- 
++netsnmp_snmp_agent \- net-snmp agent related processing.
+ .SS "Data Structures"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_alarm.3 ./man/netsnmp_snmp_alarm.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_alarm.3	2005-01-24 11:46:52.000000000 -0800
++++ ./man/netsnmp_snmp_alarm.3	2005-10-28 10:14:57.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-generic library based alarm timers for various parts of an application \- 
++netsnmp_snmp_alarm \- generic library based alarm timers for various parts of an application. 
+ .SS "Functions"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_client.3 ./man/netsnmp_snmp_client.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_client.3	2005-01-24 11:46:53.000000000 -0800
++++ ./man/netsnmp_snmp_client.3	2005-10-28 10:15:14.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-various PDU processing routines \- 
++netsnmp_snmp_client \- various PDU processing routines.
+ .SS "Defines"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_logging.3 ./man/netsnmp_snmp_logging.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_logging.3	2005-01-24 11:46:53.000000000 -0800
++++ ./man/netsnmp_snmp_logging.3	2005-10-28 10:15:27.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-generic logging for net-snmp \- 
++netsnmp_snmp_logging \-generic logging for net-snmp. 
+ .SS "Defines"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_pdu.3 ./man/netsnmp_snmp_pdu.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_pdu.3	2005-01-24 11:46:54.000000000 -0800
++++ ./man/netsnmp_snmp_pdu.3	2005-10-28 10:15:39.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-snmp_pdu \- The snmp protocol data unit.  
++netsnmp_snmp_pdu\- The snmp protocol data unit.  
+ 
+ .PP
+ .SH SYNOPSIS
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_session.3 ./man/netsnmp_snmp_session.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_snmp_session.3	2005-01-24 11:46:54.000000000 -0800
++++ ./man/netsnmp_snmp_session.3	2005-10-28 10:15:51.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-snmp_session \- The snmp session structure.  
++netsnmp_snmp_session\- The snmp session structure.  
+ 
+ .PP
+ .SH SYNOPSIS
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_stash_cache.3 ./man/netsnmp_stash_cache.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_stash_cache.3	2005-01-24 11:46:55.000000000 -0800
++++ ./man/netsnmp_stash_cache.3	2005-10-28 10:16:07.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-stash_cache: automatically caches data for certain handlers. \- This handler caches data in an optimized way which may aleviate the need for the lower level handlers to perform as much optimization.  
++netsnmp_stash_cache \- automatically caches data for certain handlers.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table.3 ./man/netsnmp_table.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table.3	2005-01-24 11:46:55.000000000 -0800
++++ ./man/netsnmp_table.3	2005-10-28 10:16:24.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-table: Helps you implement a table. \- This handler helps you implement a table by doing some of the processing for you.  
++netsnmp_table \- Helps you implement a table.
+ 
+ .PP
+ .SS "Modules"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_array.3 ./man/netsnmp_table_array.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_array.3	2005-01-24 11:46:58.000000000 -0800
++++ ./man/netsnmp_table_array.3	2005-10-28 10:16:51.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-table_array: Helps you implement a table when data can be stored locally. The data is stored in a sorted array, using a binary search for lookups. \- The table_array handler is used (automatically) in conjuntion with the \fBtable\fP handler.  
++netsnmp_table_array \- Helps you implement a table when data can be stored locally.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_container.3 ./man/netsnmp_table_container.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_container.3	2005-01-24 11:46:58.000000000 -0800
++++ ./man/netsnmp_table_container.3	2005-10-28 10:17:14.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-table_container: Helps you implement a table when data can be found via a netsnmp_container. \- The table_container handler is used (automatically) in conjuntion with the \fBtable\fP handler.  
++netsnmp_table_container \- Helps you implement a table when data can be found via a netsnmp_container.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_data.3 ./man/netsnmp_table_data.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_data.3	2005-01-24 11:46:58.000000000 -0800
++++ ./man/netsnmp_table_data.3	2005-10-28 10:17:33.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-table_data: Helps you implement a table with datamatted storage. \- This helper helps you implement a table where all the indexes are expected to be stored within the agent itself and not in some external storage location.  
++netsnmp_table_data \- Helps you implement a table with datamatted storage.
+ 
+ .PP
+ .SS "Modules"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_dataset.3 ./man/netsnmp_table_dataset.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_dataset.3	2005-01-24 11:46:59.000000000 -0800
++++ ./man/netsnmp_table_dataset.3	2005-10-28 10:17:48.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-table_dataset: Helps you implement a table with automatted storage. \- This handler helps you implement a table where all the data is expected to be stored within the agent itself and not in some external storage location.  
++netsnmp_table_dataset \- Helps you implement a table with automatted storage.
+ 
+ .PP
+ .SS "Functions"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_iterator.3 ./man/netsnmp_table_iterator.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_iterator.3	2005-01-24 11:47:00.000000000 -0800
++++ ./man/netsnmp_table_iterator.3	2005-10-28 10:18:05.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-table_iterator: The table iterator helper is designed to simplify the task of writing a table handler for the net-snmp agent when the data being accessed is not in an oid sorted form and must be accessed externally. \- Functionally, it is a specialized version of the more generic table helper but easies the burden of GETNEXT processing by manually looping through all the data indexes retrieved through function calls which should be supplied by the module that wishes help.  
++netsnmp_table_iterator \- The table iterator helper is designed to simplify the task of writing a table handler for the net-snmp agent when the data being accessed is not in an oid sorted form and must be accessed externally.
+ 
+ .PP
+ .SS "Data Structures"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_iterator.h.3 ./man/netsnmp_table_iterator.h.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_table_iterator.h.3	2003-02-19 16:53:00.000000000 -0800
++++ ./man/netsnmp_table_iterator.h.3	2005-10-28 10:18:20.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-table_iterator.h \- @addtogorup table_iterator. 
++netsnmp_table_iterator \- @addtogorup table_iterator. 
+ .SH SYNOPSIS
+ .br
+ .PP
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_util.3 ./man/netsnmp_util.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_util.3	2005-01-24 11:47:11.000000000 -0800
++++ ./man/netsnmp_util.3	2005-10-28 10:18:38.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-Memory Utility Routines \- 
++netsnmp_util \- Memory Utility Routines
+ .SS "Defines"
+ 
+ .in +1c
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_utilities.3 ./man/netsnmp_utilities.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_utilities.3	2005-01-24 11:47:12.000000000 -0800
++++ ./man/netsnmp_utilities.3	2005-10-28 10:19:01.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-utility_handlers: simplify request processing \- A group of handlers intended to simplify certain aspects of processing a request for a MIB object.  
++netsnmp_utilities \- simplify request processing.
+ 
+ .PP
+ .SS "Modules"
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_variable_list.3 ./man/netsnmp_variable_list.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_variable_list.3	2005-01-24 11:47:12.000000000 -0800
++++ ./man/netsnmp_variable_list.3	2005-10-28 10:19:09.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-variable_list \- The netsnmp variable list binding structure, it's typedef'd to netsnmp_variable_list.  
++netsnmp_variable_list\- The netsnmp variable list binding structure, it's typedef'd to netsnmp_variable_list.  
+ 
+ .PP
+ .SH SYNOPSIS
+diff -Naur /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_watcher.3 ./man/netsnmp_watcher.3
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/man/netsnmp_watcher.3	2005-01-24 11:47:12.000000000 -0800
++++ ./man/netsnmp_watcher.3	2005-10-28 10:19:26.000000000 -0700
+@@ -2,7 +2,7 @@
+ .ad l
+ .nh
+ .SH NAME
+-watcher: watch a specified variable and process \- it as an instance or scalar object  
++netsnmp_watcher \- watch a specified variable and process.
+ 
+ .PP
+ .SS "Functions"

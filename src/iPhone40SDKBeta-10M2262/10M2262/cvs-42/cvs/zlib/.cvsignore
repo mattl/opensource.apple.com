@@ -1,0 +1,10 @@
+*.bb
+*.bbg
+*.da
+Makefile
+example
+minigzip
+foo.gz
+WinDebug
+WinRel
+zlib.001

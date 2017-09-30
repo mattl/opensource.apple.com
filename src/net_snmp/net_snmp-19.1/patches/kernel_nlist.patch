@@ -1,0 +1,9 @@
+--- net-snmp-5.2.1/agent/kernel.h	2002-04-20 00:29:59.000000000 -0700
++++ net-snmp/agent/kernel.h	2006-05-18 00:44:17.000000000 -0700
+@@ -1,5 +1,5 @@
+ 
+-#ifndef linux
++#ifdef CAN_USE_NLIST
+ extern void     init_kmem(const char *);
+ extern int      klookup(unsigned long, char *, int);
+ #endif

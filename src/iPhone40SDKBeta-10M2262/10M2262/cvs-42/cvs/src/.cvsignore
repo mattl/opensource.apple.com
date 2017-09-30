@@ -1,0 +1,13 @@
+*.bb
+*.bbg
+*.da
+.deps
+.pure
+Makefile
+TAGS
+check.log
+check.plog
+cvs
+cvsbug
+mkmodules
+sanity.config.sh

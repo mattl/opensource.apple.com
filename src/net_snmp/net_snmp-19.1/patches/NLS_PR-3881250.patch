@@ -1,0 +1,36 @@
+diff -Naur --exclude=cscope.out /tmp/net_snmp.roots/net_snmp/net-snmp/apps/Makefile.in ./apps/Makefile.in
+--- /tmp/net_snmp.roots/net_snmp/net-snmp/apps/Makefile.in	2005-10-28 20:56:17.000000000 -0700
++++ ./apps/Makefile.in	2005-10-28 08:57:59.000000000 -0700
+@@ -61,7 +61,7 @@
+ USETRAPLIBS	= @USETRAPLIBS@
+ 
+ CPPFLAGS	= $(TOP_INCLUDES) -I. $(AGENT_INCLUDES) $(HELPER_INCLUDES) \
+-		  $(MIBGROUP_INCLUDES)  $(SNMPLIB_INCLUDES) @CPPFLAGS@
++		  $(MIBGROUP_INCLUDES)  $(SNMPLIB_INCLUDES) -mdynamic-no-pic @CPPFLAGS@
+ 
+ OSUFFIX		= lo
+ TRAPD_OBJECTS   = snmptrapd.$(OSUFFIX) @other_trapd_objects@
+@@ -105,8 +105,8 @@
+ snmptest$(EXEEXT):    snmptest.$(OSUFFIX) $(USELIBS)
+ 	$(LINK) -o $@ snmptest.$(OSUFFIX) $(LOCAL_LIBS) ${LDFLAGS} ${LIBS} 
+ 
+-snmptrapd$(EXEEXT):    $(TRAPD_OBJECTS) $(USETRAPLIBS) libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION) 
+-	$(LINK) -o $@ $(TRAPD_OBJECTS) .libs/libnetsnmptrapd.a  $(LOCAL_LIBS) ${LDFLAGS} ${TRAPLIBS}
++snmptrapd$(EXEEXT):    $(TRAPD_OBJECTS) $(LIBTRAPD_OBJS) $(USETRAPLIBS) 
++	$(LINK) -o $@ $(TRAPD_OBJECTS) $(LIBTRAPD_OBJS) $(LOCAL_LIBS) ${LDFLAGS} ${TRAPLIBS}
+ 
+ snmptrap$(EXEEXT):    snmptrap.$(OSUFFIX) $(USELIBS)
+ 	$(LINK) -o $@ snmptrap.$(OSUFFIX) $(LOCAL_LIBS) ${LDFLAGS} ${LIBS} 
+@@ -133,9 +136,9 @@
+ snmpdf$(EXEEXT):    snmpdf.$(OSUFFIX) $(USELIBS)
+ 	$(LINK) -o $@ snmpdf.$(OSUFFIX) $(LOCAL_LIBS) ${LDFLAGS} ${LIBS} 
+ 
+-libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION): $(LLIBTRAPD_OBJS)
+-	$(LIB_LD_CMD) libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION) ${LLIBTRAPD_OBJS}  $(LIB_LD_LIBS)
+-	$(RANLIB) libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION)
++#libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION): $(LLIBTRAPD_OBJS)
++#	$(LIB_LD_CMD) libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION) ${LLIBTRAPD_OBJS}  $(LIB_LD_LIBS)
++#	$(RANLIB) libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION)
+ 
+ snmpinforminstall:
+ 	rm -f $(INSTALL_PREFIX)$(bindir)/snmpinform$(EXEEXT)

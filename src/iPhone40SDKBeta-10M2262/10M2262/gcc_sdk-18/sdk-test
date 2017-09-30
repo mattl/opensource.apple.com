@@ -1,0 +1,43 @@
+#!/bin/sh
+# APPLE LOCAL file sdk support
+
+case `echo "testing\c"; echo 1,2,3`,`echo -n testing; echo 1,2,3` in
+  *c*,-n*) ECHO_N= ECHO_C='                                                                 
+' ECHO_T='      ' ;;
+  *c*,*  ) ECHO_N=-n ECHO_C= ECHO_T= ;;
+  *)       ECHO_N= ECHO_C='\c' ECHO_T= ;;
+esac
+
+echo SDK testsuite:
+
+cat >/tmp/test.cc <<EOF
+#include <iostream>
+using namespace std;
+
+int main() { cout << "Hi\n"; }
+EOF
+
+export LD_NO_CLASSIC_LINKER=YES
+
+set +e
+set +x
+for gcc in g++-4.0 g++-4.2; do
+  for sdk in 10.4u 10.4.0.Internal 10.5 10.5.Internal 10.6 10.6.Internal; do
+    for arch in ppc ppc64 i386 x86_64; do
+      case "$gcc:$arch:$sdk" in
+      g++-4.[2-9]:*:10.4*)
+	      echo "UNSUPPORTED: $gcc $arch $sdk hello++"
+	      continue;;
+      *:ppc64:10.[6-9]*)
+	      echo "UNSUPPORTED: $gcc $arch $sdk hello++"
+	      continue;;
+      esac
+      # Use LD_TRACE_ARCHIVES=1 LD_TRACE_DYLIBS=1 to see how the libraries are bound
+      $gcc -arch $arch -isysroot /Developer/SDKs/MacOSX$sdk.sdk /tmp/test.cc -o /tmp/a.out -w -mmacosx-version-min=10.3
+      if [ $? = 0 ]; then echo $ECHO_N "PASS: $ECHO_C"; else echo $ECHO_N "FAIL: $ECHO_C"; fi
+      echo "$gcc $arch $sdk hello++"
+    done
+  done
+done
+
+exit 0

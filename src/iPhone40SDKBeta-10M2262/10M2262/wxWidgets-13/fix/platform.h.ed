@@ -1,0 +1,3 @@
+/defined(__i386__)/s//& || defined(__x86_64__)/
+/defined(__ppc__)/s//& || defined(__ppc64__)/
+.

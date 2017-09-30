@@ -1,0 +1,86 @@
+#!/bin/sh
+# APPLE LOCAL file sdk support
+
+DESTDIR="${1-/tmp/root}"
+TARGETS="${2-powerpc i686}"
+COMPVERS="`gcc-4.2 -dumpversion`"
+OS_VER="`uname -r | sed 's/\..*//'`"
+
+# for debugging
+set -x
+
+# Catch all errors
+set -e
+
+rm -rf "$DESTDIR/Developer/SDKs"
+rm -rf "$DESTDIR/usr"
+
+for sdk in 10.5 10.6; do
+  DIR=$DESTDIR/Developer/SDKs/MacOSX$sdk.sdk
+
+  # temp to run fixincludes
+  mkdir -p $DIR/usr
+  ln -s /usr/libexec $DIR/usr/libexec
+
+  for VERS in $COMPVERS; do
+    MAJ_VERS="${VERS%*.*}"
+    for t in $TARGETS; do
+      mkdir -p $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER
+      cp -Rp /usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS \
+	  $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER
+
+      echo "Doing $t fixincludes"
+      BASE=/Developer/SDKs/MacOSX$sdk.sdk
+      # The current OS build root doesn't have the current OS SDK.
+      BASE=${BASE#/Developer/SDKs/MacOSX10.6.sdk}
+      /usr/libexec/gcc/$t-apple-darwin$OS_VER/$VERS/install-tools/mkheaders -v -v -v $DIR/usr $BASE
+
+      # Remove extraneous directories left by fixincludes
+      rm -rf $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS/include/c++
+      rm -rf $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS/include/gcc
+
+      # We don't need to regenerate, and besides, running them the normal
+      # way would alter the system headers by default, we avoid that by
+      # not giving them the rope.
+      rm -rf $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS/install-tools
+
+      # recopy omp.h, fixinclude removed it on us, don't know why
+      cp -p /usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS/include/omp.h \
+          $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS/include/omp.h
+      # fixup ppc_intrinsics.h and stdint.h
+      rm -f $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS/include/stdint.h
+      cp /usr/include/gcc/darwin/$MAJ_VERS/stdint.h \
+         $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS/include/stdint.h
+      rm -f $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS/include/ppc_intrinsics.h
+      cp /usr/include/gcc/darwin/$MAJ_VERS/ppc_intrinsics.h \
+         $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS/include/ppc_intrinsics.h
+
+      rm -f $DIR/usr/lib/gcc/$t-apple-darwin$OS_VER/$VERS/libstdc++.dylib
+      mkdir -p $DESTDIR/usr/lib/$t-apple-darwin$OS_VER/$VERS
+      mkdir -p $DIR/usr/lib/$t-apple-darwin$OS_VER/$VERS
+      cp $BASE/usr/lib/libstdc++.6.dylib \
+	 $DIR/usr/lib/$t-apple-darwin$OS_VER/$VERS/libstdc++.dylib
+      strip -x -c $DIR/usr/lib/$t-apple-darwin$OS_VER/$VERS/libstdc++.dylib || true
+    done
+
+    # Add in headers as well
+    mkdir -p $DIR/usr/include/gcc/darwin/$MAJ_VERS
+    cp /usr/include/gcc/darwin/$MAJ_VERS/stdint.h \
+       $DIR/usr/include/gcc/darwin/$MAJ_VERS/stdint.h
+    cp /usr/include/gcc/darwin/$MAJ_VERS/ppc_intrinsics.h \
+       $DIR/usr/include/gcc/darwin/$MAJ_VERS/ppc_intrinsics.h
+  done
+
+  # we're done with fixincludes, now remove it
+  rm $DIR/usr/libexec
+done
+
+for sdk in 10.5 ; do
+  DIR=$DESTDIR/Developer/SDKs/MacOSX$sdk.sdk
+
+  # 10.5 Didn't have 4.2.1 headers
+  mkdir -p $DIR/usr/include/c++ $DIR/usr/include/c++/4.0.0
+  ln -s 4.0.0 $DIR/usr/include/c++/$COMPVERS
+  ln -s i686-apple-darwin9 $DIR/usr/include/c++/4.2.1/i686-apple-darwin10
+  ln -s powerpc-apple-darwin9 $DIR/usr/include/c++/4.2.1/powerpc-apple-darwin10
+done

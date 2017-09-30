@@ -1,0 +1,9 @@
+*.bb
+*.bbg
+*.da
+*.plg
+.deps
+Makefile
+WinDebug
+WinRel
+libdiff.001

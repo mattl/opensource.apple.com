@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>OpenSourceProject</key>
+	<string>curl</string>
+	<key>OpenSourceVersion</key>
+	<string>7.21.4</string>
+	<key>OpenSourceWebsiteURL</key>
+	<string>http://curl.haxx.se/</string>
+	<key>OpenSourceURL</key>
+	<string>http://curl.haxx.se/download/curl-7.21.4.tar.bz2</string>
+	<key>OpenSourceSHA1</key>
+	<string>9cc59be07932b63e1f7d714c56ffaaa92af55373</string>
+	<key>OpenSourceImportDate</key>
+	<string>2011-02-17</string>
+	<key>OpenSourceModifications</key>
+	<array>
+		<string>Modified configure script to allow universal building.</string>
+		<string>Strip -arch flags from curl-config output.</string>
+		<string>Remove references to netrc(4) and wget(1) from manpage.</string>
+		<string>Build with the -mdynamic-no-pic flag.</string>
+	</array>
+	<key>OpenSourceLicense</key>
+	<string>MIT</string>
+	<key>OpenSourceLicenseFile</key>
+	<string>curl.txt</string>
+</dict>
+</plist>
