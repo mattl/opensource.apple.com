@@ -1,0 +1,328 @@
+ - dsync: delete foo, rename bar foo -> foo, foo-temp-1
+ - dsync+imapc:
+     - half-sync [-1], which is the same as normal sync except the other side
+       doesn't do anything (so when migrating from imapc, don't push changes
+       back to it)
+     - mailbox list could be synced pretty optimally by ignoring
+       (name, uidvalidity) matches. for the left if uidvalidities are unique
+       and can be matched -> rename mailbox.
+     - GUID-less sync could optionally use just rfc822.size [and internaldate]
+       to match messages.
+     - why does it use separate FETCH INTERNALDATE + FETCH BODY[HEADER]
+
+ - virtual plugin doesn't verify the index file's data, crashes if broken.
+ - imapc {} groups
+ - libsasl: use it in imapc, pop3c, managesieve-login, doveadm auth
+ - nonblocking passdb + blocking passdb -> deinit -> nonblocking passdb gets
+   aborted -> calls auth_worker_call() which crashes because deinit is
+   already done?
+ - ldap lookups should be done via auth worker processes? maybe automatically
+   if the lookups are queuing start creating workers? although multiple LDAP
+   connections within the same process would work too..
+ - per-msg checksums? per-cache-msg checksums? per-log record checksums?
+ - lazy_expunge_only_last_instance=yes + mdbox doesn't work, because refcounts
+   don't update immediately
+ - lib-ssl-iostream: ssl_get_last_error() should return also syscall errors
+   instead of being NULL. most importantly handle handshake code.
+ - if transaction log file corruption is noticed, make sure new dovecot.index
+   snapshot gets written and don't mark the whole file corrupted.. rather maybe
+   just rotate and truncate it
+ - mdbox: purging in alt storage could create files back to alt storage
+ - LAYOUT=index:
+    - force-resync should fix the index, finding any missing mailboxes, same
+      for when internally detecting the error
+    - see if there are any race conditions? and check other error handling
+    - after doing a lot of changes the list's memory pool keeps growing.
+      do an occasional re-parsing to clear the pool
+    - quota recalc + dict-file [+acl?] assert-crashes in !indexing->syncing
+ - imaptest: add condstore, qresync tests
+
+ - SASL client library, initially supporting only PLAIN and plugins. Use it
+   everywhere we currently use hardcoded PLAIN (proxy, doveadm, ..)
+ - zlib plugin should do caching similar to binary fetches. otherwise
+   partial fetches from large compressed mails are hopelessly slow.
+ - Track highestmodseq always, just don't keep per-message modseqs unless
+   they're enabled. Then don't return [NOMODSEQ] on select.
+ - URLAUTH: if client tries to access nonexistent user, do a delay in
+   imap-urlauth-client.c (AFTER destroying the worker)
+     - special response in the control connection to make the imap-urlauth
+       master wait before starting a new worker
+ - shared user should get settings from userdb extra fields, especially
+   plugin/quota_rule to get different quota limits for shared mailboxes.
+   the problem is that user doesn't currently have set_parser available,
+   and adding it would probably waste memory..
+ - auth_debug[_passwords]=yes ability for specific users via doveadm. for
+   both login-common and auth
+ - settings parsing is horribly bloaty
+ - doveadm: if running via doveadm-server and it fails, say something about
+   error being in the log
+ - indexer-worker and maybe others (doveadm?) could support dropping privileges
+   permanently when service_count=1. Note that LMTP can't with multiple RCPT
+   TOs.
+ - after reading whole message text, update has_nul-state to cache
+ - FIFOs maybe should be counted as connections, but unlisten should
+   unlink+reopen it in master?
+ - lmtp client/proxy: Handle multiline replies better
+ - lmtp: support DSN extension (especially ORCPT)
+ - recreate mailbox -> existing sessions log "indexid changed" error
+ - add message/mime limits
+ - imapc:
+     - prefetching to THREAD and SORT
+     - check all imap extensions and see if some don't work (condstore)
+ - per-namespace imapc_* settings? create a way to "copy" a settings struct,
+   so mail_storage_settings are copied to mail_namespace_settings. use the
+   change tracking to figure out what settings are namespace-specific.
+
+ - doveadm import: add -d parameter to deduplicate mails based on their GUID
+   (or perhaps do it by default?)
+ - sdbox: altmoving is done with mailbox locked. that's not necessary, it could
+   do the copying while unlocked and delete the primary files while locked
+ - passdb, userdb { username_format } that doesn't permanently change
+   the username
+ - mdbox/sdbox index rebuild -> quota rebuild?
+ - solr separate attachments (patch)
+ - sql connection pooling: Count lookup latencies, avoid servers with
+   significantly higher latencies. optionally use the secondary server only
+   as fallback
+ - maildir_storage_sync_force() shouldn't do anything except find the new
+   file, don't go expunging any more stuff or we could get recursively back to
+   where we started, and stuff would break
+ - imap: append/copy could trigger indexing (optionally)
+ - fuzzy: be fuzzy about date/size
+ - mailbox list index:
+    - with in-memory indexes be sure to refresh it more often
+    - refreshing could refresh only the parts that are actually requested,
+      e.g. %
+    - virtual could use it to avoid keeping all mailboxes open
+ - remove mail_deliver_session after all, do all the stuff transparently
+   by hooking into mailbox_copy().
+     - use this hook also to do the mail deduplication: 1) sort all destination
+       users, 2) create mail_user only once for each user, 3) remember in
+       src_mail the previously copied mail, 4) use that for mailbox_copy()ing
+       to following recipients
+     - make sure this removes duplicate dbox mails when sieve saves mail to
+       multiple mailboxes
+ - notify_sync() could have "what changed" struct with old/new flags
+ - maildir: copy dovecot-shared file from parent mailbox, not root.
+ - if global ACL path points to a file instead of a directory, read all of
+   them from there. support wildcards in names.
+
+ - master passdb preserves userdb_* extra fields. should it preserve
+   non-userdb_* extra fields too?
+ - imap, pop3: if client init fails, wait a second or two before disconnecting
+   client.
+ - doveadm search savedbefore 7d could be optimized in large mailboxes..
+ - mdbox: storage rebuilding could log about changes it does
+ - mdbox: broken extrefs header keeps causing index rebuilds
+ - cache: mail_cache_lookup() should be able to return mail_cache_add()ed
+   fields even before they've been flushed to disk. this is useful when copying
+   messages and some plugin (e.g. mail_log) fetches some fields that are
+   already added to cache (to avoid opening and parsing the message)
+ - doveadm -A <<EOF expunge + purge + EOF
+ - sent, drafts: .Sent/dovecot.index: modseq_hdr.log_offset too large
+ - mail_max_lock_timeout error could be reported more nicely, also ones coming
+   from lib-index
+ - sql pool: if async query is pending and sync query is sent and there
+   are no more empty connections, it should flush the async query first
+ - NTLMv1 and LM should be disabled if disable_plaintext_auth=yes
+ - SEARCH SENT*/HEADER/etc. doesn't seem optimized when using with TEXT/BODY
+ - dict sql: support ignoring some search key hierarchies (e.g. acl "anyone")
+ - dsync: avoid sending email when it could be copied from another mailbox.
+   probably requires storage to have guid => { instances } map? that's
+   rather annoying to add.
+
+ - mdbox
+    - dotlocking: cleanup should delete stale *.lock files
+    - purging seems to be inefficient. run imaptest for a while, get >500
+      files, start purging, it's slow until there are about 100 files left,
+      then the rest is suddenly fast.
+    - make sure that when reading mdbox mails sequentially the data is being
+      read from disk in n kB blocks and reads cross mail boundaries and when
+      reading the next mail it uses the previously read data in buffer
+    - Add some kind of checksum about data+metadata and use it when checking
+      consistency
+    - figure out a way to efficiently trigger purging when user has too much
+      mail expunged (e.g. keep track of total storage size, trigger purging
+      when it's 2*quota limit)
+    - keep track of total bytes in dbox storage in map header. also if
+      possible keep track of refcount=0 bytes. use these to optimize checks.
+    - save some stuff to map index header so we don't need to keep retrying
+      it. like when saving the lowest file_id which to bother checking.
+    - test crash-fixing
+    - mail_index_fsck() should perhaps cause dbox to be resynced?
+    - optimize away reading file header?
+ - maildir: out-of-disk-space failures apparently cause all kinds of
+   problems, e.g. "Expunged message reappeared", "Duplicate file entry"?
+ - deliver -r <address> used as autoreplies' From-address?
+ - istream-seekable is inefficient. it shouldn't be reading the temp file
+   immediately after writing to it
+ - config process is handling requests too slowly. maybe add some caching.
+    - maybe config should return all of the protocol/local/remote overrides
+      when requested? then the caller could do a single lookup at start and
+      merge them later internally. this would really help login processes.
+ - ipv6: auth penalty should begin from /64 and gradually grow to /48 if
+   necessary. and the same could be done for ipv4 as well..
+
+ - ldap: fix multiple-gid support somehow
+ - search: use mail_get_parts() only when it's already cached. if it's not,
+   add it to cache afterwards.
+ - dict pooling
+
+	/* currently non-external transactions can be applied multiple times,
+	   causing multiple increments. */
+	//FIXME:i_assert((t->flags & MAIL_INDEX_TRANSACTION_FLAG_EXTERNAL) != 0);
+  ^ appears to work now though, probably because of the added syncing stuff..
+
+ - use backup index in mail_index_fsck()
+ - proxying: support fallbacking to local (or other?) server if the first
+   one is down
+ - i_panic("Message count decreased") happens - why?
+     - at least one backtrace shows client_destroy -> client_command_cancel ->
+       imap_sync_deinit
+ - virtual: If last message matching INTHREAD rule gets expunged, the rest of
+   the thread doesn't go away
+ - how do shared mailboxes work with plugins?
+    - lazy-expunge, fts, etc.?
+    - listescape+acl can't handle shared mailboxes with escape chars
+ - dovecot-acl-list:
+    - how does it work with global acls?
+    - update immediately after SETACL: add/remove entries, update timestamps
+    - read the entire file to memory only once and keep it there, stat() later
+      to see if it has changed. if not, perhaps don't even bother stat()ing
+      dovecot-acl files? at least not that often..
+ - fs quota: getquotaroot inbox vs. other-box should return different quotas
+   if two quotas are defined
+ - auth_log_prefix setting similar to mail_log_prefix
+
+ - thread indexes: if we expunge a duplicate message-id: and we have a sibling
+   with identical message-id:, we can probably just move the children?
+   (unless there are non-sibling duplicates)
+ - SEARCH INTHREAD requires no thread sorting by date - don't do it
+ - CONDSTORE: use per-flag/per-keyword conflict checking
+ - QRESYNC: Drop expunges from the middle of given seq sets if possible
+ - use universal hash functions?
+
+ - UIDVALIDITY changed while saving -> sync errors
+   - mbox: copy to Trash, manually delete copied msg, change uidvalidity,
+     set nextuid=1, copy again -> error
+   - recent_uids assert at least with mbox
+ - quota fs: Should values returned by quota be divided by the actual
+   filesystem block size instead of hardcoded DEV_BSIZE? not with AIX..
+ - squat:
+   - wrong indexid
+   - fts_build_init() assertion failed: (last_uid < last_uid_locked)
+   - is locking done right? it reads header without file being locked?
+   - split after ~8 bytes?
+   - expunges are delayed until more mails are added
+ - test replacement chars (SEARCH / SORT / Squat)
+
+ - DEBUG: buffer overflow checking code probably doesn't handle a successful
+   t_try_realloc() or pool_alloconly_realloc() properly
+ - ldap:
+   - sasl bind + auth_bind=yes should probably be doing only sasl binds..
+   - support multiple connections for doing auth binds
+   - domain lookups which set the base for user lookup
+   - multiple ldap values could be joined into one field with specified
+     separator (e.g. mail_access_groups=%{ldap:gidNumber:,})
+   - implement something like:
+       user_attrs {
+	 uid = %{ldap:uidNumber}
+	 home = %{ldap:homeDirectory}
+	 quota_bytes = *:bytes=%{ldap:quota}
+       }
+
+ - maildir+pop3 fast updates:
+   - don't update dovecot-uidlist if dovecot.index.cache doesn't exist /
+     there's nothing to cache
+   - if all messages are expunged and there are no unknown extensions in index,
+     unlink dovecot.index and rotate log and add some initial useful info to
+     the log (uidvalidity, nextuid)
+
+ - maildir
+   - don't allow more than 26 keywords
+
+ - file_cache: we're growing the mmap in page size blocks, which is horribly
+   slow if mremap() doesn't exist.
+
+ - keywords:
+    - add some limits to how many there can be
+       - don't return \* in PERMANENTFLAGS when we're full
+    - remove unused keywords?
+
+ - mail caching
+    - force bits should be used only for nonregistered fields
+    - change envelope parsing not to use get_headers() so imap.envelope can
+      actually be cached without all the headers..
+    - if there's no other pressure for compression, we should do it when
+      enough temp fields are ready to be dropped
+    - we could try compressing same field values into a single
+      location in cache file.
+    - place some maximum limit of fields to cache file? maybe some soft and
+      hard limits, so when soft limit is reached drop fields that have
+      been used only once. when hard limit is reached drop any fields to get
+      more space. all this to avoid cache file growing infinitely.
+
+ - mbox
+    - UID renumbering doesn't really work after all?
+    - still problems with CRLF mboxes.. especially with broken Content-Length
+      headers (pointing between CR-LF?)
+    - syncing existing indexes takes 4x longer than creating new one, why?
+    - how well does dirty sync + status work? it reads the last mail every
+      time? not very good..
+    - always add empty line. make the parser require it too? syncing should
+      make sure there always exists two LFs at end of file. raw-mbox-stream
+      should make sure the last message ends with LF even if it doesn't exist
+      in the file
+    - Quote "From ", unquote ">From "
+    - COPY doesn't work to itself (lock assert crash, for now just disallowed)
+
+ - index
+    - index file format changes:
+        - split to "old" and "new" indexes and try to avoid loading "old" into
+	  memory until needed
+	- pack UIDs to beginning of file with UID ranges
+	- use squat-like compressed uid ranges everywhere
+        - write first extension intros in dovecot.index.log always with names
+	   - or better yet, drop the intro concept completely as it is now
+	- add "transaction boundaries" so we know which records belong to a
+	  single transaction.
+	   - only after that we can remove the transaction log offset
+	     overwriting (otherwise we can get partial transactions in views)
+
+ - login
+    - Digest-MD5: support integrity protection, and maybe crypting. Do it
+      through login process like SSL is done?
+
+ - auth
+    - with blocking passdb we're not caching lookups if the password was wrong
+    - non-plaintext authentication doesn't support all features:
+        - multiple passdbs don't work, only the first one is used
+	- auth cache's last_success password change check doesn't exist
+	- auth_cache_negative_ttl doesn't check password mismatches
+    - dovecot-auth should limit how fast authentication requests are allowed
+      from login processes. especially if there's one login/connection the speed
+      should be something like once/sec. also limit how fast to accept new
+      connections.
+    - support read-only logins. user could with alternative password get only
+      read-access to mails so mails could be read relatively safely with
+      untrusted computers. Maybe always send [ALERT] about the previous
+      read-only login time with IP?
+
+ - ssl
+    - add setting: ssl_options = bitmask. by default we enable all openssl
+      workarounds, this could be used to disable some of them
+    - gnutls support isn't working
+
+ - search
+    - message header search: we should ignore LWSP between two MIME blocks(?)
+    - message_search_init() could accept multiple search keywords so we
+      wouldn't need to call it separately for each one (so we wouldn't need
+      to parse the message multiple times).
+    - Create our own extension: When searching with TEXT/BODY, return
+      the message text surrounding the keywords just like web search engines
+      do. like: SEARCH X-PRINT-MATCHES TEXT "hello" -> * SEARCH 1 "He said:
+      Hello world!" 2 "Hello, I'm ...". This would be especially useful with
+      the above attachment scanning.
+
+ - general
+    - things break if next_uid gets to 2^32

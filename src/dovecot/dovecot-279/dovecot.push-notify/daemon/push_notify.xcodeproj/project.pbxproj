@@ -1,0 +1,300 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		177C3B4A0E952D0B0049E145 /* push_notify.m in Sources */ = {isa = PBXBuildFile; fileRef = 177C3B490E952D0B0049E145 /* push_notify.m */; };
+		612051B60F9E227700B8368B /* OpenDirectory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 612051B50F9E227700B8368B /* OpenDirectory.framework */; };
+		6126CACF0A559216004B74A4 /* push_notify.8 in Copy Man Page */ = {isa = PBXBuildFile; fileRef = 6126CACD0A55920B004B74A4 /* push_notify.8 */; };
+		6126CAD20A559263004B74A4 /* com.apple.push_notify.plist in Copy Launchd Plist */ = {isa = PBXBuildFile; fileRef = 6126CAD10A559263004B74A4 /* com.apple.push_notify.plist */; };
+		61949C46146B426400F10A1A /* APNSFeedback.m in Sources */ = {isa = PBXBuildFile; fileRef = 61949C41146B426400F10A1A /* APNSFeedback.m */; };
+		61949C47146B426400F10A1A /* APNSNotify.m in Sources */ = {isa = PBXBuildFile; fileRef = 61949C43146B426400F10A1A /* APNSNotify.m */; };
+		61949C48146B426400F10A1A /* APNSStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 61949C45146B426400F10A1A /* APNSStream.m */; };
+		61949C8C146B432B00F10A1A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61949C8B146B432B00F10A1A /* Security.framework */; };
+		61949C94146B434400F10A1A /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61949C93146B434400F10A1A /* CoreServices.framework */; };
+		61949C9F146B435D00F10A1A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61949C9E146B435D00F10A1A /* Foundation.framework */; };
+		61BA984B157D4CEA007AA6E4 /* ServerFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61BA984A157D4CEA007AA6E4 /* ServerFoundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		613B007D0A558E2300056B7F /* Copy Man Page */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = "$(SERVER_INSTALL_PATH_PREFIX)/usr/share/man/man8/";
+			dstSubfolderSpec = 0;
+			files = (
+				6126CACF0A559216004B74A4 /* push_notify.8 in Copy Man Page */,
+			);
+			name = "Copy Man Page";
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		618FFEEE0A548C4100A0FE95 /* Copy Launchd Plist */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = "$(SERVER_INSTALL_PATH_PREFIX)/System/Library/LaunchDaemons";
+			dstSubfolderSpec = 0;
+			files = (
+				6126CAD20A559263004B74A4 /* com.apple.push_notify.plist in Copy Launchd Plist */,
+			);
+			name = "Copy Launchd Plist";
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		177C3B480E952D0B0049E145 /* push_notify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = push_notify.h; sourceTree = "<group>"; };
+		177C3B490E952D0B0049E145 /* push_notify.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = push_notify.m; sourceTree = "<group>"; };
+		612051B50F9E227700B8368B /* OpenDirectory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenDirectory.framework; path = /System/Library/Frameworks/OpenDirectory.framework; sourceTree = "<absolute>"; };
+		6126CACD0A55920B004B74A4 /* push_notify.8 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = push_notify.8; sourceTree = "<group>"; };
+		6126CAD10A559263004B74A4 /* com.apple.push_notify.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = com.apple.push_notify.plist; sourceTree = "<group>"; };
+		61949C40146B426400F10A1A /* APNSFeedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APNSFeedback.h; sourceTree = "<group>"; };
+		61949C41146B426400F10A1A /* APNSFeedback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APNSFeedback.m; sourceTree = "<group>"; };
+		61949C42146B426400F10A1A /* APNSNotify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APNSNotify.h; sourceTree = "<group>"; };
+		61949C43146B426400F10A1A /* APNSNotify.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APNSNotify.m; sourceTree = "<group>"; };
+		61949C44146B426400F10A1A /* APNSStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APNSStream.h; sourceTree = "<group>"; };
+		61949C45146B426400F10A1A /* APNSStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APNSStream.m; sourceTree = "<group>"; };
+		61949C8B146B432B00F10A1A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		61949C93146B434400F10A1A /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
+		61949C9E146B435D00F10A1A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		61BA984A157D4CEA007AA6E4 /* ServerFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServerFoundation.framework; path = /System/Library/PrivateFrameworks/ServerFoundation.framework; sourceTree = "<absolute>"; };
+		61FD409D0A0A4FCA0098F485 /* push_notify */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = push_notify; sourceTree = BUILT_PRODUCTS_DIR; };
+		8486BEB91427C6B1008FED78 /* ServerBuildVariables.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = ServerBuildVariables.xcconfig; path = /AppleInternal/ServerTools/ServerBuildVariables.xcconfig; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		613AC90C0A0A4DCB00100B43 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				612051B60F9E227700B8368B /* OpenDirectory.framework in Frameworks */,
+				61949C8C146B432B00F10A1A /* Security.framework in Frameworks */,
+				61949C94146B434400F10A1A /* CoreServices.framework in Frameworks */,
+				61949C9F146B435D00F10A1A /* Foundation.framework in Frameworks */,
+				61BA984B157D4CEA007AA6E4 /* ServerFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* mail_backup */ = {
+			isa = PBXGroup;
+			children = (
+				8486BEB91427C6B1008FED78 /* ServerBuildVariables.xcconfig */,
+				613AC9330A0A4E7C00100B43 /* source */,
+				61949C2E146B41D100F10A1A /* headers */,
+				08FB7795FE84155DC02AAC07 /* Common */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				61CAF8070A0A5EB800B7CD82 /* External Frameworks and Libraries */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = mail_backup;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				6126CAD10A559263004B74A4 /* com.apple.push_notify.plist */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				61FD409D0A0A4FCA0098F485 /* push_notify */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		613AC9330A0A4E7C00100B43 /* source */ = {
+			isa = PBXGroup;
+			children = (
+				177C3B490E952D0B0049E145 /* push_notify.m */,
+				61949C43146B426400F10A1A /* APNSNotify.m */,
+				61949C41146B426400F10A1A /* APNSFeedback.m */,
+				61949C45146B426400F10A1A /* APNSStream.m */,
+			);
+			name = source;
+			sourceTree = "<group>";
+		};
+		61949C2E146B41D100F10A1A /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				177C3B480E952D0B0049E145 /* push_notify.h */,
+				61949C42146B426400F10A1A /* APNSNotify.h */,
+				61949C40146B426400F10A1A /* APNSFeedback.h */,
+				61949C44146B426400F10A1A /* APNSStream.h */,
+			);
+			name = headers;
+			sourceTree = "<group>";
+		};
+		61CAF8070A0A5EB800B7CD82 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				61949C93146B434400F10A1A /* CoreServices.framework */,
+				61949C9E146B435D00F10A1A /* Foundation.framework */,
+				612051B50F9E227700B8368B /* OpenDirectory.framework */,
+				61949C8B146B432B00F10A1A /* Security.framework */,
+				61BA984A157D4CEA007AA6E4 /* ServerFoundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				6126CACD0A55920B004B74A4 /* push_notify.8 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		613AC90D0A0A4DCB00100B43 /* push_notify */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61E39F030A50A796006A171E /* Build configuration list for PBXNativeTarget "push_notify" */;
+			buildPhases = (
+				613AC90B0A0A4DCB00100B43 /* Sources */,
+				613AC90C0A0A4DCB00100B43 /* Frameworks */,
+				618FFEEE0A548C4100A0FE95 /* Copy Launchd Plist */,
+				613B007D0A558E2300056B7F /* Copy Man Page */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = push_notify;
+			productName = mailService_backup;
+			productReference = 61FD409D0A0A4FCA0098F485 /* push_notify */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 61E39EFB0A50A796006A171E /* Build configuration list for PBXProject "push_notify" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* mail_backup */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				613AC90D0A0A4DCB00100B43 /* push_notify */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		613AC90B0A0A4DCB00100B43 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				177C3B4A0E952D0B0049E145 /* push_notify.m in Sources */,
+				61949C46146B426400F10A1A /* APNSFeedback.m in Sources */,
+				61949C47146B426400F10A1A /* APNSNotify.m in Sources */,
+				61949C48146B426400F10A1A /* APNSStream.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		61E39EFC0A50A796006A171E /* Development */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8486BEB91427C6B1008FED78 /* ServerBuildVariables.xcconfig */;
+			buildSettings = {
+			};
+			name = Development;
+		};
+		61E39EFE0A50A796006A171E /* Default */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8486BEB91427C6B1008FED78 /* ServerBuildVariables.xcconfig */;
+			buildSettings = {
+			};
+			name = Default;
+		};
+		61E39F040A50A796006A171E /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/System/Library/PrivateFrameworks,
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(SERVER_INSTALL_PATH_PREFIX)/usr/sbin";
+				OTHER_LDFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = push_notify;
+				SECTORDER_FLAGS = "";
+				VALID_ARCHS = x86_64;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Development;
+		};
+		61E39F060A50A796006A171E /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/System/Library/PrivateFrameworks,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				INSTALL_PATH = "$(SERVER_INSTALL_PATH_PREFIX)/usr/sbin";
+				PRODUCT_NAME = push_notify;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		61E39EFB0A50A796006A171E /* Build configuration list for PBXProject "push_notify" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61E39EFC0A50A796006A171E /* Development */,
+				61E39EFE0A50A796006A171E /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		61E39F030A50A796006A171E /* Build configuration list for PBXNativeTarget "push_notify" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61E39F040A50A796006A171E /* Development */,
+				61E39F060A50A796006A171E /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
