@@ -1,0 +1,5 @@
+if [ "${Target}" = "ApplePS2Mouse" ]; then
+	Targets='ApplePS2Mouse'
+else
+	Targets='ApplePS2Mouse'
+fi

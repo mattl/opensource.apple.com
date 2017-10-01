@@ -1,0 +1,730 @@
+.ig \" -*-mode:nroff-*-
+Copyright (c) 2002-2004, Apple Computer, Inc.  All rights reserved.
+
+@APPLE_LICENSE_HEADER_START@
+
+The contents of this file constitute Original Code as defined in and
+are subject to the Apple Public Source License Version 1.1 (the
+"License").  You may not use this file except in compliance with the
+License.  Please obtain a copy of the License at
+http://www.apple.com/publicsource and read it before using this file.
+
+This Original Code and all software distributed under the License are
+distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
+INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT.  Please see the
+License for the specific language governing rights and limitations
+under the License.
+
+@APPLE_LICENSE_HEADER_END@
+..
+.TH top 1 "top"
+.hy 1
+.SH NAME
+top - display and update sorted information about processes
+.SH SYNOPSIS
+.TP
+.BR top
+.RB [ \-a
+|
+.B \-d
+|
+.B \-e
+|
+.B \-c
+.IR <mode> ]
+.br
+.RB [ \-F
+| 
+.BR \-f ]
+.br
+.RB [ \-h ]
+.br
+.RB [ \-i
+.IR <interval> ]
+.br
+.RB [ \-k ]
+.br
+.RB [ \-L
+|
+.B \-l
+.IR <samples> ]
+.br
+.RB [ \-o
+.IR <key> ]
+.RB [ \-O
+.IR <skey> ]
+.br
+.RB [ \-p
+.IR <format> ]
+.RB [ \-P
+.IR <legend> ]
+.br
+.RB [ \-R
+| 
+.BR \-r ]
+.br
+.RB [ \-S ]
+.br
+.RB [ \-s
+.IR <delay> ]
+.br
+.RB [ \-T
+| 
+.BR \-t ]
+.br
+.RB [ \-U
+.IR <user> ]
+.br
+.RB [ \-u ]
+.br
+.RB [ \-W
+| 
+.BR \-w ]
+.br
+.RB [ \-X
+| 
+.BR \-x ]
+.br
+.RB [[ \-n ]
+.IR <nprocs> ]
+.SH DESCRIPTION
+The
+.B top
+program periodically displays a sorted list of system processes.
+The default sorting key is pid, but other keys can be used instead.
+Various output options are available.
+.SH OPTIONS
+Command line option specifications are processed from left to right.
+Options can be specified more than once.
+If conflicting options are specified, later specifications override earlier
+ones.
+This makes it viable to create a shell alias for
+.B top
+with preferred defaults specified, then override those preferred defaults as
+desired on the command line.
+.TP
+.B \-a
+Deprecated, equivalent to
+.BR -ca .
+.TP
+.BI \-c " " "" <mode>
+Set event counting mode to
+.IR <mode> .
+The supported modes are:
+.RS
+.TP
+.B a
+Accumulative mode.
+Count events cumulatively, starting at the launch of
+.BR top .
+Calculate CPU usage and CPU time since the launch of
+.BR top .
+.TP
+.B d
+Delta mode.
+Count events relative to the previous sample.
+Calculate CPU usage since the previous sample.
+.TP
+.B e
+Absolute mode.
+Count events using absolute counters.
+.TP
+.B n
+Non-event mode (default).
+Calculate CPU usage since the previous sample.
+.RE
+.TP
+.B \-d
+Deprecated, equivalent to
+.BR -cd .
+.TP
+.B \-e
+Deprecated, equivalent to
+.BR -ce .
+.TP
+.B \-F
+Do not calculate statistics on shared libraries, also known as frameworks.
+.TP
+.B \-f 
+Calculate statistics on shared libraries, also known as frameworks (default).
+.TP
+.B \-h
+Print command line usage information and exit.
+.TP
+.BI \-i " " "" <interval>
+Update framework (-f) info every 
+.I <interval> 
+samples; see the 
+.B PERFORMANCE vs. ACCURACY
+section below for more details.
+.TP
+.B \-k
+Deprecated (does nothing).
+This flag used to turn on memory object reporting for process 0 (kernel_task),
+but this is now done by default.
+.TP
+.B \-L
+Use non-logging mode.
+If not running on a terminal, exit with an error rather than running in
+logging mode.
+.TP
+.BI \-l " " "" <samples>
+Use logging mode and display
+.I <samples>
+samples, even if standard output is a terminal.
+0 is treated as infinity.
+Rather than redisplaying, output is periodically printed in raw form.
+Note that the first sample displayed will have an invalid %CPU displayed
+for each process, as it is calculated using the delta between samples.
+.TP
+.BI \-n " " "" <nprocs>
+Only display up to
+.I <nprocs>
+processes.
+.I <nprocs>
+can be specified as the last command line argument without the
+.B -n
+flag preceding it.
+However, doing so is deprecated command line usage.
+.TP
+.BI \-O " " "" <skey>
+Use
+.I <skey>
+as a secondary key when ordering the process display.
+See
+.B -o
+for key names
+.RB ( pid
+is default).
+.TP
+.BI \-o " " "" <key>
+.RS
+Order the process display by sorting on
+.I <key>
+in descending order.
+A
+.B +
+or
+.B -
+can be prefixed to the key name to specify ascending or descending order,
+respectively.
+The supported keys are:
+.TP
+.B command
+Command name.
+.TP
+.B cpu
+CPU usage.
+.TP
+.B pid
+Process ID (default)..
+.TP
+.B prt
+Number of Mach ports.
+.TP
+.B reg
+Number of memory regions.
+.TP
+.B rprvt
+Resident private address space size.
+.TP
+.B rshrd
+Resident shared address space size.
+.TP
+.B rsize
+Resident memory size.
+.TP
+.B th
+Number of threads.
+.TP
+.B time
+Execution time.
+.TP
+.B uid
+User ID.
+.TP
+.B username
+Username.
+.TP
+.B vprvt
+Private address space size.
+.TP
+.B vsize
+Total memory size.
+.RE
+.TP
+.BI \-P " " "" <legend>
+Set a custom legend string (containing the column headings); this should usually
+be used with a custom format string.
+.TP
+.BI \-p " " "" <format>
+Set a custom format string to display process info; see the
+.B CUSTOM DISPLAY FORMAT
+section for more information on this option.
+.TP
+.B \-R
+Do not traverse and report the memory object map for each process.
+.TP
+.B \-r
+Traverse and report the memory object map for each process (default).
+.TP
+.B \-S
+Display information about swap usage and purgeable memory.
+.TP
+.BI \-s " " "" <delay>
+Set the delay between updates to
+.I <delay>
+seconds.
+The default delay between updates is 1 second.
+.TP
+.B \-T
+Do not translate uid numbers to usernames (default).
+.TP
+.B \-t
+Translate uid numbers to usernames.
+.TP
+.BI \-U " " "" <user>
+Only display processes owned by
+.IR <user> .
+Either the username or uid number can be specified.
+.TP
+.B \-u
+Deprecated, equivalent to
+.B -ocpu
+.BR -Otime .
+.TP
+.B \-W
+Display
+.B +
+or
+.B -
+to indicate deltas (default).
+.TP
+.B \-w
+Display delta values, rather than just
+.B +
+or
+.BR - .
+.TP
+.B \-X
+Run using the legacy display format.
+.TP
+.B \-x
+Run using the nominal display format. 
+.TP
+.SH DISPLAY
+The first several lines of the
+.B top
+display show various global state.
+All of the information is labeled.
+Following is an alphabetical list of global state fields and their descriptions.
+.TP 12
+.B CPU
+Percentage of processor usage, broken into user, system, and idle components.
+The time period for which these percentages are calculated depends on the event
+counting mode.
+.TP 12
+.B Disks
+Number and total size of disk reads and writes.
+.TP 12
+.B LoadAvg
+Load average over 1, 5, and 15 minutes.
+The load average is the average number of jobs in the run queue.
+.TP 12
+.B MemRegions
+Number and total size of memory regions, and total size of memory regions broken
+into private (broken into non-library and library) and shared components.
+.TP 12
+.B Networks
+Number and total size of input and output network packets.
+.TP 12
+.B PhysMem
+Physical memory usage, broken into wired, active, inactive, used, and free
+components.
+.TP 12
+.B Procs
+Total number of processes and number of processes in each process state.
+.TP 12
+.B SharedLibs
+Number of shared libraries, resident sizes of code and data segments, and
+link editor memory usage.
+.TP 12
+.B Threads
+Number of threads.
+.TP 12
+.B Time
+Time, in YYYY/MM/DD HH:MM:SS format.
+When running in accumulative event counting mode, the time since top started is
+printed in parentheses in H:MM:SS format.
+.TP 12
+.B VirtMem
+Total virtual memory, virtual memory consumed by shared libraries, and number of
+pageins and pageouts.
+.TP 12
+.B Swap
+Swap usage: total size of swap areas, amount of swap space in use and amount
+of swap space available.
+.TP 12
+.B Purgeable
+Number of pages purged and number of pages currently purgeable.
+.PP
+Below the global state fields, a list of processes is displayed.
+The fields that are displayed depend on the options that are set.
+Following is an alphabetical list of fields and their descriptions.
+.TP 14
+.B BSYSCALL
+Number of BSD system calls made.
+.TP 14
+.B COMMAND
+Command name.
+.TP 14
+.B COW_FAULTS
+Number of faults that caused a page to be copied.
+.TP 14
+.B %CPU
+Percentage of processor time consumed (kernel and user).
+.TP 14
+.B CSWITCH
+Number of context switches.
+.TP 14
+.B FAULTS
+Number of faults.
+.TP 14
+.B MSYSCALL
+Number of Mach system calls made.
+.TP 14
+.B REG
+Number of memory regions.
+.TP 14
+.B MSGS_RCVD
+Number of Mach messages received.
+.TP 14
+.B MSGS_SENT
+Number of Mach messages sent.
+.TP 14
+.B PAGEINS
+Number of requests for pages from a pager.
+.TP 14
+.B PID
+Process ID.
+.TP 14
+.B PRT(delta)
+Number of Mach ports.
+.TP 14
+.B RPRVT(delta)
+Resident private memory size.
+.TP 14
+.B RSHRD(delta)
+Resident shared memory size.
+.TP 14
+.B RSIZE(delta)
+Total resident memory size, including shared pages.
+.TP 14
+.B TH
+Number of threads.
+.TP 14
+.B TIME
+Absolute processor time consumed.
+.TP 14
+.B UID
+User ID of process owner.
+.TP 14
+.B USERNAME
+Username of process owner.
+.TP 14
+.B VPRVT(delta)
+Private address space size.
+.TP 14
+.B VSIZE(delta)
+Total address space allocated, including shared pages.
+.SH INTERACTION
+When
+.B top
+is run in interactive (non-logging) mode, it is possible to control the output of
+.BR top ,
+as well as interactively send signals to processes.
+The interactive command syntax is terse.
+Each command is one character, followed by 0 to 2 arguments.
+Commands that take arguments prompt interactively for the arguments, and where
+applicable, the default value is shown in square brackets.
+The default value can be selected by leaving the input field blank and pressing
+enter.
+.B ^G
+escapes the interactive argument prompt, and has the same effect as leaving
+the input field blank and pressing enter.
+.PP
+The following commands are supported:
+.TP
+.BR ?
+Display the help screen.
+Any character exits help screen mode.
+This command always works, even in the middle of a command.
+.TP
+.B ^L
+Redraw the screen.
+.TP
+.BI c <mode>
+Set output mode to
+.IR <mode> .
+The supported modes are:
+.RS
+.TP
+.B a
+Accumulative mode.
+.TP
+.B d
+Delta mode.
+.TP
+.B e
+Event mode.
+.TP
+.B n
+Non-event mode.
+.RE
+.TP
+.B f
+Toggle shared library statistics reporting.
+.TP
+.BI n <nprocs>
+Only display up to
+.I <nprocs>
+processes.
+0 is treated as infinity.
+.TP
+.BI O <skey>
+Use
+.I <skey>
+as a secondary key when ordering the process display.
+See the
+.B o
+command for key names.
+.TP
+.BI o <key>
+.RS
+Order the process display by sorting on
+.I <key>
+in descending order.
+A
+.B +
+or
+.B -
+can be prefixed to the key name to specify ascending or descending order,
+respectively.
+The supported keys are:
+.TP
+.B command
+Command name.
+.TP
+.B cpu
+CPU usage.
+.TP
+.B pid
+Process ID.
+.TP
+.B prt
+Number of Mach ports.
+.TP
+.B reg
+Number of memory regions.
+.TP
+.B rprvt
+Resident private address space size.
+.TP
+.B rshrd
+Resident shared address space size.
+.TP
+.B rsize
+Resident memory size.
+.TP
+.B th
+Number of threads.
+.TP
+.B time
+Execution time.
+.TP
+.B uid
+User ID.
+.TP
+.B username
+Username.
+.TP
+.B vprvt
+Private address space size.
+.TP
+.B vsize
+Total memory size.
+.RE
+.TP
+.B q
+Quit.
+.TP
+.B r
+Toggle traversal and reporting of the memory object map for each process.
+.TP
+.BI S <signal> "" <pid>
+Send
+.I <sig>
+to
+.IR <pid>.
+.I <sig>
+can be specified either as a number or as a name (for example,
+.BR HUP ).
+The default signal starts out as
+.BR TERM .
+Each time a signal is successfully sent, the default signal is updated to be
+that signal.
+.I <pid>
+is a process id.
+.TP
+.BI s <delay>
+Set the delay between updates to
+.I <delay>
+seconds.
+.TP
+.B t
+Toggle translation of uid numbers to usernames.
+.TP
+.BI U <user>
+Only display processes owned by
+.IR <user> .
+Either the username or uid number can be specified.
+To display all processes, press enter without entering a username or uid number.
+.TP
+.B w
+Toggle wide/narrow delta mode.
+.TP
+.B x
+Toggle display formats.
+.SH PERFORMANCE vs. ACCURACY
+Calculating detailed memory statistics is fundamentally resource-intensive.
+To reduce the cpu usage in top, the
+.I \-i
+parameter has been introduced to allow the user to tune this tradeoff.  With the 
+default value of 10, framework stats will be updated once every 10 samples.
+Specifying
+.I \-i
+1 will result in the most accurate display, at the expense of system resources.
+.SH CUSTOM DISPLAY FORMATS
+Users who would like to change the format of the top process display lines may
+use the
+.I \-p
+option to specify a custom format.  Any number of fields may be specified, and
+the the order of these fields and their widths may be specified by using the
+following special syntax.
+.PP
+The following fields are available:
+.TP
+.B a
+Process ID (PID)
+.TP
+.B b
+command string
+.TP
+.B c
+CPU usage (percentage)
+.TP
+.B d
+CPU usage (time)
+.TP
+.B e
+threads
+.TP
+.B f
+Mach ports
+.TP
+.B g
+memory regions
+.TP
+.B h
+RPRVT
+.TP
+.B i
+RSHRD
+.TP
+.B j
+RSIZE
+.TP
+.B k
+VPRVT
+.TP
+.B l
+VSIZE
+.TP
+.B m
+UID
+.TP
+.B n
+username
+.TP
+.B o
+page faults
+.TP
+.B p
+pageins
+.TP
+.B q
+COW faults
+.TP
+.B r
+messages sent
+.TP
+.B s
+messages received
+.TP
+.B t
+bsyscall
+.TP
+.B u
+msyscall
+.TP
+.B v
+cswitch
+.TP
+.B w
+time (in HH:MM:SS) format
+.PP
+Each format specification is introduced by either the carat (^) character
+(indicating left justification) or the dollar ($) character (indicating 
+right justification).  It is then followed by the desired format character; this
+character may be repeated to delineate the field width.  (For example,
+'^aaaaa' will produce a left-justified PID field of width 6.)
+.PP
+Certain fields (f, h, i, j, l) may be followed by one or more dash (-) characters;
+this will cause a delta to be displayed.   One dash will display `-', `+' or ' '
+to indicate a decrease, increase, or no change in the value.  Multiple dashes will
+result in an actual delta value being displayed.
+.PP
+The backslash character may be used to escape any character, including itself.
+Any other character will be displayed as a literal.
+.PP
+The
+.I -P
+flag may be used to specify a custom legend line.  Specifying either
+.I -P
+or
+.I -p
+without a following format string will cause top to display the default legend
+and format for the selected display mode.
+.SH EXAMPLES
+.TP
+top -ocpu -O+rsize -s 5 -n 20
+Sort the processes according to CPU usage (descending) and resident memory size
+(ascending), sample and update the display at 5 second intervals, and limit the
+display to 20 processes.
+.TP
+top -ce
+Run top in event counter mode.
+.TP
+top -tl 10
+Translate uid numbers to usernames and run in logging mode, taking 10 samples
+at 2 second intervals.
+.TP
+top -P '  PID COMMAND      %CPU   TIME   #TH #PRTS #MREGS RPRVT  RSHRD  RSIZE  VSIZE' \\
+    -p '$aaaa ^bbbbbbbbb $cccc% $wwwwwww $ee $ffff-$ggggg $hhhh- $iiii- $jjjj- $llll-'
+This will recreate the default process display. 
+.SH SEE ALSO
+kill(2),
+vm_stat(1),
+signal(3)

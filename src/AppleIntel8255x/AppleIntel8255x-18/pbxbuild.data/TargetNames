@@ -1,0 +1,5 @@
+if [ "${Target}" = "AppleIntel8255x" ]; then
+	Targets='AppleIntel8255x'
+else
+	Targets='AppleIntel8255x'
+fi

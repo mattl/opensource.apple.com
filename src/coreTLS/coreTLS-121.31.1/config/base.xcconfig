@@ -1,0 +1,14 @@
+SDKROOT = macosx.internal
+
+SUPPORTED_PLATFORMS = macosx iphoneos iphonesimulator watchos watchsimulator appletvos appletvsimulator
+
+CODE_SIGN_IDENTITY = -;
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+CURRENT_PROJECT_VERSION = $(RC_ProjectSourceVersion)
+VERSIONING_SYSTEM = apple-generic;
+DEAD_CODE_STRIPPING = YES;
+
+RUN_CLANG_STATIC_ANALYZER = YES
+CLANG_STATIC_ANALYZER_MODE = deep
+
+OTHER_CFLAGS_coverage = $(inherited) -fprofile-instr-generate -fprofile-arcs -ftest-coverage

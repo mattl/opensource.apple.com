@@ -1,0 +1,118 @@
+
+----- Tagged ld64-95.9
+
+2009-02-13     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6543423> Back out Linker changes for H2 hang
+	* src/ld/Options.cpp: remove fPreventPageCrossingBranches
+	* src/ld/MachOWriterExecutable.hpp: remove layout of __text so there are not page crossing branches
+	* src/ld/MachOReaderRelocatable.hpp: parse but ignore ARM_THUMB_32BIT_BRANCH reloc
+
+
+----- Tagged ld64-95.8.3
+
+2009-03-31     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6719270> ld might set MH_WEAK_DEFINES when it should not
+	* src/ld/MachOWriterExecutable.hpp: rescan fRegularDefAtomsThatOverrideADylibsWeakDef and only consider global ones
+	
+
+----- Tagged ld64-95.8.2
+
+2009-03-18     Nick Kledzik    <kledzik@apple.com>
+
+	* src/ld/MachOReaderRelocatable.hpp: back out -force_cpusubtype_ALL changes
+
+
+----- Tagged ld64-95.8.1
+
+2009-03-17     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6578416> -dead_strip inhibits weak coalescing in no_dead_strip section	
+	* src/ld/ld.cpp: in markDead() remove from fLiveRootAtoms
+	
+	
+2009-03-17     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6671072> libgcc fails to build in with ld64-95.8
+	* src/ld/MachOReaderRelocatable.hpp: interpret CPU_SUBTYPE_ARM_ALL as CPU_SUBTYPE_ARM_V4T
+	* src/ld/Options.cpp: interept -force_cpusubtype_ALL as -arch armv4t
+
+
+----- Tagged ld64-95.8
+
+2009-02-09     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6569316> ld64-95.7 crashes building Foundation-678.39 in side build
+	* src/ld/MachOReaderRelocatable.hpp: handle a zero length section with a label before __cstring section
+
+
+----- Tagged ld64-95.7
+
+2009-02-06     Nick Kledzik    <kledzik@apple.com>
+
+	* src/ld/ObjectFile.h: make fAddCompactUnwindEncoding false by default
+	
+
+2009-02-06     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6537210> ER: add linker option to zero fill empty DATA sections on disk
+	* src/ld/Options.cpp: add support for -no_zero_fill_sections
+	* src/ld/MachOReaderRelocatable.hpp: isZeroFill() is only true if fOptimizeZeroFill 
+	* doc/man/man1/ld.1: document -no_zero_fill_sections
+	* unit-tests/test-cases/no_zero_fill_sections: add test case
+	
+
+2009-02-05     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6497366> label getting resolved to the wrong address.
+	* src/ld/MachOWriterExecutable.hpp: add findAtomAndOffsetForSection() and use it to disambiguate
+	* unit-tests/test-cases/label-on-end-of-section: added test case
+
+
+2009-01-27     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6517393> Warn -force_cpusubtype_ALL is not supported
+	* src/ld/Options.cpp: warn if fForceSubtypeAll and fArchitecture is CPU_TYPE_ARM
+	
+
+----- Tagged ld64-95.6
+
+2009-01-25     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6439020> Add support for section start/end labels
+	* src/ld/ObjectFile.h: add kSectionStart and kSectionEnd
+	* src/ld/MachOReaderRelocatable.hpp: create SectionBoundaryAtoms as needed
+	* src/ld/ld.cpp: sort SectionBoundaryAtoms correctly
+	* src/ld/MachOWriterExecutable.hpp: allow all relocations in preload images
+
+
+----- Tagged ld64-95.5
+
+2009-01-15     Nick Kledzik    <kledzik@apple.com>
+
+	* src/ld/MachOWriterExecutable.hpp: in hasPageCrossingBranches() ignore branches preceeded by a branch
+
+
+----- Tagged ld64-95.4
+
+2009-01-15     Nick Kledzik    <kledzik@apple.com>
+
+	* src/ld/Options.cpp: handle -kext and -r the same for fPreventPageCrossingBranches
+
+
+----- Tagged ld64-95.3
+
+2009-01-14     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6497574> linker should alter layout to prevent armv7 page crossing branches
+	* src/ld/Options.cpp: set fPreventPageCrossingBranches
+	* src/ld/MachOWriterExecutable.hpp: adjust layout of __text so there are not page crossing branches
+	* src/ld/MachOReaderRelocatable.hpp: support new ARM_THUMB_32BIT_BRANCH reloce
+
+
+----- Tagged ld64-95.2
+
+2009-01-06     Nick Kledzik    <kledzik@apple.com>
+
+	<rdar://problem/6476760> strip -S fails with "new trie is larger than original"
