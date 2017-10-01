@@ -1,0 +1,27 @@
+<plist version="1.0">
+<array>
+<dict>
+        <key>OpenSourceProject</key>
+        <string>libedit</string>
+        <key>OpenSourceVersion</key>
+        <string>2.9</string>
+        <key>OpenSourceWebsiteURL</key>
+        <string>http://www.thrysoee.dk/editline/</string>
+        <key>OpenSourceURL</key>
+        <string>http://www.thrysoee.dk/editline/libedit-20060829-2.9.tar.gz</string>
+        <key>OpenSourceMD5</key>
+        <string>97935f8fbd67d63b1d311f247405cd3b</string>
+        <key>OpenSourceImportDate</key>
+        <string>2006-09-03</string>
+        <key>OpenSourceLicense</key>
+        <string>BSD</string>
+        <key>OpenSourceLicenseFile</key>
+        <string>libedit.txt</string>
+	<key>OpenSourceModifications</key>
+	<array>
+		<string>Better readline support (for python); added replace_history_entry(), history_truncate_file(), rl_insert_text(), rl_cleanup_after_signal(), rl_free_line_state() and history_get_history_state()</string>
+                <string>Added rl_readline_version </string>
+	</array>	
+</dict>
+</array>
+</plist>

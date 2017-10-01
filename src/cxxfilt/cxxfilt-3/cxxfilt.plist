@@ -1,0 +1,24 @@
+<plist version="1.0">
+<array>
+<dict>
+	<key>OpenSourceImportDate</key>
+	<string>2005-05-19</string>
+	<key>OpenSourceProject</key>
+	<string>binutils</string>
+	<key>OpenSourceVersion</key>
+	<string>2.16</string>
+	<key>OpenSourceWebsiteURL</key>
+	<string>http://sourceware.org/binutils/</string>
+	<key>OpenSourceURL</key>
+	<string>ftp://sourceware.org/pub/binutils/releases/binutils-2.16.tar.bz2</string>
+	<key>OpenSourceMD5</key>
+	<string>bcb9fabaf0eaf91bd38c4ee148658df8</string>
+	<key>OpenSourceModifications</key>
+	<array/>
+	<key>OpenSourceLicense</key>
+	<string>GPL</string>
+	<key>OpenSourceLicenseFile</key>
+	<string>cxxfilt.txt</string>
+</dict>
+</array>
+</plist>

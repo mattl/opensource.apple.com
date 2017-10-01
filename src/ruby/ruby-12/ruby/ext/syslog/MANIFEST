@@ -1,0 +1,6 @@
+MANIFEST
+extconf.rb
+syslog.c
+syslog.txt
+test.rb
+depend
