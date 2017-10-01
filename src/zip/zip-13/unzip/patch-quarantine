@@ -1,0 +1,26 @@
+--- unix/unix.c.orig	2011-09-19 17:25:09.000000000 -0700
++++ unix/unix.c	2011-09-19 17:26:53.000000000 -0700
+@@ -71,6 +71,8 @@
+ #  endif
+ #endif /* ?DIRENT */
+ 
++#include <quarantine.h>
++
+ #ifdef SET_DIR_ATTRIB
+ typedef struct uxdirattr {      /* struct for holding unix style directory */
+     struct uxdirattr *next;     /*  info until can be sorted and set at end */
+@@ -1052,6 +1054,14 @@
+         perror("chmod (file attributes) error");
+ #endif
+ 
++    qtn_file_t qf = qtn_file_alloc();
++    if (qf != NULL) {
++        if (qtn_file_init_with_fd(qf, G.zipfd) == 0) {
++            (void)qtn_file_apply_to_fd(qf, fileno(G.outfile));
++        }
++        qtn_file_free(qf);
++    }
++
+     fclose(G.outfile);
+ 
+ /*---------------------------------------------------------------------------
