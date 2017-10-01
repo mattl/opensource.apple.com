@@ -1,0 +1,142 @@
+diff -ur a/configure b/configure
+--- a/configure	2013-09-24 10:06:24.000000000 -0600
++++ b/configure	2013-09-24 10:09:23.000000000 -0600
+@@ -8454,9 +8454,9 @@
+ if test "$GCC" = yes; then
+   case $cc_basename in
+   nvcc*)
+-    lt_prog_compiler_no_builtin_flag=' -Xcompiler -fno-builtin' ;;
++    lt_prog_compiler_no_builtin_flag=' -Xcompiler' ;;
+   *)
+-    lt_prog_compiler_no_builtin_flag=' -fno-builtin' ;;
++    lt_prog_compiler_no_builtin_flag= ;;
+   esac
+ 
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if $compiler supports -fno-rtti -fno-exceptions" >&5
+@@ -17779,7 +17779,7 @@
+ 
+ $as_echo "#define CLAMAUTH 1" >>confdefs.h
+ 
+-    use_netinfo="yes"
++    use_netinfo="no"
+     ;;
+ os2*)
+     CLAMDSCAN_LIBS="$CLAMDSCAN_LIBS -lsyslog"
+diff -ur a/clamconf/Makefile.am b/clamconf/Makefile.am
+--- a/clamconf/Makefile.am	2013-09-24 10:06:24.000000000 -0600
++++ b/clamconf/Makefile.am	2013-09-24 10:10:35.000000000 -0600
+@@ -32,7 +32,7 @@
+ DEFS = @DEFS@ -DCL_NOTHREADS
+ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/shared -I$(top_srcdir)/libclamav\
+ 	      -DBUILD_CPPFLAGS="\"$(CPPFLAGS)\"" -DBUILD_CFLAGS="\"$(CFLAGS)\""\
+-	      -DBUILD_CXXFLAGS="\"$(CXXFLAGS)\"" -DBUILD_LDFLAGS="\"$(LDFLAGS)\""\
++	      -DBUILD_CXXFLAGS="\"$(CXXFLAGS)\""\
+ 	      -DBUILD_CONFIGURE_FLAGS="\"$(BUILD_CONFIGURE_FLAGS)\""
+ LIBS = $(top_builddir)/libclamav/libclamav.la @CLAMD_LIBS@ @THREAD_LIBS@ @LIBCLAMAV_LIBS@
+ CLEANFILES=*.gcda *.gcno
+diff -ur a/clamconf/Makefile.in b/clamconf/Makefile.in
+--- a/clamconf/Makefile.in	2013-09-24 10:06:24.000000000 -0600
++++ b/clamconf/Makefile.in	2013-09-24 10:11:17.000000000 -0600
+@@ -313,7 +313,7 @@
+ AM_CFLAGS = @WERR_CFLAGS@
+ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/shared -I$(top_srcdir)/libclamav\
+ 	      -DBUILD_CPPFLAGS="\"$(CPPFLAGS)\"" -DBUILD_CFLAGS="\"$(CFLAGS)\""\
+-	      -DBUILD_CXXFLAGS="\"$(CXXFLAGS)\"" -DBUILD_LDFLAGS="\"$(LDFLAGS)\""\
++	      -DBUILD_CXXFLAGS="\"$(CXXFLAGS)\""\
+ 	      -DBUILD_CONFIGURE_FLAGS="\"$(BUILD_CONFIGURE_FLAGS)\""
+ 
+ CLEANFILES = *.gcda *.gcno
+diff -ur a/libclamav/c++/configure b/libclamav/c++/configure
+--- a/libclamav/c++/configure	2013-09-24 10:06:25.000000000 -0600
++++ b/libclamav/c++/configure	2013-09-24 10:12:10.000000000 -0600
+@@ -8676,9 +8676,9 @@
+ if test "$GCC" = yes; then
+   case $cc_basename in
+   nvcc*)
+-    lt_prog_compiler_no_builtin_flag=' -Xcompiler -fno-builtin' ;;
++    lt_prog_compiler_no_builtin_flag=' -Xcompiler' ;;
+   *)
+-    lt_prog_compiler_no_builtin_flag=' -fno-builtin' ;;
++    lt_prog_compiler_no_builtin_flag= ;;
+   esac
+ 
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if $compiler supports -fno-rtti -fno-exceptions" >&5
+@@ -12459,7 +12459,7 @@
+     # We don't want -fno-exception when compiling C++ code, so set the
+     # no_builtin_flag separately
+     if test "$GXX" = yes; then
+-      lt_prog_compiler_no_builtin_flag_CXX=' -fno-builtin'
++      lt_prog_compiler_no_builtin_flag_CXX=
+     else
+       lt_prog_compiler_no_builtin_flag_CXX=
+     fi
+diff -ur a/libclamav/c++/llvm/autoconf/m4/libtool.m4 b/libclamav/c++/llvm/autoconf/m4/libtool.m4
+--- a/libclamav/c++/llvm/autoconf/m4/libtool.m4	2013-09-24 10:06:25.000000000 -0600
++++ b/libclamav/c++/llvm/autoconf/m4/libtool.m4	2013-09-24 10:12:48.000000000 -0600
+@@ -2799,7 +2799,7 @@
+ # We don't want -fno-exception wen compiling C++ code, so set the
+ # no_builtin_flag separately
+ if test "$GXX" = yes; then
+-  _LT_AC_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=' -fno-builtin'
++  _LT_AC_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=
+ else
+   _LT_AC_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=
+ fi
+@@ -4590,7 +4590,7 @@
+ _LT_AC_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=
+ 
+ if test "$GCC" = yes; then
+-  _LT_AC_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=' -fno-builtin'
++  _LT_AC_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=
+ 
+   AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-rtti -fno-exceptions],
+     lt_cv_prog_compiler_rtti_exceptions,
+diff -ur a/libclamav/c++/m4/libtool.m4 b/libclamav/c++/m4/libtool.m4
+--- a/libclamav/c++/m4/libtool.m4	2013-09-24 10:06:28.000000000 -0600
++++ b/libclamav/c++/m4/libtool.m4	2013-09-24 10:13:21.000000000 -0600
+@@ -3603,9 +3603,9 @@
+ if test "$GCC" = yes; then
+   case $cc_basename in
+   nvcc*)
+-    _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=' -Xcompiler -fno-builtin' ;;
++    _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=' -Xcompiler' ;;
+   *)
+-    _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=' -fno-builtin' ;;
++    _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)= ;;
+   esac
+ 
+   _LT_COMPILER_OPTION([if $compiler supports -fno-rtti -fno-exceptions],
+@@ -5925,7 +5925,7 @@
+     # We don't want -fno-exception when compiling C++ code, so set the
+     # no_builtin_flag separately
+     if test "$GXX" = yes; then
+-      _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=' -fno-builtin'
++      _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=
+     else
+       _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=
+     fi
+diff -ur a/m4/libtool.m4 b/m4/libtool.m4
+--- a/m4/libtool.m4	2013-09-24 10:06:29.000000000 -0600
++++ b/m4/libtool.m4	2013-09-24 10:13:55.000000000 -0600
+@@ -3603,9 +3603,9 @@
+ if test "$GCC" = yes; then
+   case $cc_basename in
+   nvcc*)
+-    _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=' -Xcompiler -fno-builtin' ;;
++    _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=' -Xcompiler' ;;
+   *)
+-    _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=' -fno-builtin' ;;
++    _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)= ;;
+   esac
+ 
+   _LT_COMPILER_OPTION([if $compiler supports -fno-rtti -fno-exceptions],
+@@ -5925,7 +5925,7 @@
+     # We don't want -fno-exception when compiling C++ code, so set the
+     # no_builtin_flag separately
+     if test "$GXX" = yes; then
+-      _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=' -fno-builtin'
++      _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=
+     else
+       _LT_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=
+     fi
+themaster.manos.net-13A573-root> 

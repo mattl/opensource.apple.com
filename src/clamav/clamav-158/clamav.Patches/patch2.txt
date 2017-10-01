@@ -1,0 +1,16 @@
+diff -ur a/shared/output.c a/shared/output.c
+--- a/shared/output.c	2013-09-24 11:59:08.000000000 -0600
++++ a/shared/output.c	2013-09-24 12:00:57.000000000 -0600
+@@ -384,6 +384,12 @@
+ #endif
+     }
+ 
++	/* Apple: Prevent log injection */
++	size_t i;
++	size_t str_len=strlen(buff);
++	for(i=0;i<str_len-1;i++)
++	    if(buff[i]=='\n') buff[i]='-';
++
+ 	if(logg_fp) {
+ 	    char flush = !logg_noflush;
+             /* Need to avoid logging time for verbose messages when logverbose

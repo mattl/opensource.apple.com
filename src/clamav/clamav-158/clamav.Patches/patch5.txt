@@ -1,0 +1,23 @@
+diff -ur a/freshclam/manager.c b/freshclam/manager.c
+--- a/freshclam/manager.c	2013-09-24 10:06:25.000000000 -0600
++++ b/freshclam/manager.c	2013-09-24 10:57:08.000000000 -0600
+@@ -1286,6 +1286,7 @@
+     else
+         fname = srcfile;
+ 
++	int print_percent = 0; /* APPLE */
+ #ifdef SO_ERROR
+     while ((bread = wait_recv (sd, buffer, FILEBUFF, 0, rtimeout)) > 0)
+     {
+@@ -1319,6 +1320,11 @@
+             }
+             fflush (stdout);
+         }
++        /* APPLE */
++        if ( (!print_percent || (percentage > print_percent)) && (percentage != 100) ) {
++            logg("Downloading %s [%3i%%]\n", fname, percentage);
++            print_percent = percentage+5;
++        }
+     }
+     close (fd);
+ 

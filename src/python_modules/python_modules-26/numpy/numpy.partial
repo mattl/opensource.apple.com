@@ -1,0 +1,16 @@
+<dict>
+        <key>OpenSourceProject</key>
+        <string>numpy</string>
+        <key>OpenSourceVersion</key>
+        <string>1.5.1</string>
+        <key>OpenSourceWebsiteURL</key>
+        <string>http://numpy.scipy.org/</string>
+        <key>OpenSourceURL</key>
+        <string>http://iweb.dl.sourceforge.net/project/numpy/NumPy/1.5.1/numpy-1.5.1.tar.gz</string>
+        <key>OpenSourceImportDate</key>
+        <string>2010-11-28</string>
+        <key>OpenSourceLicense</key>
+        <string>BSD</string>
+        <key>OpenSourceLicenseFile</key>
+        <string>python_modules.txt</string>
+</dict>

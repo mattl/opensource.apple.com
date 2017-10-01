@@ -1,0 +1,405 @@
+diff -ur a/clamd/scanner.c b/clamd/scanner.c
+--- a/clamd/scanner.c	2013-03-11 09:23:20.000000000 -0600
++++ b/clamd/scanner.c	2013-03-19 16:46:09.000000000 -0600
+@@ -18,6 +18,8 @@
+  *  MA 02110-1301, USA.
+  */
+ 
++#pragma GCC diagnostic ignored "-Wpointer-sign"
++
+ #if HAVE_CONFIG_H
+ #include "clamav-config.h"
+ #endif
+diff -ur a/libclamav/bytecode_api.c b/libclamav/bytecode_api.c
+--- a/libclamav/bytecode_api.c	2013-03-11 09:23:20.000000000 -0600
++++ b/libclamav/bytecode_api.c	2013-03-19 16:47:33.000000000 -0600
+@@ -20,6 +20,8 @@
+  *  MA 02110-1301, USA.
+  */
+ 
++#pragma GCC diagnostic ignored "-Wformat"
++
+ #ifdef HAVE_CONFIG_H
+ #include "clamav-config.h"
+ #endif
+diff -ur a/libclamav/bytecode_vm.c b/libclamav/bytecode_vm.c
+--- a/libclamav/bytecode_vm.c	2013-03-11 09:23:20.000000000 -0600
++++ b/libclamav/bytecode_vm.c	2013-03-19 18:05:19.000000000 -0600
+@@ -19,6 +19,11 @@
+  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  *  MA 02110-1301, USA.
+  */
++
++#pragma GCC diagnostic ignored "-Wunused-value"
++#pragma GCC diagnostic ignored "Winvalid-pp-token"
++#pragma GCC diagnostic ignored "-Wconstant-conversion"
++
+ #if HAVE_CONFIG_H
+ #include "clamav-config.h"
+ #endif
+diff -ur a/libclamav/c++/bytecode2llvm.cpp b/libclamav/c++/bytecode2llvm.cpp
+--- a/libclamav/c++/bytecode2llvm.cpp	2013-03-11 09:23:20.000000000 -0600
++++ b/libclamav/c++/bytecode2llvm.cpp	2013-03-19 16:35:36.000000000 -0600
+@@ -19,6 +19,9 @@
+  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  *  MA 02110-1301, USA.
+  */
++
++#pragma GCC diagnostic ignored "-Wunused-private-field"
++
+ #define DEBUG_TYPE "clamavjit"
+ #include <pthread.h>
+ #ifndef _WIN32
+diff -ur a/libclamav/c++/llvm/include/llvm/ADT/DenseMap.h b/libclamav/c++/llvm/include/llvm/ADT/DenseMap.h
+--- a/libclamav/c++/llvm/include/llvm/ADT/DenseMap.h	2013-03-19 15:36:43.000000000 -0600
++++ b/libclamav/c++/llvm/include/llvm/ADT/DenseMap.h	2013-03-19 15:36:37.000000000 -0600
+@@ -14,6 +14,8 @@
+ #ifndef LLVM_ADT_DENSEMAP_H
+ #define LLVM_ADT_DENSEMAP_H
+ 
++#pragma GCC diagnostic ignored "-Wself-assign"
++
+ #include "llvm/Support/MathExtras.h"
+ #include "llvm/Support/PointerLikeTypeTraits.h"
+ #include "llvm/Support/type_traits.h"
+diff -ur a/libclamav/c++/llvm/include/llvm/CodeGen/MachineDominators.h b/libclamav/c++/llvm/include/llvm/CodeGen/MachineDominators.h
+--- a/libclamav/c++/llvm/include/llvm/CodeGen/MachineDominators.h	2013-03-19 15:37:01.000000000 -0600
++++ b/libclamav/c++/llvm/include/llvm/CodeGen/MachineDominators.h	2013-03-19 15:37:08.000000000 -0600
+@@ -15,6 +15,8 @@
+ #ifndef LLVM_CODEGEN_MACHINEDOMINATORS_H
+ #define LLVM_CODEGEN_MACHINEDOMINATORS_H
+ 
++#pragma GCC diagnostic ignored "-Wempty-body"
++
+ #include "llvm/CodeGen/MachineBasicBlock.h"
+ #include "llvm/CodeGen/MachineFunction.h"
+ #include "llvm/CodeGen/MachineFunctionPass.h"
+diff -ur a/libclamav/c++/llvm/lib/Analysis/ConstantFolding.cpp b/libclamav/c++/llvm/lib/Analysis/ConstantFolding.cpp
+--- a/libclamav/c++/llvm/lib/Analysis/ConstantFolding.cpp	2013-03-11 09:21:46.000000000 -0600
++++ b/libclamav/c++/llvm/lib/Analysis/ConstantFolding.cpp	2013-03-19 15:47:13.000000000 -0600
+@@ -16,6 +16,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wself-assign"
++
+ #include "llvm/Analysis/ConstantFolding.h"
+ #include "llvm/Constants.h"
+ #include "llvm/DerivedTypes.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/ELF.h b/libclamav/c++/llvm/lib/CodeGen/ELF.h
+--- a/libclamav/c++/llvm/lib/CodeGen/ELF.h	2013-03-11 09:21:46.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/ELF.h	2013-03-19 15:52:10.000000000 -0600
+@@ -17,6 +17,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-private-field"
++
+ #ifndef CODEGEN_ELF_H
+ #define CODEGEN_ELF_H
+ 
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/InlineSpiller.cpp b/libclamav/c++/llvm/lib/CodeGen/InlineSpiller.cpp
+--- a/libclamav/c++/llvm/lib/CodeGen/InlineSpiller.cpp	2013-03-11 09:21:46.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/InlineSpiller.cpp	2013-03-19 17:06:15.000000000 -0600
+@@ -12,6 +12,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-private-field"
++
+ #define DEBUG_TYPE "spiller"
+ #include "Spiller.h"
+ #include "SplitKit.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/PostRASchedulerList.cpp b/libclamav/c++/llvm/lib/CodeGen/PostRASchedulerList.cpp
+--- a/libclamav/c++/llvm/lib/CodeGen/PostRASchedulerList.cpp	2013-03-11 09:21:46.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/PostRASchedulerList.cpp	2013-03-19 17:05:51.000000000 -0600
+@@ -18,6 +18,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-private-field"
++
+ #define DEBUG_TYPE "post-RA-sched"
+ #include "AntiDepBreaker.h"
+ #include "AggressiveAntiDepBreaker.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/RegisterCoalescer.cpp b/libclamav/c++/llvm/lib/CodeGen/RegisterCoalescer.cpp
+--- a/libclamav/c++/llvm/lib/CodeGen/RegisterCoalescer.cpp	2013-03-11 09:21:46.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/RegisterCoalescer.cpp	2013-03-19 17:05:28.000000000 -0600
+@@ -13,6 +13,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-private-field"
++
+ #include "llvm/CodeGen/RegisterCoalescer.h"
+ #include "llvm/CodeGen/LiveIntervalAnalysis.h"
+ #include "llvm/CodeGen/MachineInstr.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/ScheduleDAGInstrs.h b/libclamav/c++/llvm/lib/CodeGen/ScheduleDAGInstrs.h
+--- a/libclamav/c++/llvm/lib/CodeGen/ScheduleDAGInstrs.h	2013-03-11 09:21:46.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/ScheduleDAGInstrs.h	2013-03-19 17:04:58.000000000 -0600
+@@ -15,6 +15,8 @@
+ #ifndef SCHEDULEDAGINSTRS_H
+ #define SCHEDULEDAGINSTRS_H
+ 
++#pragma GCC diagnostic ignored "-Wunused-private-field"
++
+ #include "llvm/CodeGen/MachineDominators.h"
+ #include "llvm/CodeGen/MachineLoopInfo.h"
+ #include "llvm/CodeGen/ScheduleDAG.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp b/libclamav/c++/llvm/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
+--- a/libclamav/c++/llvm/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp	2013-03-19 17:04:19.000000000 -0600
+@@ -11,6 +11,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-private-field"
++
+ #include "llvm/CodeGen/SelectionDAG.h"
+ #include "llvm/CodeGen/MachineFunction.h"
+ #include "llvm/CodeGen/MachineFrameInfo.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp b/libclamav/c++/llvm/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp
+--- a/libclamav/c++/llvm/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp	2013-03-19 17:03:21.000000000 -0600
+@@ -11,6 +11,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wstring-plus-int"
++
+ #define DEBUG_TYPE "isel"
+ #include "SDNodeDbgValue.h"
+ #include "SelectionDAGBuilder.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/ShrinkWrapping.cpp b/libclamav/c++/llvm/lib/CodeGen/ShrinkWrapping.cpp
+--- a/libclamav/c++/llvm/lib/CodeGen/ShrinkWrapping.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/ShrinkWrapping.cpp	2013-03-19 17:02:24.000000000 -0600
+@@ -32,6 +32,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wparentheses"
++
+ #define DEBUG_TYPE "shrink-wrap"
+ 
+ #include "PrologEpilogInserter.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/SjLjEHPrepare.cpp b/libclamav/c++/llvm/lib/CodeGen/SjLjEHPrepare.cpp
+--- a/libclamav/c++/llvm/lib/CodeGen/SjLjEHPrepare.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/SjLjEHPrepare.cpp	2013-03-19 17:01:15.000000000 -0600
+@@ -12,6 +12,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-private-field"
++
+ #define DEBUG_TYPE "sjljehprepare"
+ #include "llvm/Transforms/Scalar.h"
+ #include "llvm/Constants.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/SplitKit.cpp b/libclamav/c++/llvm/lib/CodeGen/SplitKit.cpp
+--- a/libclamav/c++/llvm/lib/CodeGen/SplitKit.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/SplitKit.cpp	2013-03-19 17:00:43.000000000 -0600
+@@ -12,6 +12,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-variable"
++
+ #define DEBUG_TYPE "splitter"
+ #include "SplitKit.h"
+ #include "VirtRegMap.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/TwoAddressInstructionPass.cpp b/libclamav/c++/llvm/lib/CodeGen/TwoAddressInstructionPass.cpp
+--- a/libclamav/c++/llvm/lib/CodeGen/TwoAddressInstructionPass.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/TwoAddressInstructionPass.cpp	2013-03-19 17:00:12.000000000 -0600
+@@ -27,6 +27,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-variable"
++
+ #define DEBUG_TYPE "twoaddrinstr"
+ #include "llvm/CodeGen/Passes.h"
+ #include "llvm/Function.h"
+diff -ur a/libclamav/c++/llvm/lib/CodeGen/VirtRegRewriter.cpp b/libclamav/c++/llvm/lib/CodeGen/VirtRegRewriter.cpp
+--- a/libclamav/c++/llvm/lib/CodeGen/VirtRegRewriter.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/CodeGen/VirtRegRewriter.cpp	2013-03-19 16:59:41.000000000 -0600
+@@ -7,6 +7,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-private-field"
++
+ #define DEBUG_TYPE "virtregrewriter"
+ #include "VirtRegRewriter.h"
+ #include "VirtRegMap.h"
+diff -ur a/libclamav/c++/llvm/lib/ExecutionEngine/JIT/JITDebugRegisterer.cpp b/libclamav/c++/llvm/lib/ExecutionEngine/JIT/JITDebugRegisterer.cpp
+--- a/libclamav/c++/llvm/lib/ExecutionEngine/JIT/JITDebugRegisterer.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/ExecutionEngine/JIT/JITDebugRegisterer.cpp	2013-03-19 15:50:17.000000000 -0600
+@@ -12,6 +12,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-private-field"
++
+ #include "JITDebugRegisterer.h"
+ #include "../../CodeGen/ELF.h"
+ #include "../../CodeGen/ELFWriter.h"
+diff -ur a/libclamav/c++/llvm/lib/MC/WinCOFFObjectWriter.cpp b/libclamav/c++/llvm/lib/MC/WinCOFFObjectWriter.cpp
+--- a/libclamav/c++/llvm/lib/MC/WinCOFFObjectWriter.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/MC/WinCOFFObjectWriter.cpp	2013-03-19 16:58:44.000000000 -0600
+@@ -11,6 +11,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wswitch"
++
+ #define DEBUG_TYPE "WinCOFFObjectWriter"
+ 
+ #include "llvm/MC/MCObjectWriter.h"
+diff -ur a/libclamav/c++/llvm/lib/Support/PrettyStackTrace.cpp b/libclamav/c++/llvm/lib/Support/PrettyStackTrace.cpp
+--- a/libclamav/c++/llvm/lib/Support/PrettyStackTrace.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/Support/PrettyStackTrace.cpp	2013-03-19 15:51:24.000000000 -0600
+@@ -12,6 +12,9 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wself-assign"
++#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
++
+ #include "llvm/Config/config.h"     // Get autoconf configuration settings
+ #include "llvm/Support/PrettyStackTrace.h"
+ #include "llvm/Support/raw_ostream.h"
+diff -ur a/libclamav/c++/llvm/lib/Support/StringMap.cpp b/libclamav/c++/llvm/lib/Support/StringMap.cpp
+--- a/libclamav/c++/llvm/lib/Support/StringMap.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/Support/StringMap.cpp	2013-03-19 15:48:32.000000000 -0600
+@@ -11,6 +11,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wself-assign"
++
+ #include "llvm/ADT/StringMap.h"
+ #include "llvm/ADT/StringExtras.h"
+ #include <cassert>
+diff -ur a/libclamav/c++/llvm/lib/Target/X86/X86FloatingPoint.cpp b/libclamav/c++/llvm/lib/Target/X86/X86FloatingPoint.cpp
+--- a/libclamav/c++/llvm/lib/Target/X86/X86FloatingPoint.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/Target/X86/X86FloatingPoint.cpp	2013-03-19 16:57:20.000000000 -0600
+@@ -23,6 +23,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wunused-variable"
++
+ #define DEBUG_TYPE "x86-codegen"
+ #include "X86.h"
+ #include "X86InstrInfo.h"
+diff -ur a/libclamav/c++/llvm/lib/Target/X86/X86InstrInfo.cpp b/libclamav/c++/llvm/lib/Target/X86/X86InstrInfo.cpp
+--- a/libclamav/c++/llvm/lib/Target/X86/X86InstrInfo.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/Target/X86/X86InstrInfo.cpp	2013-03-19 16:56:24.000000000 -0600
+@@ -11,6 +11,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
++
+ #include "X86InstrInfo.h"
+ #include "X86.h"
+ #include "X86GenInstrInfo.inc"
+diff -ur a/libclamav/c++/llvm/lib/Transforms/Utils/DemoteRegToStack.cpp b/libclamav/c++/llvm/lib/Transforms/Utils/DemoteRegToStack.cpp
+--- a/libclamav/c++/llvm/lib/Transforms/Utils/DemoteRegToStack.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/Transforms/Utils/DemoteRegToStack.cpp	2013-03-19 16:59:13.000000000 -0600
+@@ -16,6 +16,8 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#pragma GCC diagnostic ignored "-Wself-assign"
++
+ #include "llvm/Transforms/Utils/Local.h"
+ #include "llvm/Function.h"
+ #include "llvm/Instructions.h"
+diff -ur a/libclamav/c++/llvm/lib/VMCore/PassRegistry.cpp b/libclamav/c++/llvm/lib/VMCore/PassRegistry.cpp
+--- a/libclamav/c++/llvm/lib/VMCore/PassRegistry.cpp	2013-03-11 09:21:47.000000000 -0600
++++ b/libclamav/c++/llvm/lib/VMCore/PassRegistry.cpp	2013-03-19 15:47:57.000000000 -0600
+@@ -17,6 +17,8 @@
+ #include "llvm/Support/Compiler.h"
+ #include "llvm/Support/ManagedStatic.h"
+ 
++#pragma GCC diagnostic ignored "-Wself-assign"
++
+ using namespace llvm;
+ 
+ static PassRegistry *PassRegistryObj = 0;
+diff -ur a/libclamav/c++/llvm/lib/VMCore/TypesContext.h b/libclamav/c++/llvm/lib/VMCore/TypesContext.h
+--- a/libclamav/c++/llvm/lib/VMCore/TypesContext.h	2013-03-19 15:37:29.000000000 -0600
++++ b/libclamav/c++/llvm/lib/VMCore/TypesContext.h	2013-03-19 15:37:39.000000000 -0600
+@@ -15,6 +15,8 @@
+ #ifndef LLVM_TYPESCONTEXT_H
+ #define LLVM_TYPESCONTEXT_H
+ 
++#pragma GCC diagnostic ignored "-Wself-assign"
++
+ #include "llvm/ADT/STLExtras.h"
+ #include <map>
+ 
+diff -ur a/libclamav/entconv.c b/libclamav/entconv.c
+--- a/libclamav/entconv.c	2013-03-11 09:23:21.000000000 -0600
++++ b/libclamav/entconv.c	2013-03-19 16:49:56.000000000 -0600
+@@ -19,6 +19,9 @@
+  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  *  MA 02110-1301, USA.
+  */
++
++#pragma GCC diagnostic ignored "-Wswitch"
++
+ #include "clamav-config.h"
+ 
+ 
+diff -ur a/libclamav/events.c b/libclamav/events.c
+--- a/libclamav/events.c	2013-03-11 09:23:21.000000000 -0600
++++ b/libclamav/events.c	2013-03-19 16:46:49.000000000 -0600
+@@ -19,6 +19,9 @@
+  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  *  MA 02110-1301, USA.
+  */
++
++#pragma GCC diagnostic ignored "-Wswitch"
++
+ #include "events.h"
+ #include "others.h"
+ #include "7z/7zCrc.h"
+diff -ur a/libclamav/matcher.c b/libclamav/matcher.c
+--- a/libclamav/matcher.c	2013-03-11 09:23:21.000000000 -0600
++++ b/libclamav/matcher.c	2013-03-19 16:55:25.000000000 -0600
+@@ -18,6 +18,8 @@
+  *  MA 02110-1301, USA.
+  */
+ 
++#pragma GCC diagnostic ignored "-Wpointer-sign"
++
+ #if HAVE_CONFIG_H
+ #include "clamav-config.h"
+ #endif
+diff -ur a/libclamav/pdf.c b/libclamav/pdf.c
+--- a/libclamav/pdf.c	2013-03-11 09:23:21.000000000 -0600
++++ b/libclamav/pdf.c	2013-03-19 16:52:20.000000000 -0600
+@@ -22,6 +22,11 @@
+  * TODO: Embedded fonts
+  * TODO: Predictor image handling
+  */
++
++#pragma GCC diagnostic ignored "-Wformat"
++#pragma GCC diagnostic ignored "-Wswitch"
++#pragma GCC diagnostic ignored "-Wpointer-sign"
++
+ static	char	const	rcsid[] = "$Id: pdf.c,v 1.61 2007/02/12 20:46:09 njh Exp $";
+ 
+ #if HAVE_CONFIG_H
+diff -ur a/sigtool/sigtool.c b/sigtool/sigtool.c
+--- a/sigtool/sigtool.c	2013-03-11 09:23:21.000000000 -0600
++++ b/sigtool/sigtool.c	2013-03-19 16:45:20.000000000 -0600
+@@ -19,6 +19,7 @@
+  *  MA 02110-1301, USA.
+  */
+ 
++#pragma GCC diagnostic ignored "-Wformat"
+ 
+ #if HAVE_CONFIG_H
+ #include "clamav-config.h"

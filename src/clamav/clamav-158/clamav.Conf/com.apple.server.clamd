@@ -1,0 +1,3 @@
+# Facility clamd gets saved in /Library/Logs/Mail/clamav.log
+? [= Facility com.apple.server.clamd] [<= Level debug] claim only
+* file /Library/Logs/Mail/clamav.log mode=0644 uid=83 gid=80 format=bsd rotate=local compress file_max=5M all_max=10M

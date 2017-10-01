@@ -1,0 +1,42 @@
+{
+       glibc-tls
+       Memcheck:Leak
+       fun:*
+       fun:_dl_allocate_tls
+}
+{
+       zlib-cond-jump-1.2.3
+       Memcheck:Cond
+       fun:inflateReset2
+       fun:inflateInit2_
+}
+{
+    llvm-01
+    Memcheck:Leak
+    fun:_Znwj
+    fun:*
+}
+{
+    llvm-02
+    Memcheck:Leak
+    fun:malloc
+    fun:_ZN4llvm12PassRegistry12registerPassERKNS_8PassInfoE
+    fun:*
+}
+{
+    dl_catch_error-leak-1
+    Memcheck:Leak
+    ...
+    fun:dl_open_worker
+    fun:_dl_catch_error
+    ...
+}
+{
+    dl_catch_error-leak-2
+    Memcheck:Leak
+    ...
+    fun:_dl_close_worker
+    fun:_dl_close
+    fun:_dl_catch_error
+    ...
+}

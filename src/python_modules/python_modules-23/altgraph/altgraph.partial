@@ -1,0 +1,16 @@
+<dict>
+        <key>OpenSourceProject</key>
+        <string>altgraph</string>
+        <key>OpenSourceVersion</key>
+        <string>0.7.1</string>
+        <key>OpenSourceWebsiteURL</key>
+        <string>http://undefined.org/python/#altgraph</string>
+        <key>OpenSourceSVN</key>
+        <string>https://svn.red-bean.com/pyobjc/tags/pyobjc-2.3.1/altgraph</string>
+        <key>OpenSourceImportDate</key>
+        <string>2010-08-24</string>
+        <key>OpenSourceLicense</key>
+        <string>MIT</string>
+        <key>OpenSourceLicenseFile</key>
+        <string>python_modules.txt</string>
+</dict>

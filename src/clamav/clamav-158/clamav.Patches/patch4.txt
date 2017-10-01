@@ -1,0 +1,164 @@
+diff -ura a/clamd/clamd.c b/clamd/clamd.c
+--- a/clamd/clamd.c	2013-09-24 10:06:24.000000000 -0600
++++ b/clamd/clamd.c	2013-09-24 11:39:28.000000000 -0600
+@@ -215,6 +215,21 @@
+     }
+ #endif
+ 
++    /* Apple: set log level */
++    char *log_level = optget(opts, "LogLevel")->strarg;
++    if ( !strcmp(log_level, "debug") )
++        logg_level = LOG_DEBUG;
++    else if ( !strcmp(log_level, "info") )
++        logg_level = LOG_INFO;
++    else if ( !strcmp(log_level, "notice") )
++        logg_level = LOG_NOTICE;
++    else if ( !strcmp(log_level, "warning") )
++        logg_level = LOG_WARNING;
++    else if ( !strcmp(log_level, "error") )
++        logg_level = LOG_ERR;
++    else if ( !strcmp(log_level, "crit") )
++        logg_level = LOG_CRIT;
++
+     /* initialize logger */
+     logg_lock = !optget(opts, "LogFileUnlock")->enabled;
+     logg_time = optget(opts, "LogTime")->enabled;
+@@ -261,7 +276,9 @@
+     if(optget(opts, "LogSyslog")->enabled) {
+ 	    int fac = LOG_LOCAL6;
+ 
++	/* Apple: use xs_log with facility */
+ 	opt = optget(opts, "LogFacility");
++	if ( !strnstr(opt->strarg, "com.apple.server.", 17) ) {
+ 	if((fac = logg_facility(opt->strarg)) == -1) {
+ 	    logg("!LogFacility: %s: No such facility.\n", opt->strarg);
+ 	    ret = 1;
+@@ -269,6 +286,11 @@
+ 	}
+ 
+ 	openlog("clamd", LOG_PID, fac);
++	} else {
++		xs_log_set_default_category(opt->strarg);
++		xs_syslog_openlog(opt->strarg, LOG_NDELAY | LOG_PID, LOG_DAEMON);
++	    logg("Using xs_log with facility LogFacility: %s\n", opt->strarg);
++	}
+ 	logg_syslog = 1;
+     }
+ #endif
+diff -ura a/freshclam/freshclam.c b/freshclam/freshclam.c
+--- a/freshclam/freshclam.c	2013-09-24 10:06:25.000000000 -0600
++++ b/freshclam/freshclam.c	2013-09-24 11:36:11.000000000 -0600
+@@ -431,6 +431,23 @@
+     if (logg_size)
+         logg_rotate = optget(opts, "LogRotate")->enabled;
+ 
++    /* Apple: set log level */
++    logg_verbose = 0;
++    char *log_level = optget(opts, "LogLevel")->strarg;
++    if ( !strcmp(log_level, "debug") ) {
++        logg_verbose = 2;
++        logg_level = LOG_DEBUG;
++    } else if ( !strcmp(log_level, "info") )
++        logg_level = LOG_INFO;
++    else if ( !strcmp(log_level, "notice") )
++        logg_level = LOG_NOTICE;
++    else if ( !strcmp(log_level, "warning") )
++        logg_level = LOG_WARNING;
++    else if ( !strcmp(log_level, "error") )
++        logg_level = LOG_ERR;
++    else if ( !strcmp(log_level, "crit") )
++        logg_level = LOG_CRIT;
++
+     if ((opt = optget (opts, "UpdateLogFile"))->enabled)
+     {
+         logg_file = opt->strarg;
+@@ -450,6 +467,8 @@
+     {
+         int fac = LOG_LOCAL6;
+ 
++        opt = optget(opts, "LogFacility");
++        if ( !strnstr(opt->strarg, "com.apple.server.", 17) ) {
+         if ((opt = optget (opts, "LogFacility"))->enabled)
+         {
+             if ((fac = logg_facility (opt->strarg)) == -1)
+@@ -462,6 +481,11 @@
+         }
+ 
+         openlog ("freshclam", LOG_PID, fac);
++        } else {
++            xs_log_set_default_category(opt->strarg);
++            xs_syslog_openlog(opt->strarg, LOG_NDELAY | LOG_PID, LOG_DAEMON);
++            logg("Using xs_log with facility LogFacility: %s\n", opt->strarg);
++        }
+         logg_syslog = 1;
+     }
+ #endif
+diff -ura a/shared/optparser.c b/shared/optparser.c
+--- a/shared/optparser.c	2013-09-24 10:06:29.000000000 -0600
++++ b/shared/optparser.c	2013-09-24 11:41:52.000000000 -0600
+@@ -187,6 +187,8 @@
+     { "LogSyslog", NULL, 0, TYPE_BOOL, MATCH_BOOL, 0, NULL, 0, OPT_CLAMD | OPT_FRESHCLAM | OPT_MILTER, "Use the system logger (can work together with LogFile).", "yes" },
+ 
+     { "LogFacility", NULL, 0, TYPE_STRING, NULL, -1, "LOG_LOCAL6", FLAG_REQUIRED, OPT_CLAMD | OPT_FRESHCLAM | OPT_MILTER, "Type of syslog messages.\nPlease refer to 'man syslog' for the facility names.", "LOG_MAIL" },
++    /* Apple: custom log level settings */
++    { "LogLevel", NULL, 0, TYPE_STRING, NULL, -1, "info", FLAG_REQUIRED, OPT_CLAMD | OPT_FRESHCLAM | OPT_MILTER, "Adjustable log level setting.  Mirrors syslog LOG_.  Settings: crit, error, warning, notice, info, debug.", "info" },
+ 
+     { "LogVerbose", NULL, 0, TYPE_BOOL, MATCH_BOOL, 0, NULL, 0, OPT_CLAMD | OPT_FRESHCLAM | OPT_MILTER, "Enable verbose logging.", "yes" },
+ 
+diff -ura a/shared/output.c b/shared/output.c
+--- a/shared/output.c	2013-09-24 10:52:25.000000000 -0600
++++ b/shared/output.c	2013-09-24 11:44:40.000000000 -0600
+@@ -81,6 +81,7 @@
+ 
+ FILE *logg_fp = NULL;
+ 
++short int logg_level = 6;
+ short int logg_verbose = 0, logg_nowarn = 0, logg_lock = 1, logg_time = 0, logg_foreground = 1, logg_noflush = 0, logg_rotate = 0;
+ off_t logg_size = 0;
+ const char *logg_file = NULL;
+@@ -401,20 +402,27 @@
+ 		cli_ctime(&currtime, timestr, sizeof(timestr));
+ 		/* cut trailing \n */
+ 		timestr[strlen(timestr)-1] = '\0';
+-		fprintf(logg_fp, "%s -> ", timestr);
++		if (logg_level >= LOG_INFO)
++			fprintf(logg_fp, "%s -> ", timestr);
+ 	    }
+ 
+ 	    if(*buff == '!') {
+-		fprintf(logg_fp, "ERROR: %s", buff + 1);
++		if (logg_level >= LOG_ERR)
++			fprintf(logg_fp, "ERROR: %s", buff + 1);
+ 		flush = 1;
+ 	    } else if(*buff == '^') {
+-		if(!logg_nowarn)
++		if(!logg_nowarn && (logg_level >=LOG_WARNING) )
+ 		    fprintf(logg_fp, "WARNING: %s", buff + 1);
+ 		flush = 1;
+-	    } else if(*buff == '*' || *buff == '$') {
++	    } else if(*buff == '$') {
++		if (logg_level >= LOG_DEBUG)
++		    fprintf(logg_fp, "%s", buff + 1);
++	    } else if(*buff == '*') {
++		if (logg_level >= LOG_INFO)
+ 		    fprintf(logg_fp, "%s", buff + 1);
+ 	    } else if(*buff == '#' || *buff == '~') {
+-		fprintf(logg_fp, "%s", buff + 1);
++		if (logg_level >= LOG_NOTICE)
++			fprintf(logg_fp, "%s", buff + 1);
+ 	    } else
+ 		fprintf(logg_fp, "%s", buff);
+ 
+diff -ura a/shared/output.h b/shared/output.h
+--- a/shared/output.h	2013-09-24 10:06:29.000000000 -0600
++++ b/shared/output.h	2013-09-24 11:44:59.000000000 -0600
+@@ -44,6 +44,9 @@
+ extern off_t logg_size;
+ extern const char *logg_file;
+ 
++/* Apple */
++extern short logg_level;
++
+ #if defined(USE_SYSLOG) && !defined(C_AIX)
+ extern short logg_syslog;
+ int logg_facility(const char *name);
