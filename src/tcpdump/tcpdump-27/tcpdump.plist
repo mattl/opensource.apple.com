@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>OpenSourceImportDate</key>
+	<string>2008-11-14</string>
+	<key>OpenSourceLicense</key>
+	<string>BSD</string>
+	<key>OpenSourceLicenseFile</key>
+	<string>LICENSE</string>
+	<key>OpenSourceProject</key>
+	<string>tcpdump</string>
+	<key>OpenSourceSHA1</key>
+	<string>618ac122d1a9d80f64865f0a4e4c4391baa54132</string>
+	<key>OpenSourceURL</key>
+	<string>http://www.tcpdump.org/release/tcpdump-4.0.0.tar.gz</string>
+	<key>OpenSourceVersion</key>
+	<string>4.0.0</string>
+	<key>OpenSourceWebsiteURL</key>
+	<string>http://www.tcpdump.org/</string>
+</dict>
+</plist>
