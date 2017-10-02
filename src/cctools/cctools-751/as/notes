@@ -1,0 +1,12 @@
+TODO for coalesced symbols:
+- Should external relocation entries for defined coalesced symbols only be
+  created with -dynamic and not -static?
+
+TODO:
+- Add MacOS line termination \r .
+
+Known bugs:
+- The assembly line:
+	bl ""foo""
+  causes the symbol name "" to be used.
+- cmpwi seems to be the same as cmpi for PowerPC.

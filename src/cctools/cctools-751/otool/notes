@@ -1,0 +1,34 @@
+TODO:
+- Change pad in PPC_THREAD_STATE to vrsave.  Print the altivec state.
+- HPPA, bring the private version of mach/hppa/thread_status.h in sync with
+  the kernel header and change ofile_print.c to recognize new thread states.
+
+Changes for the 5.27 release (the cctools-751 release):
+- Changed the printing of Objective-C data so that strings from protected
+  sections are printed as "some string from a protected section" instead of
+  what looks like junk when the protected string is printed as characters.
+  Radar bug #5578032.
+
+Changes for the 5.26 release (the cctools-750 release):
+- Changed so that armv7 defaults to printing in thumb mode.  Moved in_thumb
+  boolean to a global in arm_disasm.[ch] and set it to TRUE in main.c if the
+  binary is armv7.  Radar bug 6651124.
+- Fixed a problem with print_objc_segment() in print_objc.c that was incorrectly
+  using sizeof(void *) when it should have been using sizeof(uint32_t).
+  Radar bug #6652270.
+- Updated ofile_print.c for the places it was missing code for
+  S_16BYTE_LITERALS.  Radar bug #5947957.
+- Fixed the x86_64 disassembly of with and SIB byte when mode is 0 and base is 5
+  and ss is not zero so that it does not print a base register.  Radar bug
+  #6533811
+
+Changes for the 5.26 release (the cctools-749 release):
+- Fixed the printing of Objective-C meta data from 64-bit object files.  So that
+  every "dereference" of a pointer looks for a relocation entry.  Also added
+  the -V option to print the symbol names from the relocation entries.
+  Radar bug #6549235.
+
+Changes for the 5.26 release (the cctools-737 release):
+- Changed arm_r_types[] for entry 7 to T_BR32 in ofile_print.c for the new
+  ARM_THUMB_32BIT_BRANCH relocation type.  Radar bug #6511482.
+- In print_insn() in arm_disasm.c removed the code at the end to check for

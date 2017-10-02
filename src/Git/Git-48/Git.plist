@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>OpenSourceImportDate</key>
+		<string>2013-12-17</string>
+		<key>OpenSourceLicense</key>
+		<string>GPL</string>
+		<key>OpenSourceProject</key>
+		<string>git</string>
+		<key>OpenSourceURL</key>
+		<string>http://kernel.org/pub/software/scm/git/git-1.8.5.2.tar.bz2</string>
+		<key>OpenSourceVersion</key>
+		<string>1.8.5.2</string>
+		<key>OpenSourceWebsiteURL</key>
+		<string>http://git-scm.com</string>
+	</dict>
+	<dict>
+		<key>OpenSourceImportDate</key>
+		<string>2013-12-17</string>
+		<key>OpenSourceLicense</key>
+		<string>GPL</string>
+		<key>OpenSourceProject</key>
+		<string>git-htmldocs</string>
+		<key>OpenSourceURL</key>
+		<string>http://kernel.org/pub/software/scm/git/git-htmldocs-1.8.5.2.tar.bz2</string>
+		<key>OpenSourceVersion</key>
+		<string>1.8.5.2</string>
+		<key>OpenSourceWebsiteURL</key>
+		<string>http://git-scm.com</string>
+	</dict>
+	<dict>
+		<key>OpenSourceImportDate</key>
+		<string>2013-12-17</string>
+		<key>OpenSourceLicense</key>
+		<string>GPL</string>
+		<key>OpenSourceProject</key>
+		<string>git-manpages</string>
+		<key>OpenSourceURL</key>
+		<string>http://kernel.org/pub/software/scm/git/git-manpages-1.8.5.2.tar.bz2</string>
+		<key>OpenSourceVersion</key>
+		<string>1.8.5.2</string>
+		<key>OpenSourceWebsiteURL</key>
+		<string>http://git-scm.com</string>
+	</dict>
+</array>
+</plist>

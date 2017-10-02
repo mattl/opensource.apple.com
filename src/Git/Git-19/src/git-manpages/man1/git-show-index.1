@@ -1,0 +1,33 @@
+'\" t
+.\"     Title: git-show-index
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 06/01/2011
+.\"    Manual: Git Manual
+.\"    Source: Git 1.7.5.4
+.\"  Language: English
+.\"
+.TH "GIT\-SHOW\-INDEX" "1" "06/01/2011" "Git 1\&.7\&.5\&.4" "Git Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+git-show-index \- Show packed archive index
+.SH "SYNOPSIS"
+.sp
+\fIgit show\-index\fR < idx\-file
+.SH "DESCRIPTION"
+.sp
+Reads given idx file for packed git archive created with \fIgit pack\-objects\fR command, and dumps its contents\&.
+.sp
+The information it outputs is subset of what you can get from \fIgit verify\-pack \-v\fR; this command only shows the packfile offset and SHA1 of each object\&.
+.SH "GIT"
+.sp
+Part of the \fBgit\fR(1) suite

@@ -1,0 +1,5 @@
+- cpusubtype_findbestarch() in best_arch.c when passed CPU_SUBTYPE_POWERPC_ALL
+  as the cpusubtype and only 7440 and 750 were in the fat file nothing was
+  selected.  Is this right?
+
+TODO:

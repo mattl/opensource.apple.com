@@ -1,0 +1,75 @@
+<HTML>
+<!--This file created 3/25/09 11:18 AM by Claris Home Page version 3.0-->
+<HEAD>
+   <TITLE>Private Compiler Tools Release Notes</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 3.0">
+   <X-CLARIS-WINDOW TOP=78 BOTTOM=967 LEFT=746 RIGHT=1493>
+   <X-CLARIS-TAGVIEW MODE=minimal>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<P><FONT SIZE="-1">Mac OS X Xcode 3.2.1 Developer Release Copyright
+2009 by Apple, Inc. All Rights Reserved.</FONT></P>
+
+<H2>Private Mac OS X Xcode 3.2.1 Developer Release:<BR>
+Compiler Tools (cctools-751)</H2>
+
+<P>This file contains release notes for the 5.27 release of the
+Compiler Tools for the Mac OS X Xcode 3.3 Developer Release. This
+file contains information about the following topics:</P>
+
+<UL>
+   <LI>The Mac OS X Mach-O GNU-based assemblers</LI>
+   
+   <LI>The classic Mac OS X 32-bit Mach-O static link editor</LI>
+   
+   <LI>Mach-O object tools (<B>nm</B>, <B>otool</B>, and so
+   on)&nbsp;</LI>
+</UL>
+
+<H2>Notes Specific to Release 5.27 (Mac OS X Xcode 3.2.1 Developer
+Release)</H2>
+
+<H5><FONT SIZE="+1">Changes since the last release (cctools-750 for
+the 5.26 Mac OS X Xcode 3.2 Developer release)</FONT></H5>
+
+<UL>
+   <LI>Fixed a problem with the assembler incorrectly not allowing
+   the SDIV and UDIV instructions for Cortex-M3. Radar bug
+   #6697528.</LI>
+   
+   <LI>Fixed a typo in the usage error message of
+   install_name_tool(1) where it had -rpaths that should have been
+   -rpath. Radar bug #6707169.</LI>
+   
+   <LI>Fixed a problem with the assembler not working with
+   MallocScribble. Radar bug #5930362.</LI>
+   
+   <LI>Fixed a problem with otool -ov printing meaningless strings
+   when used on protected binaries. Radar bug #5578032.</LI>
+   
+   <LI>Fixed a problem with the arch(3) man page incorrectly listing
+   a type as unsigned long for the parameter nfat_archs in
+   NXFindBestFatArch which should have been uint32_t. Radar bug
+   #4717379.</LI>
+</UL>
+
+<H2>Notes Specific to Release 5.26 (Mac OS X Xcode 3.2 Developer
+Release)</H2>
+
+<H5><FONT SIZE="+1">Changes since the last release (cctools-749 for
+the 5.26 Mac OS X Xcode 3.2 Developer release)</FONT></H5>
+
+<UL>
+   <LI>Fixed libtool(1) to correctly place different arm cpusubtype
+   llvm bit code files in different fat slices. Radar bug
+   #6654890.</LI>
+   
+   <LI>Updated nm(1) to display the symbol table of llvm bit code
+   files in archives. Radar bug #6067110.</LI>
+   
+   <LI>Fixed a bug in otool(1) that was incorrectly disassembling the
+   operand of an i386 instruction using an index register without a
+   base register. Radar bug #6533811.</LI>
+   
+   <LI>Improved the error message of install_name_tool(1) when the

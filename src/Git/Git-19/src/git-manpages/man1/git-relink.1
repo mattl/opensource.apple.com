@@ -1,0 +1,42 @@
+'\" t
+.\"     Title: git-relink
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 06/01/2011
+.\"    Manual: Git Manual
+.\"    Source: Git 1.7.5.4
+.\"  Language: English
+.\"
+.TH "GIT\-RELINK" "1" "06/01/2011" "Git 1\&.7\&.5\&.4" "Git Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+git-relink \- Hardlink common objects in local repositories
+.SH "SYNOPSIS"
+.sp
+\fIgit relink\fR [\-\-safe] <dir>\&... <master_dir>
+.SH "DESCRIPTION"
+.sp
+This will scan 1 or more object repositories and look for objects in common with a master repository\&. Objects not already hardlinked to the master repository will be replaced with a hardlink to the master repository\&.
+.SH "OPTIONS"
+.PP
+\-\-safe
+.RS 4
+Stops if two objects with the same hash exist but have different sizes\&. Default is to warn and continue\&.
+.RE
+.PP
+<dir>
+.RS 4
+Directories containing a \&.git/objects/ subdirectory\&.
+.RE
+.SH "GIT"
+.sp
+Part of the \fBgit\fR(1) suite

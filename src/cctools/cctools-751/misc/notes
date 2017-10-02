@@ -1,0 +1,3 @@
+To Do:
+- Add the -prebind_allow_overlap and  -prebind_all_two_level_modules to libtool
+  see Radar bug 3417137.

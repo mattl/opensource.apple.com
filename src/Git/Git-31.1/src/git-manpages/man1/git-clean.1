@@ -1,0 +1,88 @@
+'\" t
+.\"     Title: git-clean
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 01/27/2012
+.\"    Manual: Git Manual
+.\"    Source: Git 1.7.9
+.\"  Language: English
+.\"
+.TH "GIT\-CLEAN" "1" "01/27/2012" "Git 1\&.7\&.9" "Git Manual"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+git-clean \- Remove untracked files from the working tree
+.SH "SYNOPSIS"
+.sp
+.nf
+\fIgit clean\fR [\-d] [\-f] [\-n] [\-q] [\-e <pattern>] [\-x | \-X] [\-\-] <path>\&...
+.fi
+.sp
+.SH "DESCRIPTION"
+.sp
+Cleans the working tree by recursively removing files that are not under version control, starting from the current directory\&.
+.sp
+Normally, only files unknown to git are removed, but if the \fI\-x\fR option is specified, ignored files are also removed\&. This can, for example, be useful to remove all build products\&.
+.sp
+If any optional <path>\&... arguments are given, only those paths are affected\&.
+.SH "OPTIONS"
+.PP
+\-d
+.RS 4
+Remove untracked directories in addition to untracked files\&. If an untracked directory is managed by a different git repository, it is not removed by default\&. Use \-f option twice if you really want to remove such a directory\&.
+.RE
+.PP
+\-f, \-\-force
+.RS 4
+If the git configuration variable clean\&.requireForce is not set to false,
+\fIgit clean\fR
+will refuse to run unless given \-f or \-n\&.
+.RE
+.PP
+\-n, \-\-dry\-run
+.RS 4
+Don\(cqt actually remove anything, just show what would be done\&.
+.RE
+.PP
+\-q, \-\-quiet
+.RS 4
+Be quiet, only report errors, but not the files that are successfully removed\&.
+.RE
+.PP
+\-e <pattern>, \-\-exclude=<pattern>
+.RS 4
+In addition to those found in \&.gitignore (per directory) and $GIT_DIR/info/exclude, also consider these patterns to be in the set of the ignore rules in effect\&.
+.RE
+.PP
+\-x
+.RS 4
+Don\(cqt use the standard ignore rules read from \&.gitignore (per directory) and $GIT_DIR/info/exclude, but do still use the ignore rules given with
+\-e
+options\&. This allows removing all untracked files, including build products\&. This can be used (possibly in conjunction with
+\fIgit reset\fR) to create a pristine working directory to test a clean build\&.
+.RE
+.PP
+\-X
+.RS 4
+Remove only files ignored by git\&. This may be useful to rebuild everything from scratch, but keep manually created files\&.
+.RE
+.SH "GIT"
+.sp
+Part of the \fBgit\fR(1) suite

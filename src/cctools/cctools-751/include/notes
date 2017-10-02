@@ -1,0 +1,30 @@
+Changes for the 5.26 release (the cctools-750 release):
+- Added lto_get_nlist_64() to stuff/lto.h for use by nm(1) print information
+  from llvm bit code files.  Radar bug #6067110.
+
+Changes for the 5.25 release (the cctools-737 release):
+- Added the new ARM_THUMB_32BIT_BRANCH relocation type to <mach-o/arm/reloc.h> .
+  Radar bug #6511482.
+
+Changes for the 5.25 release (the cctools-725 release):
+- Added support for new compressed LINKEDIT information. Radar bug #6232822.
+  - Added dyld_info_command and constants to mach-o/loader.h .
+  - Added the dyld_info, output_dyld_info and output_dyld_info_size fields to
+    the object struct in stuff/breakout.h .
+  - Added the swap_dyld_info_command() prototype to stuff/bytesex.h .
+
+Changes for the 5.25 release (the cctools-724 release):
+- Added the MH_KEXT_BUNDLE and MH_DEAD_STRIPPABLE_DYLIB constants to
+  <mach-o/loader.h> .  Radar bug #6272534.
+
+Changes for the 5.25 release (the cctools-718 release):
+- Added the header file "coff/debug_directory.h" and added that to the Makefile.
+  Added swap_debug_directory_entry() and swap_mtoc_debug_info() to
+  "coff/bytesex.h".  Radar bug #6211642.
+
+Changes for the 5.25 release (the cctools-708 release):
+- Picked up the changes to the comments in <mach-o/x86_64/reloc.h> for
+  Radar bug #5949622.
+
+Changes for the 5.25 release (the cctools-705 release):
+- Changed the struct ofile in <stuff/ofile.h> so that the lto* fields are not

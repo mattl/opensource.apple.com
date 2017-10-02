@@ -1,0 +1,843 @@
+Changes for the 5.13.2 release (the cctools-495.3 release):
+- Added the prototype for unprebind(3) to <mach-o/redo_prebinding.h>.  
+  Radar bug #3176679.
+- Added prototypes for the new routine breakout_mem() and writeout_to_mem()
+  to <stuff/breakout.h>.  Radar bug #3176679.
+- Added MH_PREBINDABLE, MH_ALLMODSBOUND, and MH_CANONICAL Mach-O header 
+  flags to <mach-o/loader.h>.  MH_PREBINDABLE indicates that the binary is not
+  prebound but has enough information in it to be prebound by 
+  redo_prebinding(3) or redo_prebinding(1).  MH_ALLMODSBOUND exists 
+  only in binaries with MH_PREBINDABLE also set and indicates that 
+  when this binary is reprebound, all the two-level namespace modules
+  should be bound.  MH_CANONICAL identifies a canonical form of a 
+  binary, in other words, one that has been processed by unprebind(3) or 
+  redo_prebinding(1) -u.  Radar bug #3176679.
+
+Changes for the 5.13 release (the cctools-492 release):
+- Added the #define NEXT_DEBUG_ADDRESS_TO_ASSIGN to <stuff/seg_addr_table.h>
+  so that seg_addr_table(1) can layout debug and profile libraries at a lower
+  address than the rest of the flat region.  Radar bug #3360593.
+
+Changes for the 5.13 release (the cctools-490 release):
+- Added the proto type for the new routine cpusubtype_execute() to the header
+  file <stuff/best_arch.c> for use by the dynamic linker.  Radar bug #3387962.
+
+Changes for the 5.13 release (the cctools-482 release):
+- Added the file <mach-o/dyld_priv.h> that contains the new
+  NSFindSectionAndOffsetInObjectFileImage() SPI.  Radar bug #3318440.
+- Updated the Makefile to install the new file <mach-o/dyld_priv.h> .
+  Radar bug #3318440.
+
+Changes for the 5.12 release (the cctools-477 release):
+- Changed <mach-o/kld.h> to make kld_load_basefile_from_memory() available for
+  both __DYNAMIC__ and __STATIC__  and added kld_set_link_options() as well as
+  the constants to use with it.  Radar bug #3270588.
+
+Changes for the 5.12 release (the cctools-468 release):
+- Added some comments to <mach-o/ppc/reloc.h> to describe the new use of the
+  previously unused value 3 for r_length to mean that the conditional branch was
+  predicted using the Y-bit and the sign of the displacement and opcode.
+  Radar bug #3223045.
+
+Changes for the 5.12 release (the cctools-467 release):
+- Added the PPC_RELOC_LO14_SECTDIFF relocation type to <mach-o/ppc/reloc.h>
+  to match the PPC_RELOC_LO14 relocation type for load and store double
+  instructions using a section difference expression.  Radar bug #3218027.
+
+Changes for the 5.12 release (the cctools-466 release):
+- Added the DYNAMIC_LOOKUP_ORDINAL to <mach-o/nlist.h> and reduced the value of
+  MAX_LIBRARY_ORDINAL by one.  This is to allow dynamic flat namespace lookups
+  in twolevel namespace images.  Radar bug #3210803.
+
+Changes for the 5.12 release (the cctools-464 release):
+- Fixed a spelling error in <mach-o/loader.h> where "alwasys" should be "always"
+  Radar bug #3198288.
+- Added the prototype for the SPI NSHasModInitObjectFileImage() to
+  <mach-o/dyld.h> .  Radar bug #3196951.
+- Made changes to build cleanly with gcc3.3
+  - Change the prototype for round() in "stuff/round.h" to used unsigned long
+    in the two places it use long.
+
+Changes for the 5.12 release (the cctools-463 release):
+- Changed the prototype of NSGetSectionDataInObjectFileImage() from
+    /* not yet implemented */
+    extern void * NSGetSectionDataInObjectFileImage(
+	NSObjectFileImage objectFileImage,
+	const char *segmentName,
+	const char *sectionName);
+  to the now implemented prototype:
+    extern void * NSGetSectionDataInObjectFileImage(
+	NSObjectFileImage objectFileImage,
+	const char *segmentName,
+	unsigned long *size); /* can be NULL */
+  Radar bug #3194204.
+- Added the constant:
+    #define	MH_DYLIB_STUB	0x9	/* shared library stub for static */
+					/*  linking only, no section contents */
+  to <mach-o/loader.h> .  Radar bug #3193744.
+
+Changes for the 5.12 release (the cctools-462 release):
+- Added the constant:
+    #define NSLINKMODULE_OPTION_TRAILING_PHYS_NAME 0x10
+  to <mach-o/dyld.h> and comments to <mach-o/dyld_gdb.h> .  Radar bug #3190599.
+
+Changes for the 5.12 release (the cctools-461 release):
+- Added the constant:
+    #define NSLINKMODULE_OPTION_DONT_CALL_MOD_INIT_ROUTINES 0x8
+  to <mach-o/dyld.h> .  Radar bug #3183011.
+
+Changes for the 5.12 release (the cctools-460 release):
+- Removed the /* not yet implemented */ comment off of the following prototypes
+  in <mach-o/dyld.h> :
+    NSSymbolDefinitionCountInObjectFileImage
+    NSSymbolDefinitionNameInObjectFileImage
+    NSSymbolReferenceCountInObjectFileImage
+    NSSymbolReferenceNameInObjectFileImage
+    NSIsSymbolDefinedInObjectFileImage
+  As there are now implemented.  Radar bug #3179011.
+
+Changes for the 5.12 release (the cctools-457 release):
+- Added ofile_map_from_memory() to "stuff/ofile.h".  This is needed so the
+  NSCreateObjectFileImageFromMemory() api can be implemented.  Radar bug
+  #3131622.
+
+Changes for the 5.12 release (the cctools-456 release):
+- Picked up the header file <cbt/libsyminfo.h>.  Radar bug 3145742.
+
+Changes for the 5.12 release (the cctools-448 release):
+- Added the N_OPT constant to <mach-o/stabs.h> which is emitted with
+  gcc2_compiled and in gcc source.  Radar bug #3104328.
+- Added the _dyld_get_image_header_containing_address() SPI prototype to
+  <mach-o/dyld.h> (also added the missing _dyld_image_containing_address()
+  prototype).  Radar bug #2967928.
+
+Changes for the 5.12 release (the cctools-447 release):
+- Added the _dyld_all_twolevel_modules_prebound() SPI prototype to
+  <mach-o/dyld.h>.  Radar bug #3055372.
+
+Changes for the 5.11 release (the cctools-444 release):
+- Added the file <stuff/symbol_list.h> which contains the interface for the
+  symbol lists code taken from strip.c.  Now also used by ld(1)'s
+  -exported_symbols_list and -unexported_symbols_list options.  Radar bug
+  #3083844.
+
+Changes for the 5.11 release (the cctools-439 release):
+- Added the VEO cputype and its subtypes to <mach/machine.h>.  Radar bug
+  #3068161.
+- Added the install_name() API to <mach-o/redo_prebinding.h> .
+  Radar bug #3065586.
+
+Changes for the 5.11 release (the cctools-440 release):
+- Fixed the warnings about extra tokens at end of #endif directive in
+  <mach-o/loader.h>, <mach/m68k/thread_status.h>, <architecture/nrw/reg_help.h>,
+  <architecture/m88k/reg_help.h>, <mach/m88k/thread_status.h>,
+  <mach/i860/thread_status.h>, <architecture/sparc/reg.h>,
+  <mach/sparc/thread_status.h>, <mach-o/nlist.h>, <architecture/m88k/fp_regs.h>,
+  <gnu/exec.h>, <mach/machine.h>, <architecture/nrw/macro_help.h>,
+  <mach-o/gmon.h> and <mach-o/stab.h> (Radar bug #3072042).
+
+Changes for the 5.11 release (the cctools-438 release):
+- Added the constant MACOSX_DEPLOYMENT_TARGET_10_3 to the header file
+  <stuff/macosx_deployment_target.h>.  Radar bug #3049974.
+
+Changes for the 5.11 release (the cctools-437 release):
+- Added the new N_PARAMS, N_VERSION and N_OLEVEL defines to <mach-o/stab.h>.
+  Radar bug #3000792.
+
+Changes for the 5.10 release (the cctools-422 release):
+- Added the section attribute S_ATTR_STRIP_STATIC_SYMS to <mach-o/loader.h>.
+  Radar bug #2945659.
+  
+Changes for the 5.10 release (the cctools-421 release):
+- Added the constant MH_NOFIXPREBINDING to <mach-o/loader.h> so that the
+  fix_prebinding(1) program can be marked with this.  Radar bug #2941669.
+
+Changes for the 5.10 release (the cctools-420 release):
+- Changed the comment on the constant NOT_PREBINDABLE in
+  <mach-o/redo_prebinding.h> to include "or statically linked" to indicate
+  that it will be returned for statically linked binaries.  Radar bug #2934831.
+
+Changes for the 5.10 release (the cctools-416 release):
+- Added the N_WEAK_DEF define to <mach-o/nlist.h> to support weak definitions
+  and non-weak definitions in the same coalesced section. Radar bug #2919646.
+- Removed the section attribute S_ATTR_WEAK_DEFS to <mach-o/loader.h> .
+  Radar bug #2919646.
+- Added the dont_update_LC_ID_DYLIB_timestamp field to the arch struct in
+  breakout.h .  Radar bug #2914003.
+
+Changes for the 5.10 release (the cctools-414 release):
+- Added the section attribute S_ATTR_WEAK_DEFS to <mach-o/loader.h> for weak
+  definitions to be used with coalesced sections for supporting explicit
+  template instantiation.  Radar bug #2898558.
+
+Changes for the 5.10 release (the cctools-412 release):
+- Added the no_error_if_missing parameter to symLocForDylib(), dstLocForDylib()
+  and LocForDylib() in stuff/SymLoc.h .  Radar bug #2882324.
+- Added the no_error_if_missing parameter to get_symfile_for_dylib() and
+  get_dstfile_for_dylib() in stuff/dylib_roots.h.  Radar bug #2882324.
+
+Changes for the 5.10 release (the cctools-411 release):
+- Added the header file <stuff/macosx_deployment_target.h> so that both the
+  ld(1) code and the seg_addr_table(1) code can use them.
+
+Changes for the 5.10 release (the cctools-408 release):
+- Changed the comments in <mach-o/loader.h> where it used sizeof(unsigned long)
+  to 4 bytes.
+
+Changes for the 5.10 release (the cctools-407 release):
+- Added "(obsolete)" to the comment in <mach-o/loader.h> for the MH_LAZY_INIT
+  constant.
+
+Changes for the 5.10 release (the cctools-404 release):
+- Changed crc32() in <stuff/crc32.h> to be a __private_extern__. 
+  Radar bug #2859919.
+
+Changes for the 5.10 release (the cctools-403 release):
+- Changed mach-o/ppc/swap.h and mach-o/i386/swap.h to use #include and not
+  #import.  Radar bug #2778821.
+
+Changes for the 5.10 release (the cctools-400 release):
+- Added a new throttle parameter to redo_prebinding() in
+  <mach-o/redo_prebinding.h> to allow it to be used prebinding on demand to
+  throttle back its I/O when running in the back ground.  Radar bug #2850642.
+- Added a new throttle parameter to writeout() in <stuff/writeout.h> to allow
+  redo_prebinding(3) used with prebinding on demand to throttle back its
+  I/O when running in the back ground.  Radar bug #2850642.
+
+Changes for the 5.10 release (the cctools-397 release):
+- Added the new allow_missing_architectures parameter to the
+  needs_redo_prebinding() API in <mach-o/redo_prebinding.h> .  Radar bug
+  #2836068
+- Added the macro #define REDO_PREBINDING_VERSION 1 to
+  <mach-o/redo_prebinding.h> . Radar bug #2836572.
+- Removed the DYLD_BOOL macro from <mach-o/dyld.h> because ANSI C99 has a
+  macro bool defined as _Bool which causes problems with this.  Radar bug 
+  #2831923.
+- Added the _NSGetExecutablePath SPI to <mach-o/dyld.h>. Radar bug #2432816.
+
+Changes for the 5.10 release (the cctools-396 release):
+- Added the new allow_missing_architectures parameter to the redo_prebinding()
+  API in <mach-o/redo_prebinding.h> .  Radar bug #2809673.
+- Changed the N_WEAK_SYM macro in <mach-o/nlist.h> to N_WEAK_REF so that it is
+  clear it means weak references not weak defintions.
+
+Changes for the 5.10 release (the cctools-394 release):
+- Added guards to <mach-o/ranlib.h>, "stuff/bytesex.h", "stuff/arch.h",
+  "stuff/ofile.h",
+  to prevent multiple includes.
+
+Changes for the 5.10 release (the cctools-393 release):
+- Added the N_WEAK_SYM macro to <mach-o/nlist.h>.
+- Added the LC_LOAD_WEAK_DYLIB macro for the new weak dylib load command to
+  <mach-o/loader.h>.
+
+Changes for the 5.10 release (the cctools-392 release):
+- Added the new parameter use_member_syntax to the ofile_process() prototype
+  in <stuff/ofile.h>.  Radar bug #2730127.
+
+Changes for the 5.10 release (the cctools-388 release):
+- Changed the use of #import to #include in the mach-o directory files and
+  added guards to each header to prevent multiple includes.  Radar bug #2778821.
+
+Changes for the 5.10 release (the cctools-387 release):
+- Added NSADDIMAGE_OPTION_MATCH_FILENAME_BY_INSTALLNAME to <mach-o/dyld.h>
+
+Changes for the 5.10 release (the cctools-386 release):
+- Added the get_prebind_cksums() prototype to <mach-o/redo_prebinding.h> .
+- Added a <stuff/crc32.h> header for the crc32() prototype.
+- Added the parameter zero_out_prebind_checksum to redo_prebinding() in
+  <mach-o/redo_prebinding.h>
+- Added the two fields:
+    struct prebind_cksum_command *cs;
+    unsigned long calculated_input_prebind_cksum;
+  to the object struct.  And added the calculate_input_prebind_cksum parameter
+  to breakout() prototype.
+- Added the swap_prebind_cksum_command() to <stuff/bytesex.h> and to
+  <mach-o/swap.c>.
+- Added the prebind check sum load command to <mach-o/loader.h> .
+
+Changes for the 5.10 release (the cctools-385 release):
+- Added the routines archive_error(), archive_member_error() and
+  Mach_O_error() to ofile.h as they were moved out of ofile.c to ofile_error.c
+  so the redo_prebinding library can override them.
+- Changed <mach-o/redo_prebinding.h> for the following API changes for
+  Radar bug #2575205 and #2729976:
+
+  Added the routine object_file_type().
+
+  Added the only_if_needed boolean parameter to the redo_prebinding(3) library.
+            
+  Changed the return type of the redo_prebinding(3) library API to be an enum.
+
+  Removed the comment about the slide_to_address parameter of the
+  redo_prebinding(3) library API not being supported.
+
+  Added the expected_address parameter to the needs_redo_prebinding(3) library
+  API.
+
+Changes for the 5.9 release (the cctools-384 release):
+- Removed the semicolon after the closing curly brace in the trailing endif
+  __cplusplus wrapper in <mach-o/dyld.h>.  Radar bug #2748160.
+
+Changes for the 5.9 release (the cctools-381 release):
+- Added the LC_REQ_DYLD constant to <mach-o/loader.h> as a bit in the load
+  command that must be understood by the dynamic linker for the image to
+  execute properly.
+
+Changes for the 5.9 release (the cctools-378 release):
+- Added the extern "C" stuff in #if __cplusplus wrappers for <mach-o/dyld.h> .
+  Radar bug #2728016.
+
+Changes for the 5.9 release (the cctools-370 release):
+- Added the MH_NOMULTIDEFS flag to <mach-o/loader.h> .
+- Added the hints_cmd and output_hints fields to the object structure in
+  <stuff/breakout.h> .
+
+Changes for the 5.9 release (the cctools-369 release):
+- Picked up the changes to <mach-o/arch.h> so that it has the extern "C" stuff
+  in #if __cplusplus wrappers.
+- Added kld_load_from_memory & kld_load_basefile_from_memory for the dynamic
+  build variant of libkld.  These APIs will be used by the Kernel's dynamic
+  OSObject patch code.  This change is in <mach-o/kld.h> .
+
+Changes for the 5.9 release (the cctools-367 release):
+- Added swap_sub_library_command to <mach-o/swap.c>.  Added
+  swap_sub_library_command() to <stuff/bytesex.h> .  Added the LC_SUB_LIBRARY
+  load command and the sub_library_command struct to <mach-o/loader.h> . 
+  Radar bug #2697458.
+- Added swap_twolevel_hint(), swap_twolevel_hints_command() and the missing
+  swap_routines_command() to <mach-o/swap.c>. Added
+  swap_twolevel_hints_command() and swap_twolevel_hint() to <stuff/bytesex.h> .
+  Added the LC_TWOLEVEL_HINTS load command and the twolevel_hint struct to
+  <mach-o/loader.h> .  Radar bug #2558069.
+
+Changes for the 5.9 release (the cctools-365 release):
+- Added NSAddImage(), NSLookupSymbolInImage() and NSIsSymbolNameDefinedInImage()
+  and their options to <mach-o/dyld.h>.  Also NSOtherErrorInvalidArgs in the
+  NSOtherErrorNumbers enum in <mach-o/dyld.h> was added.  Radar bug #2689833.
+
+Changes for the 5.9 release (the cctools-360 release):
+- Added the sections field to stuff/breakout.h for support of NO_TOC section
+  attribute.  See notes in libstuff about writeout().
+- Added the header file <mach-o/redo_prebinding.h> for the redo_prebinding(3)
+  API.  Radar bug #2604014.
+- Changed guess_short_name() to be __private_extern__ in
+  <stuff/guess_short_name.h> .
+
+Changes for the 5.9 release (the cctools-359 release):
+- Changed the comments about SELF_LIBRARY_ORDINAL in <mach-o/nlist.h> to
+  correctly reflect its usage.
+- Removed the comment /* not yet implemented */ before
+  NSDestroyObjectFileImage() in <mach-o/dyld.h> as this was fixed as part of
+  Radar bug #2500014.
+
+Changes for the 5.8 release (the cctools-357 release):
+- Added CPU_SUBTYPE_POWERPC_7450 to <mach/machine.h> Radar bug #2599869.
+
+Changes for the 5.8 release (the cctools-354 release):
+- Fixed a type in <mach-o/loader.h> in describing MH_PRELOAD.  Radar bug
+  #2571359.
+
+Changes for the 5.8 release (the cctools-353 release):
+- Moved the header files to /usr/include and /usr/local/include when RC_OS is
+  macos and RC_RELEASE is not Beaker, Bunsen, Gonzo or Kodiak.  Radar bug
+  #2569880.
+
+Changes for the 5.8 release (the cctools-350 release):
+- Added the prototypes for NSIsSymbolNameDefinedWithHint(),
+  NSLookupAndBindSymbolWithHint() and  _dyld_lookup_and_bind_with_hint() to
+  <mach-o/dyld.h>.  Radar bug #2567184.
+
+Changes for the 5.8 release (the cctools-349 release):
+- Added the file <mach-o/dyld_gdb.h>.  Radar bug #2559324.
+
+Changes for the 5.8 release (the cctools-347 release):
+- Added _dyld_register_func_for_remove_image() to <mach-o/dyld.h>.
+- Added NSAddLibraryWithSearching() to <mach-o/dyld.h>.  Radar bug #2535633.
+
+Changes for the 5.8 release (the cctools-343 release):
+- Changed REFERENCED_DYNAMICALLY back to 0x0010 as it was inadverntly changed
+  to 0x0080 which breaks strip(1) and binary compatiblity.
+
+Changes for the 5.8 release (the cctools-342 release):
+- Added the sub_client_command load command to <mach-o/loader.h> and swap
+  routine to <mach-o/swap.h>.  Radar bug 2533649.
+- Added MH_TWOLEVEL and MH_FORCE_FLAT to <mach-o/loader.h> for two-level name
+  space support. Radar bug #2534043.
+- Added comments and macros to <mach-o/nlist.h> for two-level name space
+  support. Radar bug #2534043.
+
+Changes for the 5.8 release (the cctools-341 release):
+- Added the sub_umbrella_command load command to <mach-o/loader.h>. Radar bug
+  #2530028.
+- Added the header file <mach-o/kld.h> and changed the Makefile to install it. 
+- Changed <mach-o/sarld.h> so that sa_rld_output_addr and sa_rld_output_size
+  are private_externs and noted in the comment they are not part of the extenal
+  API.  Radar bug #2523649.
+
+Changes for the 5.7 release (the cctools-336 release):
+- Added the section attribute S_ATTR_NO_TOC section contains coalesced symbols
+  that are not to be in a ranlib table of contents.  Radar bug #2494286.
+
+Changes for the 5.7 release (the cctools-334 release):
+- Changed guess_short_name()'s has_suffix argument to return_suffix to a pointer
+  to the suffix so checksyms could check for "_debug".
+- Added NSOtherErrorLazyInit to the NSOtherErrorNumbers enum typedef for the
+  few errors that can happen setting up the exception handler for lazy inits.
+  Radar bug #2490396.
+- Added MH_LAZY_INIT to <mach-o/loader.h> for "Lazy initialization of specified
+  libraries in a prebound launch".  Radar bug #2490396.
+
+Changes for the 5.7 release (the cctools-332 release):
+- Changed the following routines to take a disablewarnings flag which was added
+  to seg_addr_table(1): get_symfile_for_dylib() and get_dstfile_for_dylib() in
+  the header file "stuff/dylib_roots.h" and dstLocForDylib(),
+  get_dstfile_for_dylib() and LocForDylib() in the header file "stuff/SymLoc.h"
+  (Radar bug #2482327).
+
+Changes for the 5.7 release (the cctools-329 release):
+- Change the parameters to the unimplemented NSReplaceModule() api to change
+  the last two parameters to just one parameter named options to match what
+  is done in NSLinkModule() and NSUnLinkModule().  Radar bug #2469558.
+- Changed the fields names iinit and ninit in struct dylib_module in
+  <mach-o/loader.h> to iinit_iterm and ninit_nterm reflect that they now contain
+  the indexes and counts into the init and term sections.  Radar bug #2469527.
+- Added the prototype for the new function _dyld_debug_task_from_core() to
+  <mach-o/dyld_debug.h>.  Radar bug #2155790.
+- Added the prototype for the new function NSCreateCoreFileImageFromFile()
+  to <mach-o/dyld.h>.  Also added a new enum for other link edit errors and made
+  some other minor changes.  Radar bug #2155790.
+
+Changes for the 5.7 release (the cctools-327 release):
+- Left where the headers get installed in the System Framework.  So they will
+  continue to be installed in /System/Library/Frameworks/System.framework/...
+  And maybe sometime post-DP4 they will be in
+  /MacOSX/System/Frameworks/System.framework/...
+
+Changes for the 5.6 release (the cctools-323 release):
+- Changed back where the headers get installed in the System Framework
+  back to /System/Library/Frameworks/System.framework/...  from
+  /MacOSX/System/Frameworks/System.framework/.... for the Space release.  This
+  won't change till post-DP4.
+
+Changes for the 5.6 release (the cctools-320 release):
+- Changed the Makefile to install "stuff/bool.h" into the local include mach-o
+  directory as an egregious hack for sampler.  See the dyld notes.
+  (Radar bug #2376135).
+- Added the new LC_SUB_FRAMEWORK load command to support "Guarding against
+  direct linking of non-umbrella frameworks".  Various public and private
+  header files were updated to supply this support, <mach-o/loader.h>,
+  <mach-o/swap.h> (also the missing prototypes for other functions were added),
+  "stuff/bytesex.h", "stuff/seg_addr_table.h" (the routine guess_short_name()
+  was broken out and the new header "guess_short_name.h" was added).
+  Radar bug #2443212.
+
+Changes for the 5.5 release (the cctools-314 release):
+- Added the definition of the struct dyld_debug_error_data and
+  the API _dyld_debug_set_error_func() to register a function to be called
+  when one of the dyld debug API's fails to <mach-o/dyld_debug.h>  Radar bug
+  #2421770.
+- Added DYLD_IMAGE_REMOVED to the dyld_event_type enum for removal of plugins
+  in <mach-o/dyld_debug.h> Radar bug #2421760.
+
+Changes for the 5.5 release (the cctools-308 release):
+- Added the following code to dyld.h:
+    #ifndef __cplusplus
+    #define DYLD_BOOL bool
+    #endif
+  and changed all occurences of "bool" to "DYLD_BOOL". Radar bug #2412898.
+
+Changes for the 5.5 release (the cctools-307 release):
+- Added N_BINCL, N_EINCL and N_EXCL to mach-o/stabs.h for begin/end/exclude
+  include files. Radar bug #2410704.
+- Added N_BNSYM and N_ENSYM to mach-o/stabs.h for begin/end section symbols
+  for used with coalesced symbols. Radar bug #2411273.
+- Added CPU_SUBTYPE_POWERPC_7400 to cctools copy of mach/machine.h.  The
+  Beaker2O6 has this as CPU_SUBTYPE_POWERPC_Max (both have the value 10).
+  Radar bug #2397523.
+
+Changes for the 5.4 release (the cctools-300 release):
+- Changed the Makefile so headers are not in installed for make install for
+  RC_OS=macos.  Radar Bug #2370826.
+- Added the new load command LC_ROUTINES for library initialization routines.
+- Added the new section type S_COALESCED for coalesced symbols.
+
+Changes for the 5.3 release (the cctools-286 release):
+- Added the new section type S_MOD_TERM_FUNC_POINTERS for termination function
+  pointers.
+
+Changes for the 5.3 release (the cctools-285 release):
+- Changed the #ifdef NeXT in <gnu/exec.h> to #ifdef NeXT_MOD and to define
+  NeXT_MOD if not defined.
+- Updated again mach/ppc/thread_status.h to the Beaker1E1 MacOS X version.
+  Also changed the macros
+	MACHINE_THREAD_STATE
+	MACHINE_THREAD_STATE_COUNT
+	THREAD_MACHINE_STATE_MAX
+  to:
+	PPC_MACHINE_THREAD_STATE
+	PPC_MACHINE_THREAD_STATE_COUNT
+	PPC_THREAD_MACHINE_STATE_MAX
+  So that mach/{ppc,i386,etc}/thread_status.h can all be included in the same
+  file without warnings about redefined macros.
+- Changed #import <sys/types.h> in ranlib.h to #include <sys/types.h>
+  Radar Bug #2303937.
+
+Changes for the MacOS X bring up (the cctools-282 release):
+- Added the file stuff/openstep_mach.h which has defines to allow cctools
+  to be built on openstep now that the code has been changed to use Mach 3.0
+  names.
+- Changed the Makefile to allow for RC_OS=macos for MacOS X builds.
+- Chanded standalone/libsa.h to used mach_port_t for port_t, vm_task_t and
+  host_t.
+- Changed all the port_t and task_t to mach_port_t in mach-o/dyld_debug.h .
+  Also added a hack to typedef msg_header_t and msg_type_t to int for bring up.
+- Changed vm_task_t to mach_port_t in vm_flush_cache.c to build for MacOS X.
+- Updated mach/ppc/thread_status.h to the MacOS X version.  The files in the
+  architecture/ppc are no longer needed and the Makefile was changed.
+- Copied in mach/i386/thread_status.h from Rhapsody Atlas1G1 for porting to
+  MacOS X since this header file is not yet part of the header set.
+
+Changes for the 5.2 release (the cctools-278 release):
+- Changed where <mach-o/rld.h> gets installed.  It is now a private header as
+  it uses <streams/streams.h> which is a private header.
+- Chanded <mach-o/dyld.h> to not include <streams/streams.h>
+
+Changes for the 5.2 release (the cctools-274 release):
+- Removed the i586SX cpusubtype and added the new intel x86 subtypes and macros
+  for families and models.  Radar bug #2231830.
+
+Changes for the 5.2 release (the cctools-267 release):
+- Added <mach-o/getsect.h>.  Radar bug #2227839.
+- Added:
+    #if defined(__MWERKS__) && !defined(__private_extern__)
+    #define __private_extern__ __declspec(private_extern)
+    #endif
+  to many headers to allow compiling with MetroWerks compiler.  Radar bug
+  #2227678.
+- Changed architecture/m88k/fp_regs.h line:
+    #ifdef __GNUC__
+	    unsigned        x[4] __attribute__(( aligned(16) ));
+    #else
+	    unsigned        x[4];
+    #endif
+  to deal with MetroWerks compiler. Radar bug #2227678.
+- Removed the #ifded 0 around swap_dysymtab_command() in <mach-o/swap.h>.
+  Radar bug #2227474.
+
+Changes for the 5.1 release (the cctools-260 release):
+- Added -c to all the install commands in the Makefile.
+
+Changes for the 5.1 release (the cctools-253 release):
+- Changed where the headers get installed to match the new directory layout for
+  Preimer.
+
+Changes for the 5.1 release (the cctools-248 release):
+- Changed over to base gmon.h on the 4.4bsd file.  For Rhapsody this file is
+  installed by another project.  There is a local copy if the file <sys/gmon.h> 
+  here until the modified file makes it into the release.  The 4.2
+  <mach-o/gmon.h> file is no longer installed for RC_OS teflon.
+
+Changes for the 5.1 release (the cctools-247 release):
+- Added MKDIRS if code to the Makefile to build native on Rhapsody.
+- Changed the Makefile to use gnutar instead of tar because it works on Rhapsody
+  where tar does not.
+- Moved m68k and sparc mach-o headers to local headers for install.
+- Removed the comment allowing the moduleName parameter of NSLinkModule() in
+  dyld.h to be NULL (Radar 1670835).
+
+Changes for the 5.0 release (the cctools-240 release):
+- Changed it so gnu/a.out.h and gnu/exec.h are not installed with installGNUsrc
+  and installMWsrc because they are encumbered.
+
+Changes for the 5.0 release (the cctools-235 release):
+- Added PPC_RELOC_JBSR to ppc/reloc.h .
+- Picked up the comments from the OpenBSD headers and replaced the comments in
+  nlist.h, reloc.h, gmon.h and stab.h.
+
+Changes for the 5.0 release (the cctools-234 release):
+- Ifdef'ed the inline functions using asm()'s in architecture because of the
+  Teflon use of -fkeep-inlines causing things not to compile.
+
+Changes for the 5.0 release (the cctools-224 release):
+- Added mach-o/ranlib.h from bsd/ranlib.h changing off_t to unsigned long.
+  This was needed for Teflon as off_t is a long long (64 bits).
+- Added a mach-o/sparc/swap.h, mach-o/ppc/swap.h, mach-o/i860/swap.h and a
+  mach-o/m88k/swap.h .
+- Picked up the PowerPC subtypes from unix-42/mach/machine.h .
+- Changed the Makefile to install mach-o/ppc/reloc.h in NextDeveloper/Headers.
+
+Changes for the 5.0 release (the cctools-221 release):
+- Picked up correct Rhapsody mach/ppc/thread_status.h and updated
+  stuff/bytesex.h.
+
+Changes for the 4.0 release (the cctools-133 release):
+- Picked up sparc changes to architecture/sparc/reg.h.
+- Picked up sparc changes to mach/sparc/thread_status.h.
+- Picked up sparc changes to stuff/bytesex.h for prototype of
+  swap_sparc_thread_state_fpu().
+- Picked up sparc changes to mach-o/sparc/reloc.h.
+
+Changes for the 4.0 release (the cctools-132 release):
+- Removed the 2.0 compatiblity header files.
+- Picked up the files mach/sparc/thread_status.h and architecture/sparc/reg.h
+
+Changes for the 3.3 release (the cctools-125 release):
+- Picked up installing 2.0Compatiblity/sys/loader.h
+- Added installing nlist.h stab.h loader.h fat.h (bug #31334).
+
+Changes for the 3.3 release (the cctools-120 release):
+- Added the file <mach-o/dyld.h>
+
+Changes for the 3.3 release (the cctools-119 release):
+- Picked up the first changes for sparc (sparc/reloc.h) the work is not
+  complete.
+
+Changes for the 3.3 release (the cctools-104 release):
+- Changed the name of the first parameter of swap_ident_command() from id to
+  id_cmd (in bytesex.h).  The compiler is treating this as a reserved word.
+
+Changes for the 3.3 release (the cctools-102 release):
+- Integrated in the hppa support.
+different include/Makefile (integrated for cctools-102)
+    Using cctoolshppa-37. mach-o/hppa/reloc.h is new.
+different include/gnu/a.out.h (integrated for cctools-102)
+    Using cctoolshppa-37.  Added:
+	#ifdef HPPA
+	#include "mach-o/hppa/reloc.h"
+	#endif
+different include/mach/machine.h (integrated for cctools-102)
+    Using cctoolshppa-37.  New constants for hppa and badly integrated the
+    existing contants:
+	#define CPU_TYPE_ANY                    ((cpu_type_t) -1)
+	#define CPU_SUBTYPE_MULTIPLE            ((cpu_subtype_t) -1)
+	#define CPU_SUBTYPE_LITTLE_ENDIAN       ((cpu_subtype_t) 0)
+	#define CPU_SUBTYPE_BIG_ENDIAN          ((cpu_subtype_t) 1)
+    which were scattered though out the file and moved from their comment.
+    Email sent to Josh on this one (who forwarded it to Mac).
+different include/stuff/bytesex.h (integrated for cctools-102)
+    Using cctoolshppa-37.  New routines for swaping hppa's threads.
+Only in cctoolshppa-37/include/mach: hppa (integrated for cctools-102)
+    Pick up include/mach/hppa/thread_status.h from cctoolshppa-37.
+Only in cctoolshppa-37/include/mach-o: hppa (integrated for cctools-102)
+    Pick up include/mach-o/hppa/reloc.h from cctoolshppa-37.  But has
+    HPPA_RELOC_NORELOC which is used in hppa.c.  HPPA_RELOC_NORELOC pulled
+    from reloc.h and NO_RELOC defined as 0x10 (out side the range of r_type:4)
+    in hppa.h and NO_RELOC used in hppa.c.
+
+Changes for the 3.1 release (the cctools-22 release):
+- Added to mach/machine.h the following cpp macros (bug #32553):
+	#define CPU_TYPE_ANY			((cpu_type_t) -1)
+	#define CPU_SUBTYPE_LITTLE_ENDIAN	((cpu_subtype_t) 0)
+	#define CPU_SUBTYPE_BIG_ENDIAN		((cpu_subtype_t) 1)
+
+Changes for the 3.1 release (the cctools-15 release):
+- Picked up the proper mach/m98k/thread_status.h and the six included files
+  to make it compile.
+
+Changes for the 3.1 release (the cctools-13 release):
+- Added the m98k (PowerPC) architecture.  This includes a kludged
+  mach/m98k/thread_status.h with only an entry point.
+
+Changes for the 3.1 release (the cctools-6 release):
+- Changed mach/i386/thread_status.h so the m68k compiler will compile this the
+  same as the i386 compiler.  The change was to change the "unsigned int :0" to
+  "unsigned short pad_??".
+
+Changes for the 3.1 release (the cctools-5 release):
+- Picked up the lono teams cctools-4_2 mach/i386/thread_status.h as well as
+  machdep/i386/frame.h machdep/i386/fpregs.h machdep/i386/sel.h .
+- Changed "struct i386_thread_state *cpu," to "i386_thread_state_t *cpu,"
+  in bytesex.h for the lono team.
+
+Changes for the 3.1 release (the cctools-4 release):
+- Moved the ix86 directory to i386.
+
+Changes for the 3.0 release (the -56 compiler release):
+- Fixed some typos in mach-o/reloc.h in the __LITTLE_ENDIAN__ code (bug #19639).
+
+Changes for the 3.0 release (the -53 compiler release):
+- Removed the local copy of mach/m88k/thread_status.h .
+
+Changes for the 3.0 release (the -47 compiler release):
+- Split of the reloc.h header file:
+  part of mach-o/reloc.h -> mach-o/m88k/reloc.h
+  part of mach-o/reloc.h -> mach-o/i860/reloc.h
+- Switch over to the newer header file organization.
+  m88k/mach/thread_status.h -> mach/m88k/thread_status.h
+  ix86/mach/thread_status.h -> mach/ix86/thread_status.h
+  i860/mach/thread_status.h -> mach/i860/thread_status.h
+  m88k/disasm.h -> mach-o/m88k/disasm.h
+  m88k/parseinst.h -> mach-o/m88k/parseinst.h
+
+Changes for the 3.0 release (the -44 compiler release):
+- Switch over to the new header file organization.
+
+Changes for the 3.0 release (the -36 compiler release):
+- Added the 88k disassembler header file but these are not installed.
+
+Changes for the 3.0 release (the -34 compiler release):
+- Added installsrc, installIBMsrc and installGNUsrc targets to the Makefile.
+
+Changes for the 3.0 release (the -33 compiler release):
+- sys/machine.h:  (this is owned by the OS group and will be given back to them)
+     * 16-Oct-90  Compiler group (comp) at NeXT.
+     *	Replaced the 88k cpu_subtype CPU_SUBTYPE_MMAX_JPC with 
+     *	CPU_SUBTYPE_MC88100 and CPU_SUBTYPE_MC88110 to match 68k types.
+
+    /*
+     *	MC88000 subtypes
+     */
+    #define CPU_SUBTYPE_MC88100		((cpu_subtype_t) 1) 
+    #define CPU_SUBTYPE_MC88110		((cpu_subtype_t) 2) 
+
+
+    The I860 CPU type in the NDTools 7 conflicts with the CPU_TYPE_I386 which is
+    also 7.  In talking with Mike Paquette (10/16/90) he said it is ok to change
+    CPU_TYPE_I860 to whatever and he will recompile NextDimention.
+    The three I860 additions were as follows:
+
+     * 16-Aug-89  Mike Paquette (mpaque) at NeXT
+     *	Added I860 CPU type and subtypes for big or little-endian data
+     *	implementation.
+
+    #define CPU_TYPE_I860		((cpu_type_t) 7) <<<will be 14>>>
+
+    /*
+     *	I860 subtypes
+     */
+    #define CPU_SUBTYPE_LITTLE_ENDIAN	((cpu_subtype_t) 0)
+    #define CPU_SUBTYPE_BIG_ENDIAN		((cpu_subtype_t) 1)
+
+- machine/thread_status.h: where "machine" is a symbolic link to "next"
+  (this is owned by the OS group and will be given back to them)
+    In talking to Mike DeMoney on (10/16/90) he came up with the following
+    structure to handle the multiple machines specific files.  These would
+    be the directories in /usr/include (or in the kernel's header file area):
+
+	next68k/   was just next/
+	next88k/
+	next860/
+
+    A symbolic link from "next to "next" will be added for compatiblity and
+    the symbolic "machine" will point to the directory the kernel is configured
+    for.
+
+- next860/thread_status.h:
+    This is to be owned by someone like Mike Paquette.  It is the file that
+    discrbes JUST the i860 thread state.
+
+- next88k/thread_status.h:
+    This is to be owned by the OS group.  The compiler group made a first
+    cut at it.
+
+Changes for the Warp ?? release (the -25 compiler release):
+- Added the scattered_relocation_info struct to reloc.h
+
+Changes for the Warp ?? release (the -24 compiler release):
+- Added #import <sys/loader.h> to ldsyms.h (bug 6031).
+- Added rld.h to be installed in /usr/include.
+
+Changes for the 2.0 impulse X.X release (the -19 compiler release):
+- Updated ldsyms.h to match the new link editor.  Basicly removing lots of old
+  stuff.
+- Added one missing ';' in symseg.h to get rid of a warning.
+- Removed the temporay copies of <ranlib.h> and  <sys/loader.h> now that the
+  Impulse 0.02 release has the right versions.
+- Added temporary copies of <nlist.h> and <sys/machine.h> until the next libc
+  and mk projects get released and the correct versions are in /usr/include.
+
+Changes for the 0.93 release (the -12 compiler release):
+- No longer install symseg.h
+- Now own sys/exec.h as a part of a.out.h
+
+Changes for the 0.82 release (the -8 compiler release):
+- Changed the Makefile to install in /usr/include
+
+Changes for the 0.82 release (the -7 compiler release):
+- Added header_addr to fvmlib load and id commands.
+- Added the SEG_PAGEZERO segment name to sys/loader.h for the segment created
+  to protect page zero for NULL pointers.
+
+Changes for the 0.81 release (the -6 compiler release):
+- The following files to reflect what is contained in a true mach-O object
+  file (relocatables and other formats):
+	nlist.h
+	reloc.h (new)
+	symseg.h
+	stab.h
+  These along with <sys/loader.h> are now the offical files that mach-O object
+  tools should reference.  The file <a.out.h> has been updated with the same
+  changes but will go away in the 1.0 release or renamed to <a.out.h.old>.  
+
+  The logical changes are as follows:
+
+  To the nlist structure (also see comments in <nlist.h> and <stab.h>):
+
+    The modifications from the original format were changing n_other (an unused
+    field) to n_sect and the addition of the N_SECT type.   All mach-O symbols
+    defined a section (for example what use to be N_TEXT, N_DATA and N_BSS) now
+    have the type N_SECT.
+
+    If the type is N_SECT then the n_sect field contains an ordinal of the
+    section the symbol is defined in.  The sections are numbered from 1 and 
+    refer to sections in order they appear in the load commands for the file
+    they are in.  This means the same ordinal may very well refer to different
+    sections in different files.
+  
+    The n_value field for all symbol table entries (including N_STAB's) gets
+    updated by the link editor based on the value of it's n_sect field and where
+    the section n_sect references gets relocated.  If the value of the n_sect 
+    field is NO_SECT then it's n_value field is not changed by the link editor.
+    The comments in <stab.h> have been updated to reflect this.
+
+    Common symbols are represented by undefined (N_UNDF) external (N_EXT) types
+    who's values (n_value) are non-zero.  In which case the value of the n_value
+    field is the size (in bytes) of the common symbol.
+
+    Absolute, undefined and common symbols are NOT in any section and thus their
+    n_sect field must be NO_SECT to indicate this and avoid having their n_value
+    field changed.
+
+  To the relocation_info structure (see the comments in <reloc.h>):
+
+    The modifications from the original format were changing the value
+    of the r_symbolnum field for "local" (r_extern == 0) relocation entries.
+
+    In 4.3bsd a.out objects if r_extern is zero then r_symbolnum is an ordinal
+    for the segment the symbol being relocated is in.  These ordinals are the
+    symbol types N_TEXT, N_DATA, N_BSS or N_ABS.  In mach-O object files these
+    ordinals refer to the sections in the object file they are in.  The first
+    section has the ordinal 1, the second 2, and so on.  This means that the
+    same ordinal in two different object files could refer to two different
+    sections.  And further could have still different ordinals when combined
+    by the link-editor.  The value R_ABS is used for relocation entries for
+    absolute symbols which need no further relocation.
+
+  To the symseg structures (see the comments in <symseg.h>):
+
+    To handle an arbitrary number of segments and sections the symbol_root,
+    the indirect_root and the shlib_root have new structures in a mach-O
+    object file.  The change to these structures was to replace the fields
+    relating to where a segment was loaded with a load map.
+
+    The load map describes where the parts the relocatable object have been
+    loaded in the executable.  The enitre address space of the relocatable
+    is to be covered by all the map entries.  There may be multiple map entries
+    for a single section or one map entry for multiple sections.  This allows
+    the link editor to scatter load a section based on information that improves
+    performance by increasing the locality of reference.
+
+- The N_INDR symbol type was added for indirect symbols (to support building
+  the ANSI C library).
+
+    If the type is N_INDR then the symbol is defined to be the same as another
+    symbol.  In this case the n_value field is an index into the string table
+    of the other symbol's name.  When the other symbol is defined then they both
+    take on the defined type and value.
+
+- Changed the loader defined symbol names _etext, _edata, and _end to __etext,
+  __edata, __end so not to pollute the name space of ANSI C programs.  There
+  are now macros for these symbols.  The ANSI C library will have objects with
+  indirect symbols so that old names will still work if the program is linked
+  with the ANSI C library.
