@@ -1,0 +1,2 @@
+INSTALL_AS_GROUP = operator      # (probably want to set both of these) 
+INSTALL_PERMISSIONS = 0555    # If set, 'install' chmod's executable to this
